@@ -101,13 +101,25 @@ Demonstrates API call flows:
 
 ## 📎 Deliverables
 
-- High-level package diagram doc.pdf : The technical documentation for the package diagram.
+- High-level package diagram doc.pdf : The technical documentation for the package diagram.  
 
-- Class diagram doc.pdf : The technical documentation for the package diagram.
+- Class diagram doc.pdf : The technical documentation for the package diagram.  
 
-- Sequence diagram doc.pdf : The technical documentation for the sequence diagram.
+- Sequence diagram doc.pdf : The technical documentation for the sequence diagram.  
 
-- HBnB complete doc.pdf : The technical documentation for the application.
+- HBnB complete doc.pdf : The technical documentation for the application.  
+
+- HBnB_High-level package.pdf : The high level package in full format.  
+
+- HBnB_Classes diagram.pdf : The class diaram in full format.  
+
+- HBnB_Sequence diagram_Add_place.pdf : The sequence diagram to add places.  
+
+- HBnB_Sequence diagram_Place list.pdf : The sequence diagram to list places.  
+
+- HBnB_Sequence diagram_Review.pdf : The sequence diagram to add a review.  
+
+- HBnB_Sequence diagram_User registration.pdf : The sequence diagram for user's registration.  
 
 ---
 
