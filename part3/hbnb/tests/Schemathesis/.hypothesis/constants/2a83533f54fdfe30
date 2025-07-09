@@ -1,0 +1,4 @@
+# file: /usr/lib/python3/dist-packages/urllib3/request.py
+# hypothesis_version: 6.135.24
+
+['?', 'Content-Type', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'RequestMethods', 'body', 'headers', 'request_url']

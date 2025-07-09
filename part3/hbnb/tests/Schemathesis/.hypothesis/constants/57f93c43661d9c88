@@ -1,0 +1,4 @@
+# file: /usr/lib/python3/dist-packages/urllib3/fields.py
+# hypothesis_version: 6.135.24
+
+['"', '"\\\r\n', '%22', '%s*=%s', '%s: %s', '%s="%s"', '%{:02X}', '; ', 'Content-Disposition', 'Content-Location', 'Content-Type', '\\', '\\\\', 'ascii', 'filename', 'form-data', 'name', 'utf-8', '|']

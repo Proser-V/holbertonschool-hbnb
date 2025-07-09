@@ -1,0 +1,4 @@
+# file: /usr/lib/python3/dist-packages/urllib3/connection.py
+# hypothesis_version: 6.135.24
+
+[b'\r\n', b'0\r\n\r\n', 443, 2020, "', '", '.', 'TLSv1', 'TLSv1.1', 'Transfer-Encoding', 'User-Agent', '_tunnel_host', 'accept-encoding', 'check_hostname', 'chunked', 'host', 'http', 'https', 'load_default_certs', 'proxy', 'proxy_config', 'python-urllib3/%s', 'socket_options', 'source_address', 'strict', 'subjectAltName', 'transfer-encoding', 'user-agent', 'utf8', 'version']

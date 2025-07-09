@@ -1,0 +1,72 @@
+-- A script that creates the table user for HBnB
+
+CREATE TABLE IF NOT EXISTS user(
+	id CHAR(36) PRIMARY KEY,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	email VARCHAR(120) UNIQUE NOT NULL,
+	hashed_password VARCHAR(255) NOT NULL,
+	is_active BOOLEAN DEFAULT TRUE NOT NULL,
+	is_admin BOOLEAN DEFAULT FALSE NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+	photo_url VARCHAR(2048)
+	);
+
+-- A script that creates the table place for HBnB
+
+CREATE TABLE IF NOT EXISTS place(
+	id CHAR(36) PRIMARY KEY,
+	title VARCHAR(50) NOT NULL,
+	description VARCHAR(1000) NOT NULL,
+	price DECIMAL(10, 2) CHECK (price >= 0) NOT NULL,
+	latitude FLOAT CHECK (-90 <= latitude AND latitude <= 90) NOT NULL,
+	longitude FLOAT CHECK (-180 <= longitude AND longitude <= 180) NOT NULL,
+	owner_id VARCHAR(36) NOT NULL,
+	rating DECIMAL(10, 1) CHECK (rating >= 0 AND rating <= 5),
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+	photos_url JSON DEFAULT (JSON_ARRAY()),
+
+	FOREIGN KEY(owner_id) REFERENCES user(id) ON DELETE CASCADE
+	);
+
+-- A script that creates the table amenity for HBnB
+
+CREATE TABLE IF NOT EXISTS amenity(
+	id CHAR(36) PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	description VARCHAR(500) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+	);
+
+-- A script that creates the association table place_amenity for HBnB
+
+CREATE TABLE IF NOT EXISTS place_amenity(
+	place_id VARCHAR(36),
+	amenity_id VARCHAR(36),
+
+	PRIMARY KEY (place_id, amenity_id)
+	FOREIGN KEY (place_id) REFERENCES place(id),
+	FOREIGN KEY (amenity_id) REFERENCES amenity(id)
+	);
+
+-- A script that creates the table reviews for HBnB
+
+CREATE TABLE IF NOT EXISTS reviews(
+	id CHAR(36) PRIMARY KEY,
+	comment VARCHAR(2000) NOT NULL,
+	rating DECIMAL(10, 1) CHECK (rating >= 0 AND rating <= 5) NOT NULL,
+	place VARCHAR(36) NOT NULL,
+	user_ide VARCHAR(36) NOT NULL,
+	user_first_name VARCHAR(50) NOT NULL,
+	user_last_name VARCHAR(50) NOT NULL,
+	booking VARCHAR(36) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+
+	FOREIGN KEY(place) REFERENCES place(id),
+	FOREIGN KEY(user_ide) REFERENCES user(id),
+	FOREIGN KEY(booking) REFERENCES booking(id)
+	);

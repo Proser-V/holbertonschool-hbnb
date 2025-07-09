@@ -1,0 +1,4 @@
+# file: /usr/lib/python3/dist-packages/urllib3/packages/ssl_match_hostname/_implementation.py
+# hypothesis_version: 6.135.24
+
+['*', ', ', '.', '3.5.0.1', 'DNS', 'IP Address', '[^.]*', '[^.]+', '\\*', '\\.', '\\A', '\\Z', 'ascii', 'commonName', 'strict', 'subject', 'subjectAltName', 'xn--']

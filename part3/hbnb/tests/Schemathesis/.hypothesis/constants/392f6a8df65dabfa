@@ -1,0 +1,4 @@
+# file: /usr/lib/python3/dist-packages/urllib3/__init__.py
+# hypothesis_version: 6.135.24
+
+['HTTPConnectionPool', 'HTTPResponse', 'HTTPSConnectionPool', 'MIT', 'PoolManager', 'ProxyManager', 'Retry', 'Timeout', 'add_stderr_logger', 'always', 'connection_from_url', 'default', 'disable_warnings', 'get_host', 'ignore', 'make_headers', 'proxy_from_url']
