@@ -1,4 +1,0 @@
-# file: /usr/lib/python3/dist-packages/urllib3/util/wait.py
-# hypothesis_version: 6.135.24
-
-[1000, 'inf', 'select', 'wait_for_read', 'wait_for_write']

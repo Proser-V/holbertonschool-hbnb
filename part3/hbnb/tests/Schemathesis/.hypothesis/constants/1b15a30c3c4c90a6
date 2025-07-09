@@ -1,4 +1,0 @@
-# file: /usr/lib/python3/dist-packages/urllib3/connectionpool.py
-# hypothesis_version: 6.135.24
-
-[303, '%s(host=%r, port=%r)', '/', '443', '80', 'CERT_REQUIRED', 'Connection aborted.', 'GET', 'HTTP/?', 'No host specified.', 'Pool is closed.', 'Redirecting %s -> %s', 'Retry-After', 'Retry: %s', '[', ']', '_http_vsn_str', 'auto_open', 'errno', 'http', 'https', 'preload_content', 'proxy', 'proxy_config', 'request_method', 'sock', 'socket_options', 'timed out']

@@ -1,4 +1,0 @@
-# file: /usr/lib/python3/dist-packages/requests/utils.py
-# hypothesis_version: 6.135.24
-
-[b'^\\S[^\\r\\n]*$|^$', 443, 4294967295, '\x00', ' \'"', "!#$%&'()*+,/:;=?@[]~", "!#$&'()*+,/:;=?@[]~", '"', '"\' ', '%', '%s/%s', '\'"', '*', '*/*', ',', ', ', ', *<', '.', '.*', '.netrc', '/', '0123456789-._~', '://', ':{}', ';', '<', '<> \'"', '<local>', '=', '=L', '>', '>I', '?', '@', 'Accept', 'Accept-Encoding', 'Connection', 'ISO-8859-1', 'NETRC', 'ProxyEnable', 'ProxyOverride', 'User-Agent', '\\', '\\"', '\\.', '\\\\', '^\\S[^\\r\\n]*$|^$', '__len__', '_netrc', 'all', 'all://', 'application/json', 'ascii', 'b', 'charset', 'content-type', 'deflate', 'fileno', 'gzip', 'http', 'https', 'items', 'keep-alive', 'len', 'name', 'no_proxy', 'python-requests', 'replace', 'seek', 'tell', 'text', 'url', 'utf-16', 'utf-16-be', 'utf-16-le', 'utf-32', 'utf-32-be', 'utf-32-le', 'utf-8', 'utf-8-sig', 'win32', '~/{}']

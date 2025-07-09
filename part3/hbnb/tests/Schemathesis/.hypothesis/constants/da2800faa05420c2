@@ -1,4 +1,0 @@
-# file: /usr/lib/python3/dist-packages/urllib3/util/connection.py
-# hypothesis_version: 6.135.24
-
-[0.0, '::1', '[', '[]', 'idna', 'sock']
