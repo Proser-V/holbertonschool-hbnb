@@ -24,8 +24,9 @@ review_model = api.model('Review', {
 
 @api.route('/')
 class ReviewList(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'List of reviews retrieved successfully')
+    @api.response(401, 'Unauthorized')
     def get(self):
         """Retrieve a list of all reviews"""
         reviews_list = facade.get_all_reviews()
@@ -87,9 +88,10 @@ class CreateReview(Resource):
 
 @api.route('/<review_id>')
 class ReviewResource(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'Review details retrieved successfully')
     @api.response(400, 'Invalide UUID format')
+    @api.response(401, 'Unauthorized')
     @api.response(404, 'Review not found')
     def get(self, review_id):
         """Get review details by ID"""
@@ -107,10 +109,10 @@ class ReviewResource(Resource):
     @jwt_required()
     @api.expect(review_model)
     @api.response(200, 'Review updated successfully')
-    @api.response(404, 'Review not found')
-    @api.response(403, 'Permission error')
     @api.response(400, 'Invalid input data or UUID format')
     @api.response(401, 'Unauthorized')
+    @api.response(403, 'Permission error')
+    @api.response(404, 'Review not found')
     def put(self, review_id):
         """Update a review's information"""
         current_user_id = get_jwt_identity()
@@ -165,7 +167,7 @@ class ReviewResource(Resource):
             return {'error': 'Review not found'}, 404
 
         if (current_user_id != str(review_to_delete.user_ide)
-            and current_user.is_admin is False):
+           and current_user.is_admin is False):
             return {'error': "You must be the review's"
                     " creator or admin to delete it"}, 403
 

@@ -12,6 +12,7 @@ from pydantic import ValidationError, EmailStr, TypeAdapter
 from uuid import UUID
 from app.models.user import UserCreate, LoginRequest, UserUpdate
 from app.models.user import UserPublic, RevokedToken, AdminCreate
+from app.models.user import UserModeration
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from argon2.exceptions import VerifyMismatchError
@@ -48,6 +49,12 @@ login_model = api.model('Login', {
     'password': fields.String(required=True, description='User password')
 })
 
+# User moderation
+user_moderation_model = api.model('UserModeration', {
+    'is_active': fields.Boolean(required=True,
+                                description='Desactive or active an account')
+})
+
 
 @api.route('/')
 class UserList(Resource):
@@ -69,12 +76,18 @@ class UserList(Resource):
 
         return UserPublic.model_validate(new_user).model_dump(), 201
 
-    @api.doc(security=[])
+    @jwt_required()
     @api.doc(params={'email': 'Filter user by email (optional)'})
     @api.response(200, 'User(s) found')
+    @api.response(401, 'Unauthorized')
+    @api.response(403, 'Forbidden')
     @api.response(404, 'User not found')
     def get(self):
         """Get all users or by email query"""
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+        if (current_user.is_admin is False):
+            return {'error': "Only an admin can view these informations"}, 403
         email = request.args.get('email')
         if email:
             user = facade.get_user_by_email(email)
@@ -92,10 +105,11 @@ class UserList(Resource):
 
 @api.route('/<user_id>')
 class UserResource(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'user details retrieved successfully')
-    @api.response(404, 'User not found')
     @api.response(400, 'Invalid UUID format')
+    @api.response(401, 'Unauthorized')
+    @api.response(404, 'User not found')
     def get(self, user_id):
         """Get user details by ID"""
         try:
@@ -122,7 +136,7 @@ class UserResource(Resource):
         current_user = facade.get_user(current_user_id)
         try:
             UUID(user_id)
-        except TypeError:
+        except ValueError:
             return {'error': 'Invalid UUID format'}, 400
 
         if (current_user_id != str(user_id)
@@ -135,8 +149,13 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
 
         try:
-            update_data = (UserUpdate.model_validate(request.json)
-                           .model_dump(exclude_unset=True))
+            update_user = UserUpdate.model_validate(request.json)
+            if update_user.photo_url is not None:
+                if not UserUpdate.validate_image(update_user.photo_url):
+                    return {'message': 'L\'URL ne pointe pas'
+                            ' vers une image valide'}, 400
+            update_data = update_user.model_dump(exclude_unset=True,
+                                                 mode="json")
         except ValidationError as e:
             return {'error': json.loads(e.json())}, 400
         if "email" in update_data:
@@ -190,6 +209,7 @@ class Login(Resource):
     @api.expect(login_model, validate=True)
     @api.response(200, 'Token created')
     @api.response(400, 'Invalid password or email')
+    @api.response(403, 'Forbidden')
     @api.response(404, 'User not found')
     def post(self):
         """Login the user"""
@@ -207,6 +227,9 @@ class Login(Resource):
                 user.hashed_password, login_data.password)
         except VerifyMismatchError:
             return {'error': 'Invalid password or email'}, 400
+
+        if user.is_active is False:
+            return {'error': 'User account deactivated'}, 403
 
         access_token = create_access_token(
             identity=user.id,
@@ -273,6 +296,9 @@ class AdminCreation(Resource):
     @api.response(403, 'Forbidden')
     @jwt_required()
     def post(self):
+        """
+        Create a new admin.
+        """
         identity = get_jwt_identity()
         user = facade.get_user(identity)
         if not user.is_admin:
@@ -288,3 +314,32 @@ class AdminCreation(Resource):
         new_admin = facade.create_user_admin(admin_data.model_dump())
 
         return UserPublic.model_validate(new_admin).model_dump(), 201
+
+
+@api.route('/<user_id>/moderate')
+class ModerateUser(Resource):
+    @jwt_required()
+    @api.expect(user_moderation_model)
+    @api.response(201, 'User successfully updated')
+    @api.response(400, 'Email already registered or invalid input')
+    @api.response(401, 'Unauthorized')
+    @api.response(403, 'Forbidden')
+    def patch(self, user_id):
+        """
+        Deactivate or activate an user account
+        """
+        identity = get_jwt_identity()
+        user = facade.get_user(identity)
+        try:
+            UUID(user_id)
+        except ValueError:
+            return {'error': 'Invalid UUID format'}, 400
+        if not user.is_admin:
+            return {'error': 'You are not allowed'}, 403
+        try:
+            user_is_active = UserModeration(**request.json)
+        except ValidationError as e:
+            return {'error': json.loads(e.json())}, 400
+
+        updated_user = facade.update_user(user_id, user_is_active.model_dump())
+        return UserPublic.model_validate(updated_user).model_dump(), 201

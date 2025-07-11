@@ -3,15 +3,13 @@
 This module provides the initialization file for
 the Flask server and JWT management.
 '''
-from flask import Flask, redirect, request, make_response
+from flask import Flask, redirect
 from flask_restx import Api
 from config import config
 from utils import purge_expired_tokens
 from extensions import db, jwt
 from app.models.user import RevokedToken
 from utils import purge_expired_tokens, delete_invalid_amenities
-from flask import request, jsonify, abort
-from werkzeug.exceptions import MethodNotAllowed
 
 
 def create_app(config_name='default'):

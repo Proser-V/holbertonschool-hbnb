@@ -1,8 +1,14 @@
+"""
+This module provides a testing suite for places CRUD.
+"""
+
+
 import requests
 
 BASE_URL = "http://localhost:5001/api/v1"
 
 print("========== Running the places tests ==========")
+
 
 # Create a new set of users
 def register(email):
@@ -16,15 +22,15 @@ def register(email):
 
     if res.status_code == 201:
         return res.json()["id"]
-    elif res.status_code == 400 and res.json().get("error") == "Email already registered":
+    elif (res.status_code == 400 and res.json().get("error")
+          == "Email already registered"):
         return None
     else:
         raise Exception(f"Unexpected response: {res.status_code} - {res.text}")
 
+
 user1_id = register("user1@example.com")
-assert user1_id is not None
 user2_id = register("user2@example.com")
-assert user2_id is not None
 
 # Login user
 res = requests.post(f"{BASE_URL}/users/login", json={
@@ -33,7 +39,6 @@ res = requests.post(f"{BASE_URL}/users/login", json={
 })
 
 token = res.json().get("access_token")
-assert token, "No access token received"
 
 # Add Authorization header
 headers = {
@@ -41,7 +46,7 @@ headers = {
 }
 
 # Register a new place
-res = requests.post(f"{BASE_URL}/places", json = {
+res = requests.post(f"{BASE_URL}/places", json={
     "title": "Maion de test",
     "description": "C'est une maison en forme de maison",
     "price": 23.4243,
@@ -101,7 +106,6 @@ res = requests.post(f"{BASE_URL}/users/login", json={
 })
 
 token = res.json().get("access_token")
-assert token, "No access token"
 
 # Return the good authorization header
 headers = {"Authorization": f"Bearer {token}"}

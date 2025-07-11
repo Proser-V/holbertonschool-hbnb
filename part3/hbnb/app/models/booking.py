@@ -161,6 +161,7 @@ class UpdateBooking(BaseModel):
             raise ValueError("Start date must be before end date")
         return values
 
+
 class BookingPublic(BaseModel):
     """
     This class is used to display public informations when a booking is

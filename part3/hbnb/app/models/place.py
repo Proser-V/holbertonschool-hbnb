@@ -72,7 +72,8 @@ class Place(db.Model):
     reviews = db.relationship("Review", back_populates='place_rel',
                               cascade='all, delete-orphan')
     bookings = db.relationship(Booking, back_populates='place_rel',
-                               cascade='all, delete-orphan', foreign_keys=[Booking.place])
+                               cascade='all, delete-orphan',
+                               foreign_keys=[Booking.place])
     owner = db.relationship('User', back_populates='places')
 
     __table_args__ = (
@@ -301,6 +302,7 @@ class PlaceUpdate(BaseModel):
         if not value:
             raise ValueError("Field cannot be empty or just whitespace")
         return value
+
 
 class PlacePublic(BaseModel):
     """

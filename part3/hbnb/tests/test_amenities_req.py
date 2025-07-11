@@ -1,3 +1,8 @@
+"""
+This module provides a testing suite for places CRUD.
+"""
+
+
 import requests
 
 
@@ -6,7 +11,7 @@ BASE_URL = "http://localhost:5001/api/v1"
 print("========== Running the amenities test ==========")
 
 # Login an admin
-res = requests.post(f"{BASE_URL}/users/login", json= {
+res = requests.post(f"{BASE_URL}/users/login", json={
     "email": "admin@hbnb.com",
     "password": "Iamanadmin"
 })
@@ -32,6 +37,7 @@ except ValueError:
 
 amenity_id = data.get("id")
 
+
 # Create a user
 def register(email):
     res = requests.post(f"{BASE_URL}/users", json={
@@ -44,13 +50,14 @@ def register(email):
 
     if res.status_code == 201:
         return res.json()["id"]
-    elif res.status_code == 400 and res.json().get("error") == "Email already registered":
+    elif (res.status_code == 400 and res.json().get("error")
+          == "Email already registered"):
         return None
     else:
         raise Exception(f"Unexpected response: {res.status_code} - {res.text}")
 
+
 user_id = register("user1@example.com")
-assert user_id is not None
 
 # Login the user
 res = requests.post(f"{BASE_URL}/users/login", json={

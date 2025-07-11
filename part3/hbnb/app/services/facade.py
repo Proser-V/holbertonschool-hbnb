@@ -71,6 +71,7 @@ class HBnBFacade:
             last_name=user_in.last_name,
             email=user_in.email,
             hashed_password=hashed_pw,
+            photo_url=str(user_in.photo_url)
         )
         self.user_repo.add(user)
         return user
@@ -88,7 +89,8 @@ class HBnBFacade:
             last_name=user_in.last_name,
             email=user_in.email,
             hashed_password=hashed_pw,
-            is_admin=user_in.is_admin
+            is_admin=user_in.is_admin,
+            photo_url=str(user_in.photo_url)
         )
         self.user_repo.add(user)
         return user
@@ -143,7 +145,7 @@ class HBnBFacade:
         for amenity_id in place_in.amenity_ids or []:
             amenity = self.get_amenity(str(amenity_id))
             if not amenity:
-                raise Exception(f'Amenity {amenity_id} not found')
+                raise ValueError(f'Amenity {amenity_id} not found')
             amenities.append(amenity)
 
         place = Place(
@@ -185,7 +187,7 @@ class HBnBFacade:
             for amenity_id in to_add:
                 amenity = self.get_amenity(amenity_id)
                 if not amenity:
-                    raise Exception(f"Amenity {amenity_id} not found")
+                    raise ValueError(f"Amenity {amenity_id} not found")
                 updated_amenities.append(amenity)
 
             place.amenities = updated_amenities
@@ -399,11 +401,13 @@ class HBnBFacade:
         place_id = booking.place
         place = self.place_repo.get(place_id)
         user_id = booking.user
+        user = self.get_user(user_id)
 
         if 'status' in booking_data:
-            if str(place.owner_id) != str(user_id):
-                raise PermissionError("Only the owner of a place"
-                                      "can update the status")
+            if (str(place.owner_id) != str(user_id)
+               and not user.is_admin):
+                raise PermissionError("Only the owner of a place or an admin"
+                                      " can update the status")
             if booking_data['status'] not in ("DONE", "PENDING", "CANCELLED"):
                 raise ValueError("Status must be DONE, PENDING, or CANCELLED")
 

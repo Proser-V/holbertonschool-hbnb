@@ -5,7 +5,7 @@ with validation rules and sensible defaults applied.
 """
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from pydantic import field_validator
+from pydantic import field_validator, AnyUrl
 from datetime import datetime, timezone
 from app.models.place import Place
 from app.models.review import Review
@@ -13,6 +13,7 @@ from app.models.booking import Booking
 from typing import Optional
 from extensions import db  # db = SQLAlchemy()
 import re
+import requests
 
 
 # Default profile picture URL used when no photo_url is provided by the user
@@ -90,9 +91,33 @@ class UserCreate(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=1, max_length=50)
-    photo_url: Optional[str] = None
+    photo_url: Optional[AnyUrl] = None
 
     @field_validator("photo_url")
+    @classmethod
+    def validate_image(cls, url):
+        if url is None:
+            return None
+        try:
+            # HEAD request
+            response = requests.head(str(url), timeout=5, allow_redirects=True)
+            if response.status_code == 200:
+                content_type = response.headers.get('Content-Type', '')
+                if content_type.startswith('image/'):
+                    return url
+            # GET partial content
+            headers = {'Range': 'bytes=0-1023'}
+            response = requests.get(str(url), headers=headers, timeout=5,
+                                    stream=True, allow_redirects=True)
+            if response.status_code in (200, 206):
+                content_type = response.headers.get('Content-Type', '')
+                if content_type.startswith('image/'):
+                    return url
+            raise ValueError("The URL is not a valid image")
+        except requests.RequestException as e:
+            raise ValueError(f"An error occured while the verification"
+                             " of the image")
+
     @classmethod
     def set_default_photo(cls, photo_url):
         if not photo_url:
@@ -133,9 +158,33 @@ class UserUpdate(BaseModel):
     last_name: Optional[str] = Field(None, min_length=1, max_length=50)
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=1, max_length=50)
-    photo_url: Optional[str] = None
+    photo_url: Optional[AnyUrl] = None
 
     @field_validator("photo_url")
+    @classmethod
+    def validate_image(cls, url):
+        if url is None:
+            return None
+        try:
+            # HEAD request
+            response = requests.head(str(url), timeout=5, allow_redirects=True)
+            if response.status_code == 200:
+                content_type = response.headers.get('Content-Type', '')
+                if content_type.startswith('image/'):
+                    return url
+            # GET partial content
+            headers = {'Range': 'bytes=0-1023'}
+            response = requests.get(str(url), headers=headers, timeout=5,
+                                    stream=True, allow_redirects=True)
+            if response.status_code in (200, 206):
+                content_type = response.headers.get('Content-Type', '')
+                if content_type.startswith('image/'):
+                    return url
+            raise ValueError("The URL is not a valid image")
+        except requests.RequestException as e:
+            raise ValueError(f"An error occured while the verification"
+                             " of the image")
+
     @classmethod
     def set_default_photo(cls, photo_url):
         if not photo_url:
@@ -169,6 +218,7 @@ class UserPublic(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
+    is_active: bool
 
     # Pydantic config to serialize datetime as ISO format strings
     model_config = ConfigDict(
@@ -195,6 +245,13 @@ class AdminCreate(UserCreate):
 
     """
     is_admin: bool = True
+
+
+class UserModeration(BaseModel):
+    """
+
+    """
+    is_active: bool = Field(..., description="User active status (True/False)")
 
 
 class RevokedToken(db.Model):

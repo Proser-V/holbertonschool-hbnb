@@ -1,6 +1,5 @@
-#!/usr/bin/python3
 '''
-
+This module is the application launcher script.
 '''
 from app import create_app
 

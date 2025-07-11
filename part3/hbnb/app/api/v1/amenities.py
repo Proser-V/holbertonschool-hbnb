@@ -93,7 +93,7 @@ class AmenityResource(Resource):
             return {'error': 'Admin privileges required'}, 403
         try:
             UUID(amenity_id)
-        except TypeError:
+        except ValueError:
             return {'error': 'Invalid UUID format'}, 400
 
         existing_amenity = facade.get_amenity(amenity_id)

@@ -1,6 +1,5 @@
-#!/usr/bin/python3
 '''
-
+This module provides the base configuration for the server's application.
 '''
 import os
 from datetime import timedelta
@@ -18,6 +17,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+    # Use 'sqlite:///testDB.db' to use automated tests
     SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True

@@ -12,7 +12,6 @@ from pydantic import ValidationError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import uuid
 from datetime import datetime, timezone
-from dateutil.parser import isoparse
 import json
 
 api = Namespace('bookings', description='Booking operations')
@@ -42,10 +41,16 @@ def ensure_aware(dt):
 
 @api.route('/')
 class BookingList(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'List of bookings retrieved successfully')
+    @api.response(401, 'Unauthorized')
+    @api.response(403, 'Forbidden')
     def get(self):
         """Retrieve a list of all bookings"""
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+        if (current_user.is_admin is False):
+            return {'error': "Only an admin can view these informations"}, 403
         bookings = facade.get_all_bookings()
         if not bookings:
             return {"message": "No booking yet"}, 200
@@ -56,7 +61,7 @@ class BookingList(Resource):
         for booking in bookings:
             booking_end_aware = ensure_aware(booking.end_date)
             if (booking.status == BookingStatus.PENDING.value
-                                  and now > booking_end_aware):
+                    and now > booking_end_aware):
                 booking.set_status(BookingStatus.DONE.value)
                 facade.booking_repo.update(booking.id, booking.__dict__)
 
@@ -64,6 +69,7 @@ class BookingList(Resource):
                 booking).model_dump(mode='json'))
 
         return booking_list, 200
+
 
 @api.route('/<place_id>')
 class BookingCreate(Resource):
@@ -102,17 +108,21 @@ class BookingCreate(Resource):
 
         return (BookingPublic.model_validate(
             new_booking).model_dump(mode='json')), 201
-    
+
 
 @api.route('/<booking_id>')
 class BookingResource(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'Booking details retrieved successfully')
     @api.response(400, 'Invalide UUID format')
     @api.response(401, 'Unauthorized')
+    @api.response(403, 'Forbidden')
     @api.response(404, 'Booking not found')
     def get(self, booking_id):
         """Get booking details by ID"""
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+
         try:
             uuid.UUID(booking_id)
         except ValueError:
@@ -121,6 +131,14 @@ class BookingResource(Resource):
         booking = facade.get_booking(booking_id)
         if not booking:
             return {'error': 'Booking not found'}, 404
+        place = facade.get_place(booking.place)
+        if not place:
+            return {'error': 'Place not found'}, 404
+        if (current_user_id != booking.user
+            and current_user_id != place.owner_id
+                and current_user.is_admin is False):
+            return {'error': "Only an admin, the place owner or the visitor "
+                    "can view these informations"}, 403
 
         now = datetime.now(timezone.utc)
         booking_end_aware = ensure_aware(booking.end_date)
@@ -138,7 +156,7 @@ class BookingResource(Resource):
     @api.response(400, 'Invalid input data or UUID format')
     @api.response(401, 'Unauthorized')
     @api.response(403, 'Forbidden')
-    @api.response(404, 'Booking not found')
+    @api.response(404, 'Entity not found')
     @jwt_required()
     def put(self, booking_id):
         """Update a booking's information"""
@@ -150,8 +168,12 @@ class BookingResource(Resource):
         booking = facade.get_booking(booking_id)
         if not booking:
             return {'error': 'Booking not found'}, 404
-
-        current_user = get_jwt_identity()
+        if booking.status != "PENDING":
+            return {
+                'error': 'Cannot modifiy an already done or cancelled booking'
+                }, 400
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
         try:
             update_data = (UpdateBooking.model_validate(request.json)
                            .model_dump(exclude_unset=True))
@@ -164,13 +186,17 @@ class BookingResource(Resource):
 
         if "status" in update_data:
             place = facade.get_place(booking.place)
-            if not place or place.owner_id != str(current_user):
+            if not place:
+                return {'error': 'Associated place not found'}, 404
+            if (str(place.owner_id) != str(current_user_id)
+               and not current_user.is_admin):
                 return {
-                    'error': 'Only the owner of a place can update the status'
+                    "error": "Only the owner of a place or an"
+                    "admin can update the status"
                     }, 403
-            if update_data['status'] not in ("DONE", "PENDING", "CANCELLED"):
+            if update_data['status'] not in ("CANCELLED"):
                 return {
-                    'error': "Status must be DONE, PENDING, or CANCELLED"
+                    'error': "Status must be CANCELLED"
                     }, 400
 
         try:
@@ -186,9 +212,10 @@ class BookingResource(Resource):
 
 @api.route('/places/<place_id>/booking')
 class PlaceBookingList(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'List of booking for the place retrieved successfully')
     @api.response(400, 'Invalide UUID format')
+    @api.response(401, 'Unauthorized')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all bookings for a specific place"""
@@ -221,9 +248,10 @@ class PlaceBookingList(Resource):
 
 @api.route('/places/<place_id>/pending_booking')
 class PlaceBookingList(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'List of booking for the place retrieved successfully')
     @api.response(400, 'Invalide UUID format')
+    @api.response(401, 'Unauthorized')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all pending bookings for a specific place"""
@@ -255,9 +283,10 @@ class PlaceBookingList(Resource):
 
 @api.route('/users/<user_id>/booking')
 class UserBookingList(Resource):
-    @api.doc(security=[])
+    @jwt_required()
     @api.response(200, 'List of booking of the user retrieved successfully')
     @api.response(400, 'Invalide UUID format')
+    @api.response(401, 'Unauthorized')
     @api.response(404, 'User not found')
     def get(self, user_id):
         """Get all bookings of a user"""
@@ -265,7 +294,7 @@ class UserBookingList(Resource):
             uuid.UUID(user_id)
         except ValueError:
             return {'error': 'Invalid UUID format'}, 400
-        user = facade.get_place(user_id)
+        user = facade.get_user(user_id)
         if not user:
             return {'message': 'User not found'}, 404
         bookings = facade.get_booking_list_by_user(user_id)
