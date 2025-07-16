@@ -6,12 +6,14 @@ including associated amenities, reviews, and photo handling.
 
 import uuid
 from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import AnyUrl
 from typing import Optional, List
 from datetime import datetime, timezone
 from sqlalchemy import CheckConstraint
 from extensions import db  # db = SQLAlchemy()
 from .booking import Booking
 import re
+import requests
 
 # Default image URL to use when no photos are provided for a place
 DEFAULT_PLACE_PHOTO_URL = (
@@ -63,7 +65,7 @@ class Place(db.Model):
         db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
         nullable=False)
     updated_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc),
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
         onupdate=datetime.now(timezone.utc)
         )
     photos_url = db.Column(db.JSON, default=list)
@@ -218,6 +220,37 @@ class PlaceCreate(BaseModel):
     rating: float = 0.0
     owner_id: str
     amenity_ids: Optional[List[uuid.UUID]] = []
+    photos_url: Optional[List[AnyUrl]] = []
+
+    @field_validator("photos_url")
+    @classmethod
+    def validate_image(cls, photos):
+        if photos is None:
+            return []
+        validated = []
+        for url in photos:
+            if url is None:
+                return None
+            try:
+                response = requests.head(str(url), timeout=5, allow_redirects=True)
+                if response.status_code == 200:
+                    content_type = response.headers.get('Content-Type', '')
+                    if content_type.startswith('image/'):
+                        validated.append(str(url))
+                        continue
+
+                headers = {'Range': 'bytes=0-1023'}
+                response = requests.get(str(url), headers=headers, timeout=5,
+                                        stream=True, allow_redirects=True)
+                if response.status_code in (200, 206):
+                    content_type = response.headers.get('Content-Type', '')
+                    if content_type.startswith('image/'):
+                        return url
+                raise ValueError("The URL is not a valid image")
+            except requests.RequestException as e:
+                raise ValueError(f"An error occured while the verification"
+                                " of the image")
+        return validated
 
     @field_validator('price')
     def round_price(cls, value: float) -> float:
@@ -274,6 +307,37 @@ class PlaceUpdate(BaseModel):
     latitude: Optional[float] = Field(None, ge=-90, le=90)
     longitude: Optional[float] = Field(None, ge=-180, le=180)
     amenity_ids: Optional[List[uuid.UUID]] = []
+    photos_url: Optional[List[AnyUrl]] = []
+
+    @field_validator("photos_url")
+    @classmethod
+    def validate_image(cls, photos):
+        if photos is None:
+            return []
+        validated = []
+        for url in photos:
+            if url is None:
+                return None
+            try:
+                response = requests.head(str(url), timeout=5, allow_redirects=True)
+                if response.status_code == 200:
+                    content_type = response.headers.get('Content-Type', '')
+                    if content_type.startswith('image/'):
+                        validated.append(str(url))
+                        continue
+
+                headers = {'Range': 'bytes=0-1023'}
+                response = requests.get(str(url), headers=headers, timeout=5,
+                                        stream=True, allow_redirects=True)
+                if response.status_code in (200, 206):
+                    content_type = response.headers.get('Content-Type', '')
+                    if content_type.startswith('image/'):
+                        return url
+                raise ValueError("The URL is not a valid image")
+            except requests.RequestException as e:
+                raise ValueError(f"An error occured while the verification"
+                                " of the image")
+        return validated
 
     @field_validator('price')
     def round_price(cls, value: float) -> float:
@@ -318,6 +382,7 @@ class PlacePublic(BaseModel):
     rating: Optional[float]
     owner_id: str
     amenity_ids: Optional[List[str]] = []
+    photos_url: Optional[List[AnyUrl]] = []
 
     model_config = ConfigDict(
                 json_encoders={datetime: lambda v: v.isoformat(),

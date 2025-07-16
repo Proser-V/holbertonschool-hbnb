@@ -329,13 +329,16 @@ class ModerateUser(Resource):
         Deactivate or activate an user account
         """
         identity = get_jwt_identity()
-        user = facade.get_user(identity)
+        current_user = facade.get_user(identity)
+        user = facade.get_user(user_id)
         try:
             UUID(user_id)
         except ValueError:
             return {'error': 'Invalid UUID format'}, 400
-        if not user.is_admin:
+        if not current_user.is_admin:
             return {'error': 'You are not allowed'}, 403
+        if user.is_admin:
+            return {'error': 'You cannot deactivate an admin'}, 403
         try:
             user_is_active = UserModeration(**request.json)
         except ValidationError as e:

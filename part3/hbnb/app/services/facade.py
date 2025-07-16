@@ -148,6 +148,10 @@ class HBnBFacade:
                 raise ValueError(f'Amenity {amenity_id} not found')
             amenities.append(amenity)
 
+        photos = []
+        for url in place_in.photos_url or []:
+            photos.append(url)
+
         place = Place(
             id=str(uuid4()),
             title=place_in.title,
@@ -156,7 +160,8 @@ class HBnBFacade:
             latitude=place_in.latitude,
             longitude=place_in.longitude,
             owner_id=place_in.owner_id,
-            amenities=amenities
+            amenities=amenities,
+            photos_url=photos
         )
         self.place_repo.add(place)
         return place
@@ -193,6 +198,19 @@ class HBnBFacade:
             place.amenities = updated_amenities
 
             update_data.pop('amenity_ids')
+        
+        if "photos_url" in update_data:
+            current_photos = {str(url) for url in place.photos_url}
+            new_photos = set(update_data["photos_url"])
+
+            photos_to_add = new_photos - current_photos
+            photos_to_remove = current_photos - new_photos
+
+            updated_photos = [url for url in place.photos_url if
+                              str(url) not in photos_to_remove]
+
+            for photo in photos_to_add:
+                updated_photos.append(photo)
 
         self.place_repo.update(place_id, update_data)
         return self.place_repo.get(place_id)
@@ -413,3 +431,15 @@ class HBnBFacade:
 
         self.booking_repo.update(booking_id, booking_data)
         return self.booking_repo.get(booking_id)
+    
+    def manage_bookingstatus(self, booking_id):
+
+        booking = self.get_booking(booking_id)
+        now = datetime.now(timezone.utc)
+        booking_end_aware = ensure_aware(booking.end_date)
+
+        if (booking.status == BookingStatus.PENDING.value
+           and now > booking_end_aware):
+            booking.set_status(BookingStatus.DONE.value)
+            self.booking_repo.update(booking_id, booking.__dict__)
+        return booking.status

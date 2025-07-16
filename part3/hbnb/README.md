@@ -109,7 +109,7 @@ hbnb/
 1️⃣ Clone the repository:
 
 ```bash
-git clone https://github.com/Proser-V/holbertonschool-hbnb.git
+git clone https://github.com/loufi84/holbertonschool-hbnb.git
 cd holbertonschool-hbnb/part3/hbnb
 ```
 
@@ -143,7 +143,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
 ```
 To :
 ```python
-SQLALCHEMY_DATABASE_URI = 'sqlite:///testDB.db.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///testDB.db'
 ```
 Start the server.  
 While it's running:

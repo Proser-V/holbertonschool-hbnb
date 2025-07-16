@@ -56,6 +56,10 @@ class CreateReview(Resource):
         except ValueError:
             return {"error": "Invalid booking UUID format"}, 400
 
+        bookingstatus = facade.manage_bookingstatus(booking_id)
+        if bookingstatus != "DONE":
+            return {'error': 'Booking status must be DONE to review.'}, 403
+
         try:
             review_data = ReviewCreate(**request.json)
         except ValidationError as e:

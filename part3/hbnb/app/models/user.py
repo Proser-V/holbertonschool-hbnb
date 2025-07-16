@@ -52,10 +52,10 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)  # Allows disabling user
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc), nullable=False
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
         )
     updated_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc),
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
         onupdate=datetime.now(timezone.utc)
         )
     photo_url = db.Column(db.String(2048), nullable=True)
@@ -99,13 +99,13 @@ class UserCreate(BaseModel):
         if url is None:
             return None
         try:
-            # HEAD request
+
             response = requests.head(str(url), timeout=5, allow_redirects=True)
             if response.status_code == 200:
                 content_type = response.headers.get('Content-Type', '')
                 if content_type.startswith('image/'):
                     return url
-            # GET partial content
+
             headers = {'Range': 'bytes=0-1023'}
             response = requests.get(str(url), headers=headers, timeout=5,
                                     stream=True, allow_redirects=True)
@@ -242,14 +242,14 @@ class LoginRequest(BaseModel):
 
 class AdminCreate(UserCreate):
     """
-
+    The class to create an admin.
     """
     is_admin: bool = True
 
 
 class UserModeration(BaseModel):
     """
-
+    The class that handles the moderation of a user.
     """
     is_active: bool = Field(..., description="User active status (True/False)")
 

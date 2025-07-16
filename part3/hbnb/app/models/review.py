@@ -37,10 +37,10 @@ class Review(db.Model):
     booking = db.Column(db.String,
                         db.ForeignKey('bookings.id'), nullable=False)
     created_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc), nullable=False
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
         )
     updated_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc),
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
         onupdate=datetime.now(timezone.utc)
         )
     place_rel = db.relationship(

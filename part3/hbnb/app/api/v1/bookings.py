@@ -55,16 +55,9 @@ class BookingList(Resource):
         if not bookings:
             return {"message": "No booking yet"}, 200
 
-        now = datetime.now(timezone.utc)
-
         booking_list = []
         for booking in bookings:
-            booking_end_aware = ensure_aware(booking.end_date)
-            if (booking.status == BookingStatus.PENDING.value
-                    and now > booking_end_aware):
-                booking.set_status(BookingStatus.DONE.value)
-                facade.booking_repo.update(booking.id, booking.__dict__)
-
+            facade.manage_bookingstatus(booking.id)
             booking_list.append(BookingPublic.model_validate(
                 booking).model_dump(mode='json'))
 
@@ -140,13 +133,7 @@ class BookingResource(Resource):
             return {'error': "Only an admin, the place owner or the visitor "
                     "can view these informations"}, 403
 
-        now = datetime.now(timezone.utc)
-        booking_end_aware = ensure_aware(booking.end_date)
-
-        if (booking.status == BookingStatus.PENDING.value
-           and now > booking_end_aware):
-            booking.set_status(BookingStatus.DONE.value)
-            facade.booking_repo.update(booking_id, booking.__dict__)
+        facade.manage_bookingstatus(booking_id)
 
         return (BookingPublic.model_validate(
             booking).model_dump(mode='json')), 200
@@ -230,16 +217,9 @@ class PlaceBookingList(Resource):
         if not bookings:
             return {'message': 'No booking for this place yet'}, 200
 
-        now = datetime.now(timezone.utc)
-
         booking_list = []
         for booking in bookings:
-            booking_end_aware = ensure_aware(booking.end_date)
-            if (booking.status == BookingStatus.PENDING.value
-               and now > booking_end_aware):
-                booking.set_status(BookingStatus.DONE.value)
-                facade.booking_repo.update(booking.id, booking.__dict__)
-
+            facade.manage_bookingstatus(booking.id)
             booking_list.append(BookingPublic.model_validate(
                 booking).model_dump(mode='json'))
 
@@ -266,18 +246,11 @@ class PlaceBookingList(Resource):
         if not bookings:
             return {'message': 'No pending booking for this place yet'}, 200
 
-        now = datetime.now(timezone.utc)
         booking_list = []
         for booking in bookings:
-            booking_end_aware = ensure_aware(booking.end_date)
-            if (booking.status == BookingStatus.PENDING.value
-               and now > booking_end_aware):
-                booking.set_status(BookingStatus.DONE.value)
-                facade.booking_repo.update(booking.id, booking.__dict__)
-            else:
-                booking_list.append(BookingPublic.model_validate(booking)
+            facade.manage_bookingstatus(booking.id)
+            booking_list.append(BookingPublic.model_validate(booking)
                                     .model_dump(mode='json'))
-
         return booking_list, 200
 
 
@@ -301,16 +274,9 @@ class UserBookingList(Resource):
         if not bookings:
             return {'message': 'No booking for this place yet'}, 200
 
-        now = datetime.now(timezone.utc)
-
         booking_list = []
         for booking in bookings:
-            booking_end_aware = ensure_aware(booking.end_date)
-            if (booking.status == BookingStatus.PENDING.value
-               and now > booking_end_aware):
-                booking.set_status(BookingStatus.DONE.value)
-                facade.booking_repo.update(booking.id, booking.__dict__)
-
+            facade.manage_bookingstatus(booking.id)
             booking_list.append(BookingPublic.model_validate(
                 booking).model_dump(mode='json'))
 

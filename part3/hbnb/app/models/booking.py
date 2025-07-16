@@ -49,10 +49,10 @@ class Booking(db.Model):
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc), nullable=False
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
         )
     updated_at = db.Column(
-        db.DateTime, default=datetime.now(timezone.utc),
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
         onupdate=datetime.now(timezone.utc)
         )
     place_rel = db.relationship(
