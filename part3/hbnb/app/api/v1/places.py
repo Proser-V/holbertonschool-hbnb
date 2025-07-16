@@ -108,10 +108,14 @@ class PlaceList(Resource):
         if not places:
             return {'message': 'No places found'}, 404
 
-        return [
-            PlacePublic.model_validate(place).model_dump()
-            for place in places
-        ], 200
+        results = []
+        for place in places:
+            place_data = PlacePublic.model_validate(place).model_dump()
+            if 'photos_url' in place_data and place_data['photos_url'] is not None:
+                place_data['photos_url'] = [str(url) for url in place_data['photos_url']]
+            results.append(place_data)
+
+        return results, 200
 
 
 @api.route('/<place_id>')
@@ -140,7 +144,13 @@ class PlaceResource(Resource):
                     'description': amenity.description
                 })
 
-            return PlacePublic.model_validate(place).model_dump(), 200
+        response_data = PlacePublic.model_validate(place).model_dump()
+
+        if 'photos_url' in response_data and response_data['photos_url'] is not None:
+            response_data['photos_url'] = [str(url) for url in response_data['photos_url']]
+
+        return response_data, 200
+
 
     @jwt_required()
     @api.expect(place_model_update)
