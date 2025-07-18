@@ -4,32 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <div>
-            <a href="/hbnb/base_file/index.html">
-                <img src = "images/logo.png" alt="HBnB logo">
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
             </a>
         </div>
-        <nav>
-            <a href="index.html" id="home-link">Home</a>
+        <nav class="header-home">
+            <a href="{{ url_for('web.index') }}" id="home-link">Accueil</a>
         </nav>
     </header>
     <main>
-        <form id="login-form">
-            <h2>Login</h2>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <br>
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            
-            <button type="submit">Login</button>
+        <form id="login-form" method="POST" action="{{ url_for('web.login') }}">
+            <h2 class="login-title">Login</h2>
+            <div class="login-input">
+                <input type="email" id="email" name="email" required placeholder="email@exemple.com">
+            </div>
+            <div class="login-input">
+                <input type="password" id="password" name="password" required placeholder="Mot de passe">
+            </div>
+            <button class="login-validation-button" type="submit">Login</button>
         </form>
+        <p id="error-message" style="color:red; text-align: center;"></p>
+        <h2 class="login-title">Pas encore inscrit?</h2>
+        <button class="login-validation-button" type="redirect"><a href="{{ url_for('web.new_user') }}">Créer un compte</a></button>
     </main>
-    <script src="scripts.js"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 </html>

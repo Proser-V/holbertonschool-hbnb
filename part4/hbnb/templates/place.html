@@ -4,37 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Details</title>
-    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header class="header">
         <div class="header-logo">
-            <a href="/hbnb/base_file/index.html">
-                <img src = "../images/logo.png" alt="HBnB logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
             </a>
         </div>
         <nav class="header-login">
-            <a href="login.html" id="login-link">Login</a>
+            <a href="{{ url_for('web.login') }}" id="login-link">Login</a>
         </nav>
     </header>
     <main>
         <section id="place-details">
             <div class="photo-gallery">
-                <pre>{{ photos_url }}</pre>
-                {% if photos_url and photos_url|length > 0 %}
-                    {% for url in photos_url %}
-                        <img src="{{ url }}" alt="Photo {{ loop.index }}">
-                    {% endfor %}
-                {% else %}
-                    <img src="https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg" alt="Photo par défaut">
-                {% endif %}
+                {% set default_img = 'https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg' %}
+                {% set total_photos = photos_url|length %}
+                {% for i in range(5) %}
+                    {% set photo = photos_url[i] if total_photos > i else default_img %}
+                    {% if i == 0 %}
+                        <img class="place-photo-main" src="{{ photo }}" alt="Photo principale">
+                    {% elif i == 1 %}
+                        <img class="place-photo-little little-1" src="{{ photo }}" alt="Photo 1">
+                    {% elif i == 2 %}
+                        <img class="place-photo-little little-2" src="{{ photo }}" alt="Photo 2">
+                    {% elif i == 3 %}
+                        <img class="place-photo-little little-3" src="{{ photo }}" alt="Photo 3">
+                    {% elif i == 4 %}
+                        <img class="place-photo-little little-4" src="{{ photo }}" alt="Photo 4">
+                    {% endif %}
+                {% endfor %}
+                <button class="show-all-photos-btn" onclick="openGalleryModal()">Voir toutes les photos</button>
             </div>
-            <!-- Place details will be populated dynamically -->
+            <div class="place-info-card">
+                <div class="place-title">
+                    <h2>{{ place.title }}</h2>
+                </div>
+                <div class="place-location" data-latitude="{{ place.latitude }}" data-longitude="{{ place.longitude }}">
+                    <p id="location-name">Chargement de la localisation...</p>
+                </div>
+                <div class="place-owner">
+                    <a class="place-owner-photo" href="#" data-user-id="{{ place.owner.id }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}" id="to-owner-link">
+                        {% if place.owner.photo_url %}
+                            <img src="{{ place.owner.photo_url }}" alt="Photo de {{ place.owner.first_name }}">
+                        {% else %}
+                            <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
+                        {% endif %}
+                    </a>
+                    <a class="place-owner-name" href="#" data-user-id="{{ place.owner.id }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
+                </div>
+                <div class="place-description">
+                    <p>{{ place.description }}</p>
+                </div>
+                <div class="place-price">
+                    <p><bold>{{ place.price }}</bold> €/nuit</p>
+                </div>
+                <div>
+                    <p class="place-card-rating">
+                        {% set rating = place.rating or 0 %}
+                        {% set note = ((rating * 2) | round) / 2 %}
+                        {% if rating == 0 %}
+                        <p>Pas encore de note</p>
+                        {% else %}
+                        {% for i in range(1, 6) %}
+                            {% if i <= note %}
+                            <span class="star">★</span>
+                            {% elif i - 0.5 == note %}
+                            <span class="star">⯪</span>
+                            {% else %}
+                            <span class="star">☆</span>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="place-card-rating-value">{{ note }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
         </section>
         <section id="reviews">
-            <!-- Reviews will be populated dynamically -->
+            <div class="reviews-list">
+            {% if reviews_list %}
+                <h3>Les derniers avis laissés pour cet hébergement</h3>
+                {% for review in reviews_list[:5] %}
+                    <div class="review-card">
+                        <h4>{{ review.user_first_name }} {{ review.user_last_name }}</h4>
+                        <p class="review-card-rating">
+                            {% set rating = review.rating %}
+                            {% set note = ((rating * 2) | round) / 2 %}
+                            {% for i in range(1, 6) %}
+                                {% if i <= note %}
+                                    <span class="star">★</span>
+                                {% elif i - 0.5 == note %}
+                                    <span class="star">⯪</span>
+                                {% else %}
+                                    <span class="star">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="review-card-rating-value">{{ note }}</span>
+                        </p>
+                        <p>{{ review.comment }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+            <h3>Soyez la première personne à visiter cet endroit et laisser un avis.</h3>
+            {% endif %}
+                <button class="show-all-reviews-btn" onclick="openReviewsListModal()">Voir tous les avis</button>
+                </div>
+            </div>
         </section>
     </main>
-    <script src="../js/scripts.js"></script>
+    <div id="modal-overlay" class="hidden"></div>
+    <div id="user-modal" class="user-card-modal hidden">
+        <div class="user-modal-content">
+            <span id="close-user-modal" class="close" style="cursor:pointer; font-size:24px;">&times;</span>
+            <img id="modal-user-photo" src="" alt="Photo utilisateur" style="width:100px; border-radius: 50%;">
+            <h2 id="modal-user-name"></h2>
+            <button id="user-contact-button" class="message-button">Contactez-moi</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/user_popup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/getcity.js') }}"></script>
 </body>
 </html>

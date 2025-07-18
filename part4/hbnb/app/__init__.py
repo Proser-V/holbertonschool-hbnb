@@ -10,7 +10,7 @@ from utils import purge_expired_tokens
 from extensions import db, jwt
 from app.models.user import RevokedToken
 from utils import purge_expired_tokens, delete_invalid_amenities
-from flask_cors import CORS
+from app.web.html_routes import bp_web
 
 
 def create_app(config_name='default'):
@@ -19,9 +19,9 @@ def create_app(config_name='default'):
     JWT functions.
     """
     print("create_app() called")
-    app = Flask(__name__)
-    CORS(app)
+    app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config.from_object(config[config_name])
+    app.register_blueprint(bp_web)
 
     db.init_app(app)
     jwt.init_app(app)

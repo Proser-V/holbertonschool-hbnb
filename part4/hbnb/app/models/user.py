@@ -219,6 +219,7 @@ class UserPublic(BaseModel):
     last_name: str
     email: EmailStr
     is_active: bool
+    photo_url: Optional[str] = None
 
     # Pydantic config to serialize datetime as ISO format strings
     model_config = ConfigDict(

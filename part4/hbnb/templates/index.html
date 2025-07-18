@@ -4,36 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home page</title>
-    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header class="header">
+    <header class="index-header">
         <div class="header-logo">
-            <a href="/hbnb/base_file/index.html">
-                <img src = "../images/logo.png" alt="HBnB logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
             </a>
         </div>
         <div class="header-filter">
             <section id="filter">
-                <input type="text" id="filter-input" placeholder="Recherchier un lieu...">
-               <img class="filter-icon" src = "../images/loupe.png" alt="Searching_icon">
+                <input type="text" id="filter-input" placeholder="Rechercher un lieu...">
+               <img class="filter-icon" src = "../static/images/loupe.png" alt="Searching_icon">
             </section>
         </div>
-        <nav class="header-login">
-            <a href="login.html" id="login-link">Login</a>
+        <nav id="user-nav">
+            {% if current_user %}
+                <a class="header-user-photo" href="#" id="current-user-profil-link">
+                    {% if current_user.photo_url %}
+                        <img src="{{ current_user.photo_url }}" alt="Profil de {{ current_user.first_name }}">
+                    {% else %}
+                        <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
+                    {% endif %}
+                    <span>{{ current_user.first_name }}</span>
+                </a>
+                <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
+            {% else %}
+                <div class="header-auth">
+                    <div class="header-registration">
+                        <a href="{{ url_for('web.new_user') }}" id="registration-link">Créer un compte</a>
+                    </div>
+                    <p class="separation">|</p>
+                    <div class="header-login">
+                        <a href="{{ url_for('web.login') }}" id="login-link">Login</a>
+                    </div>
+                </div>
+            {% endif %}
         </nav>
     </header>
     <main>
-        <section id="places-list">
-            <!-- List of places will be populated dynamically -->
+        <section id="places-section">
+            <h2>Découvrez nos logements</h2>
+
+            <div id="places-list">
+                {% for place in places_list %}
+                {% set img_url = place.photos_url[0] if place.photos_url else 'https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg' %}
+                <a href="{{ url_for('web.show_place', place_id=place.id) }}" class="place-card">
+                    <img src="{{ img_url }}"
+                        alt="{{ place.title }}"
+                        class="place-front-pic"
+                        style="width: 100%; border-radius: 10px 10px 0 0;">
+                    <div class="place-card-content">
+                    <h2 class="place-card-title">{{ place.title }}</h2>
+                    <p class="place-card-price"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                    <p class="place-card-rating">
+                        {% set rating = place.rating or 0 %}
+                        {% set note = ((rating * 2) | round) / 2 %}
+                        {% if rating == 0 %}
+                        <p>Pas encore de note</p>
+                        {% else %}
+                        {% for i in range(1, 6) %}
+                            {% if i <= note %}
+                            <span class="star">★</span>
+                            {% elif i - 0.5 == note %}
+                            <span class="star">⯪</span>
+                            {% else %}
+                            <span class="star">☆</span>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="place-card-rating-value">{{ note }}</span>
+                        {% endif %}
+                    </p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
         </section>
     </main>
-    <script src="../js/scripts.js"></script>
-    <script src="../js/places.js"></script>
     <footer>
         <div class="footer-content">
             <p>All rights reserved</p>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3/build/jwt-decode.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jwt.js') }}"></script>
 </body>
 </html>

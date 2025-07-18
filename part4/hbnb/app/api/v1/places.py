@@ -11,10 +11,7 @@ from app.models.place import PlacePublic, PlaceUpdate, PlaceCreate
 from uuid import UUID
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
-from flask import Blueprint
 
-
-html_places = Blueprint('html_places', __name__)
 api = Namespace('places', description='Places operations')
 
 
@@ -154,19 +151,6 @@ class PlaceResource(Resource):
 
         return response_data, 200
 
-    @html_places.route('/place/<place_id>')
-    def show_place(place_id):
-        try:
-            UUID(place_id)
-        except ValueError:
-            abort(400, description="Invalid UUID")
-
-        place = facade.get_place(place_id)
-        if not place:
-            abort(404, description="Place not found")
-
-        print(place.photos_url)
-        return render_template("place.html", place=place, photos_url=place.photos_url or [])
 
     @jwt_required()
     @api.expect(place_model_update)

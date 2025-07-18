@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+            </a>
+        </div>
+        <nav class="header-home">
+            <a href="{{ url_for('web.index') }}" id="home-link">Accueil</a>
+        </nav>
+    </header>
+    <main>
+        <form id="registration-form" method="POST" action="{{ url_for('web.new_user') }}">
+            <h2 class="registration-title">Création d'un compte</h2>
+            <div class="registration-input">
+                <input type="email" id="email" name="email" required placeholder="Votre email : email@exemple.com">
+            </div>
+            <div class="registration-input">
+                <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
+            </div>
+            <div class="registration-input">
+                <input type="name" id="first_name" name="first_name" required placeholder="Votre prénom">
+            </div>
+            <div class="registration-input">
+                <input type="name" id="last_name" name="last_name" required placeholder="Votre nom">
+            </div>
+            <div class="registration-input">
+                <input type="url" id="new_user_photo_url" name="photo_url" required placeholder="L'URL de votre avatar">
+            </div>
+            <button class="registration-validation-button" type="submit">Créer mon compte</button>
+        </form>
+        <h2 class="login-title">Déjà inscrit?</h2>
+        <button class="login-validation-button" type="redirect"><a href="{{ url_for('web.login') }}">Login</a></button>
+    </main>
+</body>
+</html>

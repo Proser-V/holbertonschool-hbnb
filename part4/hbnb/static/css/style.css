@@ -1,8 +1,4 @@
-/* 
-  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks. 
-  You'll probably need to override some of theese styles.
-*/
-
+/* ---------------- General settings ---------------- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -16,30 +12,49 @@ html {
 }
 
 :root {
-    --color-primary: #f4f4f4;
+    --color-primary: #fefeff;
+    --color-header: #fafbfb;
     --text-color: #333;
-    --light-text-color: #8c8c8c;
+    --light-text-color: #b9b9b9bc;
     --card-border-color : #ddd;
-    --text-color-rate: #b72121;
+    --star-color: #b72121;
     --shadow-color: rgba(0,0,0,0.1)
 }
 
-body {
-    background-color: var(--color-primary);
-    color: var(--text-color);
+.hidden {
+  display: none;
 }
 
+/* ---------------- header settings ---------------- */
+
 .header {
-    position: sticky;
-    top: 0;
     display: flex;
     justify-content: space-between;
-    background-color: var(--color-primary);
+    background-color: var(--color-header);
     color: var(--text-color);
     align-items: center;
     padding: 1rem 2rem;
     border-bottom: 1px solid var(--card-border-color);
     z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.index-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--color-header);
+    color: var(--text-color);
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--card-border-color);
+    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .header-logo img {
@@ -91,85 +106,55 @@ body {
   pointer-events: none;
 }
 
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-registration a {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 1.25rem;
+}
+
 .header-login a {
   text-decoration: none;
   font-weight: bold;
   color: var(--text-color);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
-#places-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.2rem;
-  margin-top: 2rem;
-  perspective: 1000px;
-}
-
-.place-rating .star {
-  color: var(--text-color-rate);
-}
-
-.place-price {
-  font-size: 125%;
-}
-
-.rating-value {
+.header-logout {
+  text-decoration: none;
   font-weight: bold;
+  color: var(--text-color);
+  font-size: 1.25rem;
+  padding-right: 20px;
 }
 
-.place-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 20px;
-  padding: 10px;
-  border: 1px solid var(--card-border-color);
-  border-radius: 10px;
-  width: 300px;
-  height: 300px;
-  box-shadow: 0 2px 5px var(--shadow-color);
-  color: inherit;
-  text-decoration: inherit;
+#current-user-profil-link {
+  display: inline-block;
 }
 
-.place-front-pic {
-  height: 200px;
-  width: 280px;
-  overflow: hidden;
+.header-user-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
 }
 
-.place-content {
-  margin-top: auto;
-  padding: 10px;
-  padding-bottom: auto;
-}
-.place-title {
-  color: var(--text-color-rate)
-}
-.place-card:hover {
-  transition: transform 0.4s ease;
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  z-index: 10;
+.separation {
+  padding-left: 10px;
 }
 
-.photo-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-}
+/* ---------------- general body settings ---------------- */
 
-.photo-gallery img {
-    max-width: 300px;
-    height: auto;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-.photo-gallery img:hover {
-  transform: scale(1.05);
+body {
+    background-color: var(--color-primary);
+    color: var(--text-color);
 }
 
 nav a {
@@ -181,6 +166,380 @@ nav a {
 main {
     padding: 2rem;
 }
+
+/* ------ place cards settings ------ */
+
+#places-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.place-card {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  padding: 0;
+  width: 300px;
+  height: 270px;
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.place-card-rating .star {
+  color: var(--star-color);
+}
+
+.place-card-price {
+  font-size: 125%;
+}
+.place-card-price bold {
+  font-weight: bold;
+}
+
+.place-card-rating-value {
+  font-weight: bold;
+}
+
+.place-front-pic {
+  height: 200px;
+  width: 300px;
+  overflow: hidden;
+}
+
+.place-card-content {
+  margin-top: auto;
+  padding: 10px;
+}
+
+.place-card-title {
+  color: var(--text-color)
+}
+
+.place-card:hover {
+  transition: transform 0.4s ease;
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  z-index: 10;
+}
+
+/* ------ place details settings ------ */
+
+.photo-gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  max-width: 1000px;
+  margin: auto;
+  margin-bottom: 30px;
+  height: 500px;
+}
+
+.place-photo-main {
+  grid-row: 1 / 3;
+  grid-column: 1 / 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.place-photo-little {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.place-photo-little:nth-of-type(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.place-photo-little:nth-of-type(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.place-photo-little:nth-of-type(4) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.place-photo-little:nth-of-type(5) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.photo-gallery img:hover {
+  transform: scale(1.05);
+}
+
+.show-all-photos-btn {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--text-color);
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.place-info-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 100%;
+  min-height: 100px;
+  color: inherit;
+  text-decoration: inherit;
+  margin-bottom: 50px;
+}
+.place-title {
+  margin-top: 10px;
+}
+.place-owner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.place-owner-photo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.place-owner-name {
+  font-weight: bold;
+  font-size: 1.1em;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.place-location {
+  margin-bottom: 10px;
+}
+
+.place-description {
+  margin: 10px 0;
+  font-style: italic;
+}
+
+.place-price {
+  margin: 10px 0;
+}
+
+.place-price bold {
+  font-weight: bold;
+}
+
+/* ------ reviews list settings ------ */
+
+#reviews-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding: 0;
+  width: 100%;
+  min-height: 100px;
+  color: inherit;
+  text-decoration: inherit;
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+}
+
+.review-card-rating-value {
+  font-weight: bold;
+}
+.review-card-rating .star {
+  color: var(--star-color);
+}
+
+/* ------ user modal settings ------ */
+
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--shadow-color);
+  z-index: 999;
+}
+
+#user-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-primary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px --shadow-color;
+  z-index: 1000;
+}
+
+.user-card-modal {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  position: relative;
+  text-align: center;
+}
+
+.user-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-user-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+#close-user-modal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.show-all-reviews-btn {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--text-color);
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* ---------------- login settings ---------------- */
+
+.login-title {
+  text-align: center;
+  color: var(--text-color)
+}
+
+.login-input {
+  display: flex;
+  justify-content: center;
+  margin: 30px auto;
+  max-width: 500px;
+  width: 100%;
+}
+
+.login-input input {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--card-border-color);
+  border-radius: 50px;
+  outline: none;
+  font-size: 16px;
+  background-color: var(--color-header);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+.login-input input:focus {
+  border-color: var(--card-border-color);
+  box-shadow: 0 0 8px var(--shadow-color);
+  background-color: var(--color-primary);
+}
+
+.login-validation-button {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.login-validation-button a {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+/* ---------------- registration settings ---------------- */
+
+.registration-title {
+  text-align: center;
+  color: var(--text-color);
+}
+
+.registration-input {
+  display: flex;
+  justify-content: center;
+  margin: 30px auto;
+  max-width: 500px;
+  width: 100%;
+}
+
+.registration-input input {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--card-border-color);
+  border-radius: 50px;
+  outline: none;
+  font-size: 16px;
+  background-color: var(--color-header);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+.registration-input input:focus {
+  border-color: var(--card-border-color);
+  box-shadow: 0 0 8px var(--shadow-color);
+  background-color: var(--color-primary);
+}
+
+.registration-validation-button {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* ---------------- footer settings ---------------- */
 
 .footer {
     background-color: var(--color-primary);
