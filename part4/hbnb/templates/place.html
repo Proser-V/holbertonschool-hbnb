@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="/hbnb/base_file/index.html">
+                <img src = "../images/logo.png" alt="HBnB logo">
+            </a>
+        </div>
+        <nav class="header-login">
+            <a href="login.html" id="login-link">Login</a>
+        </nav>
+    </header>
+    <main>
+        <section id="place-details">
+            <div class="photo-gallery">
+                <pre>{{ photos_url }}</pre>
+                {% if photos_url and photos_url|length > 0 %}
+                    {% for url in photos_url %}
+                        <img src="{{ url }}" alt="Photo {{ loop.index }}">
+                    {% endfor %}
+                {% else %}
+                    <img src="https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg" alt="Photo par défaut">
+                {% endif %}
+            </div>
+            <!-- Place details will be populated dynamically -->
+        </section>
+        <section id="reviews">
+            <!-- Reviews will be populated dynamically -->
+        </section>
+    </main>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>

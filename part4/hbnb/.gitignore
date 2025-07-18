@@ -1,0 +1,9 @@
+__pycache__
+.DS_Store
+.env
+saves.py
+test_root.py
+.pytest_cache
+alembic
+alembic.ini
+venv

@@ -1,0 +1,194 @@
+/* 
+  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks. 
+  You'll probably need to override some of theese styles.
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Cabin", Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 80%;
+}
+
+:root {
+    --color-primary: #f4f4f4;
+    --text-color: #333;
+    --light-text-color: #8c8c8c;
+    --card-border-color : #ddd;
+    --text-color-rate: #b72121;
+    --shadow-color: rgba(0,0,0,0.1)
+}
+
+body {
+    background-color: var(--color-primary);
+    color: var(--text-color);
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--color-primary);
+    color: var(--text-color);
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--card-border-color);
+    z-index: 1000;
+}
+
+.header-logo img {
+  height: 50px;
+}
+
+#filter {
+  position: relative;
+  width: 100%;
+}
+
+.header-filter {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+#filter-input {
+  flex: 1;
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border: 2px solid var(--light-text-color);
+  border-radius: 50px;
+  outline: none;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.filter-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-color);
+  pointer-events: none;
+}
+
+.header-login a {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+#places-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+  perspective: 1000px;
+}
+
+.place-rating .star {
+  color: var(--text-color-rate);
+}
+
+.place-price {
+  font-size: 125%;
+}
+
+.rating-value {
+  font-weight: bold;
+}
+
+.place-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  width: 300px;
+  height: 300px;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.place-front-pic {
+  height: 200px;
+  width: 280px;
+  overflow: hidden;
+}
+
+.place-content {
+  margin-top: auto;
+  padding: 10px;
+  padding-bottom: auto;
+}
+.place-title {
+  color: var(--text-color-rate)
+}
+.place-card:hover {
+  transition: transform 0.4s ease;
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.photo-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.photo-gallery img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.photo-gallery img:hover {
+  transform: scale(1.05);
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+main {
+    padding: 2rem;
+}
+
+.footer {
+    background-color: var(--color-primary);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--card-border-color);
+}
+.footer-content {
+  color: var(--light-text-color);
+  text-align: center;
+  padding: 10px;
+}

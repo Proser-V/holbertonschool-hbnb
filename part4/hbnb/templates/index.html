@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="/hbnb/base_file/index.html">
+                <img src = "../images/logo.png" alt="HBnB logo">
+            </a>
+        </div>
+        <div class="header-filter">
+            <section id="filter">
+                <input type="text" id="filter-input" placeholder="Recherchier un lieu...">
+               <img class="filter-icon" src = "../images/loupe.png" alt="Searching_icon">
+            </section>
+        </div>
+        <nav class="header-login">
+            <a href="login.html" id="login-link">Login</a>
+        </nav>
+    </header>
+    <main>
+        <section id="places-list">
+            <!-- List of places will be populated dynamically -->
+        </section>
+    </main>
+    <script src="../js/scripts.js"></script>
+    <script src="../js/places.js"></script>
+    <footer>
+        <div class="footer-content">
+            <p>All rights reserved</p>
+        </div>
+    </footer>
+</body>
+</html>
