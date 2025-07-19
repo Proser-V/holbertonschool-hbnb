@@ -12,7 +12,7 @@ bp_web = Blueprint('web', __name__)
 @bp_web.route('/')
 def index():
     places = facade.place_repo.get_all()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     return render_template('index.html', places_list=places, now=now)
 
 
