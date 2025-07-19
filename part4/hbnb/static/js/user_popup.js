@@ -4,11 +4,10 @@ const closeModalBtn = document.getElementById('close-user-modal');
 const userPhoto = document.getElementById('modal-user-photo');
 const userName = document.getElementById('modal-user-name');
 
-document.querySelectorAll(".place-owner-photo, .place-owner-name").forEach(link => {
+document.querySelectorAll(".place-owner-photo, .place-owner-name, .review-user-photo, .review-user-name").forEach(link => {
   link.addEventListener("click", event => {
     event.preventDefault();
     
-    const userId = link.getAttribute('data-user-id');
     const name = link.getAttribute('data-user-name') || "Nom inconnu";
     const img = link.querySelector('img');
     let photo;

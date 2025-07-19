@@ -46,14 +46,14 @@
                     <p id="location-name">Chargement de la localisation...</p>
                 </div>
                 <div class="place-owner">
-                    <a class="place-owner-photo" href="#" data-user-id="{{ place.owner.id }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}" id="to-owner-link">
+                    <a class="place-owner-photo" href="#" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}" id="to-owner-link">
                         {% if place.owner.photo_url %}
                             <img src="{{ place.owner.photo_url }}" alt="Photo de {{ place.owner.first_name }}">
                         {% else %}
                             <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
                         {% endif %}
                     </a>
-                    <a class="place-owner-name" href="#" data-user-id="{{ place.owner.id }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
+                    <a class="place-owner-name" href="#" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
                 </div>
                 <div class="place-description">
                     <p>{{ place.description }}</p>
@@ -88,8 +88,16 @@
             {% if reviews_list %}
                 <h3>Les derniers avis laissés pour cet hébergement</h3>
                 {% for review in reviews_list[:5] %}
-                    <div class="review-card">
-                        <h4>{{ review.user_first_name }} {{ review.user_last_name }}</h4>
+                    <div class="review-card">                    
+                        <a class="review-user-photo" href="#" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">
+                        {% if place.owner.photo_url %}
+                            <img src="{{ review.user.photo_url }}" alt="Photo de {{ review.user_first_name }}">
+                        {% else %}
+                            <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
+                        {% endif %}
+                    </a>
+                        <a class="review-user-name" href="#" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
+                        <p>A visité du {{ review.booking_rel.start_date.strftime('%d/%m/%Y') }} au {{ review.booking_rel.end_date.strftime('%d/%m/%Y') }}</p>
                         <p class="review-card-rating">
                             {% set rating = review.rating %}
                             {% set note = ((rating * 2) | round) / 2 %}

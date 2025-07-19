@@ -3,7 +3,7 @@ from flask import request, flash, url_for, session, redirect
 from uuid import UUID
 from app.services import facade
 from flask_jwt_extended import create_access_token, create_refresh_token
-
+from datetime import datetime, timezone
 
 
 bp_web = Blueprint('web', __name__)
@@ -12,7 +12,8 @@ bp_web = Blueprint('web', __name__)
 @bp_web.route('/')
 def index():
     places = facade.place_repo.get_all()
-    return render_template('index.html', places_list=places)
+    now = datetime.now(timezone.utc)
+    return render_template('index.html', places_list=places, now=now)
 
 
 @bp_web.route('/place/<place_id>')

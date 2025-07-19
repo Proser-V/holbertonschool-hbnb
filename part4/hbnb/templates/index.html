@@ -76,6 +76,12 @@
                         <span class="place-card-rating-value">{{ note }}</span>
                         {% endif %}
                     </p>
+                    {% set future_bookings = place.bookings | selectattr("start_date", ">", now) | sort(attribute="start_date") %}
+                    {% if future_bookings|length > 0 %}
+                        Prochaine date libre : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
+                    {% else %}
+                        Disponible immédiatement
+                    {% endif %}
                     </div>
                 </a>
                 {% endfor %}

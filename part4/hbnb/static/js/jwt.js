@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
+                /* Ajouter un évenement lors du logout */
                 window.location.reload();
             };
             })
