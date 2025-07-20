@@ -13,14 +13,32 @@
                 <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
             </a>
         </div>
-        <nav class="header-login">
-            <a href="{{ url_for('web.login') }}" id="login-link">Login</a>
+        <nav id="user-nav">
+            {% if current_user %}
+                <nav>
+                    <a href="/profile/{{ current_user.id }}">
+                    <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
+                    {{ current_user.first_name }}
+                    </a>
+                    <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
+                </nav>
+            {% else %}
+                <div class="header-auth">
+                    <div class="header-registration">
+                        <a href="{{ url_for('web.new_user') }}" id="registration-link">Créer un compte</a>
+                    </div>
+                    <p class="separation">|</p>
+                    <div class="header-login">
+                        <a href="{{ url_for('web.login') }}" id="login-link">Login</a>
+                    </div>
+                </div>
+            {% endif %}
         </nav>
     </header>
     <main>
         <section id="place-details">
             <div class="photo-gallery">
-                {% set default_img = 'https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg' %}
+                {% set default_img = url_for('static', filename="images/default-place-grey.png") %}
                 {% set total_photos = photos_url|length %}
                 {% for i in range(5) %}
                     {% set photo = photos_url[i] if total_photos > i else default_img %}
@@ -46,20 +64,22 @@
                     <p id="location-name">Chargement de la localisation...</p>
                 </div>
                 <div class="place-owner">
-                    <a class="place-owner-photo" href="#" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}" id="to-owner-link">
-                        {% if place.owner.photo_url %}
-                            <img src="{{ place.owner.photo_url }}" alt="Photo de {{ place.owner.first_name }}">
-                        {% else %}
-                            <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
-                        {% endif %}
-                    </a>
-                    <a class="place-owner-name" href="#" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
+                    <img class="place-owner-photo" src="{{ place.owner.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ place.owner.first_name }}" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">
+                    <a class="place-owner-name" href="#" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
                 </div>
                 <div class="place-description">
                     <p>{{ place.description }}</p>
                 </div>
                 <div class="place-price">
-                    <p><bold>{{ place.price }}</bold> €/nuit</p>
+                    <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                </div>
+                <div class="next_booking">
+                    {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
+                    {% if future_bookings|length > 0 %}
+                        Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
+                    {% else %}
+                        Disponible immédiatement
+                    {% endif %}
                 </div>
                 <div>
                     <p class="place-card-rating">
@@ -84,19 +104,39 @@
             </div>
         </section>
         <section id="reviews">
+            <div class="place-visited-check">
+                {% if current_user %}
+                    {% set has_visited = false %}
+                    {% for booking in place.bookings %}
+                        {% if booking.user == current_user.id and booking.status == DONE %}
+                            {% set has_visited = true %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if has_visited %}
+                        <nav>Vous avez séjourné dans l'hébergement de {{ place.owner.first_name }}:
+                        <button class="button-to-review" type="redirect"><a href="{{ url_for('web.add_review') }}">Laissez votre avis</a></button>
+                        </nav>
+                    {% else %}
+                            <nav>Vous n'avez pas encore séjourné dans l'hébergement de {{ place.owner.first_name }}:
+                            <button class="button-to-booking" type="redirect"><a href="{{ url_for('web.new_booking') }}">Réservez maintenant</a></button>
+                            </nav>
+                    {% endif %}
+                {% else %}
+                    <nav>
+                        Vous n'êtes pas connecté:
+                    <button class="login-button-fromplace" type="redirect"><a href="{{ url_for('web.login') }}">Authentifiez-vous pour réserver</a></button>
+                    </nav>
+                {% endif %}
+            </div>
             <div class="reviews-list">
             {% if reviews_list %}
                 <h3>Les derniers avis laissés pour cet hébergement</h3>
                 {% for review in reviews_list[:5] %}
-                    <div class="review-card">                    
-                        <a class="review-user-photo" href="#" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">
-                        {% if place.owner.photo_url %}
-                            <img src="{{ review.user.photo_url }}" alt="Photo de {{ review.user_first_name }}">
-                        {% else %}
-                            <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
-                        {% endif %}
-                    </a>
-                        <a class="review-user-name" href="#" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
+                    <div class="review-card">
+                        <div class="review-user-info">
+                            <img class="review-user-photo" src="{{ review.user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ review.user_first_name }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}" data-user-photo="{{ review.user.photo_url }}">
+                            <a class="review-user-name" href="#" data-user-photo="{{ review.user.photo_url }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
+                        </div>
                         <p>A visité du {{ review.booking_rel.start_date.strftime('%d/%m/%Y') }} au {{ review.booking_rel.end_date.strftime('%d/%m/%Y') }}</p>
                         <p class="review-card-rating">
                             {% set rating = review.rating %}

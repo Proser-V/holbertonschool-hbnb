@@ -8,14 +8,8 @@ document.querySelectorAll(".place-owner-photo, .place-owner-name, .review-user-p
   link.addEventListener("click", event => {
     event.preventDefault();
     
-    const name = link.getAttribute('data-user-name') || "Nom inconnu";
-    const img = link.querySelector('img');
-    let photo;
-    if (img) {
-      photo = img.src;
-    } else {
-      photo = 'https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png';
-    }
+    const name = link.dataset.userName || "Nom inconnu";
+    const photo = link.dataset.userPhoto || '../static/images/default-user.png';
 
     userPhoto.src = photo;
     userName.textContent = name;

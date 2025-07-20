@@ -4,7 +4,7 @@ It calls the basic business logic from the facade (/app/services/facade).
 It defines the CRUD methods for the users.
 """
 from flask_restx import Namespace, Resource, fields
-from flask import request
+from flask import request, jsonify
 from app.services import facade
 from datetime import datetime
 from blacklist import blacklist
@@ -15,6 +15,8 @@ from app.models.user import UserPublic, RevokedToken, AdminCreate
 from app.models.user import UserModeration
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import unset_jwt_cookies
 from argon2.exceptions import VerifyMismatchError
 from app import db
 import json
@@ -236,10 +238,12 @@ class Login(Resource):
             additional_claims={"is_admin": user.is_admin}
         )
         refresh_token = create_refresh_token(identity=user.id)
-        return {
-            'access_token': access_token,
-            'refresh_token': refresh_token
-        }, 200
+
+        response = jsonify({'msg': 'Login successful'})
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+
+        return response
 
 
 @api.route('/refresh')
@@ -250,7 +254,10 @@ class TokenRefresh(Resource):
     def post(self):
         identity = get_jwt_identity()
         new_token = create_access_token(identity=identity)
-        return {"access_token": new_token}, 200
+
+        response = jsonify({'msg': 'Token refreshed'})
+        set_access_cookies(response, new_token)
+        return response
 
 
 @api.route('/logout')
@@ -267,7 +274,10 @@ class Logout(Resource):
         db.session.add(RevokedToken(jti=jti, expires_at=expires_at))
         db.session.commit()
 
-        return {"message": "Access token revoked"}, 200
+        response = jsonify({'msg': 'Logout successful'})
+        unset_jwt_cookies(response)
+
+        return response
 
 
 @api.route('/logout_refresh')
@@ -284,7 +294,10 @@ class LogoutRefresh(Resource):
         db.session.add(RevokedToken(jti=jti, expires_at=expires_at))
         db.session.commit()
 
-        return {"message": "Refresh token revoked"}, 200
+        response = jsonify({'msg': 'Logout successful'})
+        unset_jwt_cookies(response)
+
+        return response
 
 
 @api.route('/admin_creation')

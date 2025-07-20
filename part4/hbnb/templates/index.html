@@ -21,15 +21,13 @@
         </div>
         <nav id="user-nav">
             {% if current_user %}
-                <a class="header-user-photo" href="#" id="current-user-profil-link">
-                    {% if current_user.photo_url %}
-                        <img src="{{ current_user.photo_url }}" alt="Profil de {{ current_user.first_name }}">
-                    {% else %}
-                        <img src="https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Profile-256.png" alt="Photo par défaut">
-                    {% endif %}
-                    <span>{{ current_user.first_name }}</span>
-                </a>
-                <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
+                <nav>
+                    <a href="#">
+                    <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
+                    {{ current_user.first_name }}
+                    </a>
+                    <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
+                </nav>
             {% else %}
                 <div class="header-auth">
                     <div class="header-registration">
@@ -76,12 +74,14 @@
                         <span class="place-card-rating-value">{{ note }}</span>
                         {% endif %}
                     </p>
-                    {% set future_bookings = place.bookings | selectattr("start_date", ">", now) | sort(attribute="start_date") %}
-                    {% if future_bookings|length > 0 %}
-                        Prochaine date libre : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
-                    {% else %}
-                        Disponible immédiatement
-                    {% endif %}
+                        <div class="next_booking">
+                            {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
+                            {% if future_bookings|length > 0 %}
+                                Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
+                            {% else %}
+                                Disponible immédiatement
+                            {% endif %}
+                        </div>
                     </div>
                 </a>
                 {% endfor %}
@@ -93,7 +93,5 @@
             <p>All rights reserved</p>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3/build/jwt-decode.min.js"></script>
-    <script src="{{ url_for('static', filename='js/jwt.js') }}"></script>
 </body>
 </html>

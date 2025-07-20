@@ -14,6 +14,11 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_COOKIE_SECURE = False
+    JWT_ACCESS_COOKIE_NAME = 'access_token'
+    JWT_REFRESH_COOKIE_NAME = 'refresh_token'
+    JWT_COOKIE_CSRF_PROTECT = False  # True for later.
 
 
 class DevelopmentConfig(Config):
