@@ -75,7 +75,7 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         new_user = facade.create_user(user_data.model_dump())
-
+        print("Photo URL avant commit:", new_user.photo_url)
         return UserPublic.model_validate(new_user).model_dump(), 201
 
     @jwt_required()

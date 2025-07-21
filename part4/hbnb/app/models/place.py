@@ -77,6 +77,7 @@ class Place(db.Model):
                                cascade='all, delete-orphan',
                                foreign_keys=[Booking.place])
     owner = db.relationship('User', back_populates='places')
+    city_name = db.Column(db.String(128))
 
     __table_args__ = (
         CheckConstraint('price >= 0', name='check_price_positive'),
@@ -159,6 +160,16 @@ class Place(db.Model):
         self.longitude = longitude
         self.updated_at = datetime.now(timezone.utc)
 
+    def set_city_name(self, city_name: str):
+        """
+        Update the city_name and timestamp last update.
+
+        Args:
+            city_name (str): New city_name.
+        """
+        self.city_name = city_name
+        self.updated_at = datetime.now(timezone.utc)
+
     def add_photo(self, url: str):
         """
         Add a new photo URL to the photos list.
@@ -221,6 +232,7 @@ class PlaceCreate(BaseModel):
     owner_id: str
     amenity_ids: Optional[List[uuid.UUID]] = []
     photos_url: Optional[List[AnyUrl]] = []
+    city_name: str
 
     @field_validator("photos_url")
     @classmethod
@@ -308,6 +320,7 @@ class PlaceUpdate(BaseModel):
     longitude: Optional[float] = Field(None, ge=-180, le=180)
     amenity_ids: Optional[List[uuid.UUID]] = []
     photos_url: Optional[List[AnyUrl]] = []
+    city_name: Optional[str] = None
 
     @field_validator("photos_url")
     @classmethod

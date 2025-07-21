@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <header class="header">
@@ -77,14 +78,6 @@
                 <div class="place-price">
                     <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
                 </div>
-                <div class="next_booking">
-                    {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
-                    {% if future_bookings|length > 0 %}
-                        Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
-                    {% else %}
-                        Disponible immédiatement
-                    {% endif %}
-                </div>
                 <div>
                     <p class="place-card-rating">
                         {% set rating = place.rating or 0 %}
@@ -107,60 +100,12 @@
                 </div>
             </div>
         </section>
-        <section id="reviews">
-            <div class="place-visited-check">
-                {% if current_user %}
-                    {% set has_visited = false %}
-                    {% for booking in place.bookings %}
-                        {% if booking.user == current_user.id and booking.status == DONE %}
-                            {% set has_visited = true %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if has_visited %}
-                        Vous avez séjourné dans l'hébergement de {{ place.owner.first_name }}:
-                        <a href="{{ url_for('web.add_review') }}" class="button-to-review">Laissez votre avis</a>
-                    {% else %}
-                            Vous n'avez pas encore séjourné dans l'hébergement de {{ place.owner.first_name }}:
-                            <a href="{{ url_for('web.new_booking', place_id=place.id) }}" class="button-to-booking">Réservez maintenant</a>
-                    {% endif %}
-                {% else %}
-                    Vous n'êtes pas connecté:
-                    <a href="{{ url_for('web.login') }}" class="login-button-fromplace">Authentifiez-vous pour réserver</a>
-                {% endif %}
-            </div>
-            <div class="reviews-list">
-            {% if reviews_list %}
-                <h3>Les derniers avis laissés pour cet hébergement</h3>
-                {% for review in reviews_list[:5] %}
-                    <div class="review-card">
-                        <div class="review-user-info">
-                            <img class="review-user-photo" src="{{ review.user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ review.user_first_name }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}" data-user-photo="{{ review.user.photo_url }}">
-                            <a class="review-user-name" href="#" data-user-photo="{{ review.user.photo_url }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
-                        </div>
-                        <p>A visité du {{ review.booking_rel.start_date.strftime('%d/%m/%Y') }} au {{ review.booking_rel.end_date.strftime('%d/%m/%Y') }}</p>
-                        <p class="review-card-rating">
-                            {% set rating = review.rating %}
-                            {% set note = ((rating * 2) | round) / 2 %}
-                            {% for i in range(1, 6) %}
-                                {% if i <= note %}
-                                    <span class="star">★</span>
-                                {% elif i - 0.5 == note %}
-                                    <span class="star">⯪</span>
-                                {% else %}
-                                    <span class="star">☆</span>
-                                {% endif %}
-                            {% endfor %}
-                            <span class="review-card-rating-value">{{ note }}</span>
-                        </p>
-                        <p class="review-comment">"{{ review.comment }}"</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-            <h3>Soyez la première personne à visiter cet endroit et laisser un avis.</h3>
-            {% endif %}
-                <button class="show-all-reviews-btn" onclick="openReviewsListModal()">Voir tous les avis</button>
-                </div>
-            </div>
+        <section id="new_booking">
+            <form id="booking-form">
+                <label for="booking-date">Choisir une date :</label>
+                <input type="text" id="date-range" name="date-range" placeholder="Cliquez pour choisir une date" required>
+                <button type="submit">Réserver</button>
+            </form>
         </section>
     </main>
     <div id="modal-overlay" class="hidden"></div>
@@ -174,5 +119,7 @@
     </div>
     <script src="{{ url_for('static', filename='js/user_popup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/show_photos.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="module" src="{{ url_for('static', filename='js/calandar.js') }}"></script>
 </body>
 </html>

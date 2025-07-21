@@ -93,7 +93,15 @@ class UserCreate(BaseModel):
     password: str = Field(..., min_length=1, max_length=50)
     photo_url: Optional[AnyUrl] = None
 
-    @field_validator("photo_url")
+
+    @field_validator('photo_url', mode='before')
+    @classmethod
+    def none_string_to_null(cls, v):
+        if isinstance(v, str) and v.strip().lower() == "none":
+            return None
+        return v
+
+    @field_validator("photo_url", mode="after")
     @classmethod
     def validate_image(cls, url):
         if url is None:
@@ -123,6 +131,7 @@ class UserCreate(BaseModel):
         if not photo_url:
             return DEFAULT_USER_PHOTO_URL
         return photo_url
+
 
     @field_validator('first_name', 'last_name', 'password')
     @classmethod

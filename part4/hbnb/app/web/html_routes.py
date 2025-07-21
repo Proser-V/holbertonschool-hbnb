@@ -70,9 +70,20 @@ def logout():
 def new_user():
     return render_template("registration.html")
 
-@bp_web.route('/booking')
-def new_booking():
-    return render_template("booking.html")
+@bp_web.route('/booking/<place_id>')
+def new_booking(place_id):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    place = facade.get_place(place_id)
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("booking.html", place=place, photos_url=place.photos_url or [], reviews_list=place.reviews or [], current_user=current_user)
 
 @bp_web.route('/review')
 def add_review():

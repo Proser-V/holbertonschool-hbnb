@@ -17,6 +17,8 @@ from datetime import datetime, timezone
 from argon2 import PasswordHasher
 import uuid
 from app import db
+from utils import geolocation
+from flask import request
 
 
 def ensure_aware(dt):
@@ -64,6 +66,11 @@ class HBnBFacade:
         """
         user_in = UserCreate(**user_data)
         hashed_pw = self.ph.hash(user_in.password)
+        print("Photo_url reçu:", request.json.get("photo_url"))
+        if user_in.photo_url in [None, "None"]:
+            photo_url = None
+        else:
+            photo_url = str(user_in.photo_url)
 
         user = User(
             id=str(uuid.uuid4()),
@@ -71,7 +78,7 @@ class HBnBFacade:
             last_name=user_in.last_name,
             email=user_in.email,
             hashed_password=hashed_pw,
-            photo_url=str(user_in.photo_url)
+            photo_url=photo_url
         )
         self.user_repo.add(user)
         return user
@@ -152,6 +159,8 @@ class HBnBFacade:
         for url in place_in.photos_url or []:
             photos.append(url)
 
+        city = geolocation(place_data['latitude'], place_data['longitude'])
+
         place = Place(
             id=str(uuid4()),
             title=place_in.title,
@@ -161,7 +170,8 @@ class HBnBFacade:
             longitude=place_in.longitude,
             owner_id=place_in.owner_id,
             amenities=amenities,
-            photos_url=photos
+            photos_url=photos,
+            city_name=city
         )
         self.place_repo.add(place)
         return place
@@ -177,6 +187,19 @@ class HBnBFacade:
         place = self.place_repo.get(place_id)
         if not place:
             raise Exception("Place not found")
+
+        if "latitude" in update_data and "longitude" not in update_data:
+            lat = update_data.get("latitude", place.latitude)
+            lon = place.longitude
+            update_data["city_name"] = geolocation(lat, lon)
+        if "longitude" in update_data and "latitude" not in update_data:
+            lat = place.latitude
+            lon = update_data.get("longitude", place.longitude)
+            update_data["city_name"] = geolocation(lat, lon)
+        if "longitude" in update_data and "latitude" in update_data:
+            lat = update_data.get("latitude", place.latitude)
+            lon = update_data.get("longitude", place.longitude)
+            update_data["city_name"] = geolocation(lat, lon)   
 
         if "amenity_ids" in update_data:
             current_amenity_ids = {str(a.id) for a in place.amenities}

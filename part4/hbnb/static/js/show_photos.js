@@ -1,18 +1,18 @@
-function openGalleryModal() {
-    document.getElementById("gallery-modal").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const overlay = document.getElementById("lightbox-overlay");
+  const overlayImg = document.getElementById("lightbox-img");
 
-function closeGalleryModal() {
-    document.getElementById("gallery-modal").style.display = "none";
-}
+  document.querySelectorAll(".photo-gallery img").forEach(photo => {
+    photo.addEventListener("click", function () {
+      overlayImg.src = this.src;
+      overlay.classList.remove("hidden");
+    });
+  });
 
-closeModal.onclick = function() {
-  modal.style.display ="none";
-}
-
-window.addEventListener('click', function (event) {
-    const modal = document.getElementById("gallery-modal");
-    if (event.target === modal) {
-        closeGalleryModal();
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay || e.target === overlayImg) {
+      overlay.classList.add("hidden");
+      overlayImg.src = "";
     }
+  });
 });

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,13 +21,14 @@
         </div>
         <nav id="user-nav">
             {% if current_user %}
-                <nav>
-                    <a href="#">
-                    <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
-                    {{ current_user.first_name }}
+                <div class ="user-nav-inner">
+                    <a href="#" class="user-logged">
+                        {{ current_user.first_name }}
+                        <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
                     </a>
+                    <span class="separation">|</span>
                     <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
-                </nav>
+                </div>
             {% else %}
                 <div class="header-auth">
                     <div class="header-registration">
@@ -47,12 +48,11 @@
 
             <div id="places-list">
                 {% for place in places_list %}
-                {% set img_url = place.photos_url[0] if place.photos_url else 'https://static.vecteezy.com/system/resources/previews/006/059/989/large_2x/crossed-camera-icon-avoid-taking-photos-image-is-not-available-illustration-free-vector.jpg' %}
+                {% set img_url = place.photos_url[0] if place.photos_url else url_for('static', filename="images/default-place-grey.png") %}
                 <a href="{{ url_for('web.show_place', place_id=place.id) }}" class="place-card">
                     <img src="{{ img_url }}"
                         alt="{{ place.title }}"
-                        class="place-front-pic"
-                        style="width: 100%; border-radius: 10px 10px 0 0;">
+                        class="place-front-pic">
                     <div class="place-card-content">
                     <h2 class="place-card-title">{{ place.title }}</h2>
                     <p class="place-card-price"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
@@ -74,14 +74,17 @@
                         <span class="place-card-rating-value">{{ note }}</span>
                         {% endif %}
                     </p>
-                        <div class="next_booking">
-                            {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
-                            {% if future_bookings|length > 0 %}
-                                Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
-                            {% else %}
-                                Disponible immédiatement
-                            {% endif %}
-                        </div>
+                    <div class="place-location">
+                        <p class="location-name">{{ place.city_name }}</p>
+                    </div>
+                    <div class="next_booking">
+                        {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
+                        {% if future_bookings|length > 0 %}
+                            Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
+                        {% else %}
+                            Disponible immédiatement
+                        {% endif %}
+                    </div>
                     </div>
                 </a>
                 {% endfor %}
