@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <header class="header">
@@ -101,11 +101,16 @@
             </div>
         </section>
         <section id="new_booking">
-            <form id="booking-form">
-                <label for="booking-date">Choisir une date :</label>
-                <input type="text" id="date-range" name="date-range" placeholder="Cliquez pour choisir une date" required>
-                <button type="submit">Réserver</button>
-            </form>
+        <div class="booking-container">
+            <div class="booking-info">
+                <h2>Choisir une plage de dates :</h2>
+                <p id="selected-dates" class="selected-dates">Aucune date sélectionnée</p>
+                <form id="booking-form">
+                    <button id="btn-book" type="submit">Réserver</button>
+                </form>
+            </div>
+            <div id="calendar" class="calendar" data-place-id="{{ place.id }}"></div>
+        </div>
         </section>
     </main>
     <div id="modal-overlay" class="hidden"></div>
@@ -119,7 +124,11 @@
     </div>
     <script src="{{ url_for('static', filename='js/user_popup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/show_photos.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script type="module" src="{{ url_for('static', filename='js/calandar.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+    <script>
+        const reservedRanges = {{ bookings | tojson | safe }};
+        console.log("Reserved ranges:", reservedRanges);
+    </script>
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
 </body>
 </html>

@@ -78,12 +78,19 @@
                     <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
                 </div>
                 <div class="next_booking">
-                    {% set future_bookings = place.bookings | selectattr("end_date", ">", now) | selectattr("status", "equalto", "PENDING") | sort(attribute="end_date") %}
-                    {% if future_bookings|length > 0 %}
-                        Prochaine réservation disponible : {{ future_bookings[-1].end_date.strftime("%d/%m/%Y") }}
-                    {% else %}
+                        {% set now = now %}
+                        {% set blocking_booking = place.bookings 
+                            | selectattr("status", "equalto", "PENDING") 
+                            | selectattr("start_date", "<=", tomorrow) 
+                            | selectattr("end_date", ">=", now) 
+                            | sort(attribute="end_date")
+                            | first %}
+
+                        {% if blocking_booking %}
+                        Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
+                        {% else %}
                         Disponible immédiatement
-                    {% endif %}
+                        {% endif %}
                 </div>
                 <div>
                     <p class="place-card-rating">

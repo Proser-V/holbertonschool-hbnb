@@ -524,6 +524,124 @@ main {
     transition: background-color 0.2s;
 }
 
+/* ---------------- booking settings ---------------- */
+
+.booking-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: var(--text-color);
+}
+
+.booking-info {
+  flex: 1;
+  max-width: 300px;
+}
+
+.selected-dates {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+#booking-form button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  background-color: var(--star-color);
+  color: var(--color-primary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  margin-left: 70px;
+}
+
+#booking-form button:hover {
+  background-color: var(--star-color);
+}
+
+#calendar {
+  flex: 1;
+  min-width: 320px;
+  max-width: 500px;
+}
+
+/* Surcharge style Litepicker - calendrier clair et épuré */
+.litepicker {
+  background: var(--color-header);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  font-family: Arial, sans-serif;
+  user-select: none;
+}
+
+/* En-tête du mois */
+.litepicker .container__months > div {
+  border-bottom: 1px solid var(--card-border-color);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+/* Jours de la semaine */
+.litepicker .container__days .day-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Jours */
+.litepicker .container__days .day-item {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 500;
+}
+
+.litepicker .container__days .day-item:hover:not(.is-locked):not(.is-disabled) {
+  background-color: #9acba3e9;
+  color: var(--color-primary);
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+/* Jour sélectionné */
+.litepicker .container__days .day-item.is-start-date,
+.litepicker .container__days .day-item.is-end-date {
+  background-color: #9acba3e9 !important;
+  color: var(--color-primary) !important;
+  font-weight: 700;
+}
+
+/* Jours entre début et fin */
+.litepicker .container__days .day-item.is-in-range {
+  background: #c9e9cfe9 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+}
+
+/* Jours bloqués (réservés) */
+.litepicker .container__days .day-item.is-locked {
+  background-color: #eee !important;
+  color: #aaa;
+  cursor: not-allowed;
+  pointer-events: none;
+  font-style: italic;
+}
+
+/* Jour désactivé (hors mois) */
+.litepicker .container__days .day-item.is-disabled {
+  color: var(--text-color);
+  cursor: default;
+  background: none;
+}
+
 /* ---------------- login settings ---------------- */
 
 .login-title {

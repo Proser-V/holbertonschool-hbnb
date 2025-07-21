@@ -93,7 +93,8 @@ class BookingCreate(Resource):
 
             if booking_start < new_end and new_start < booking_end:
                 return {'error': 'Already booked'}, 400
-        now = datetime.now(timezone.utc)
+        
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         if booking_data.start_date < now:
             return {'error': 'Cannot create a booking in the past'}, 400
 
