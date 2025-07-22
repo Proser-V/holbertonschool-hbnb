@@ -97,8 +97,28 @@ def new_booking(place_id):
 
     ranges = [{"start_date": booking.start_date.strftime("%Y-%m-%d"), "end_date": booking.end_date.strftime("%Y-%m-%d")} for booking in place.bookings if booking.status != 'CANCELLED']
 
-    return render_template("booking.html", place=place, photos_url=place.photos_url or [], reviews_list=place.reviews or [], current_user=current_user, bookings=ranges)
+    return render_template("booking.html",
+                           place=place,
+                           photos_url=place.photos_url or [],
+                           reviews_list=place.reviews or [],
+                           current_user=current_user,
+                           bookings=ranges)
 
-@bp_web.route('/review')
-def add_review():
-    return render_template("review.html")
+@bp_web.route('/reviews/from_booking/<booking_id>')
+def add_review(booking_id):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+    booking = facade.get_booking(booking_id)
+    place = facade.get_place(booking.place)
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("add_review.html",
+                           booking=booking,
+                           place=place,
+                           photos_url=place.photos_url or [],
+                           current_user=current_user)

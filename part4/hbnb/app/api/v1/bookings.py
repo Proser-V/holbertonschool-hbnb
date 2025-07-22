@@ -86,16 +86,16 @@ class BookingCreate(Resource):
 
         booking_list = facade.get_pending_booking_list_by_place(place_id)
         for booking in booking_list:
-            booking_start = ensure_aware(booking.start_date)
-            booking_end = ensure_aware(booking.end_date)
-            new_start = ensure_aware(booking_data.start_date)
-            new_end = ensure_aware(booking_data.end_date)
+            booking_start = ensure_aware(booking.start_date).astimezone(timezone.utc).replace(tzinfo=None)
+            booking_end = ensure_aware(booking.end_date).astimezone(timezone.utc).replace(tzinfo=None)
+            new_start = ensure_aware(booking_data.start_date).astimezone(timezone.utc).replace(tzinfo=None)
+            new_end = ensure_aware(booking_data.end_date).astimezone(timezone.utc).replace(tzinfo=None)
 
             if booking_start < new_end and new_start < booking_end:
                 return {'error': 'Already booked'}, 400
         
         now = datetime.now(timezone.utc).replace(tzinfo=None)
-        if booking_data.start_date < now:
+        if new_start < now:
             return {'error': 'Cannot create a booking in the past'}, 400
 
         new_booking = facade.create_booking(user_id, place_id, booking_data)

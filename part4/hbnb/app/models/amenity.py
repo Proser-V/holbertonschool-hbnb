@@ -5,6 +5,7 @@ enforcing constraints on fields like name and description.
 """
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict
+from typing import Optional
 from datetime import datetime, timezone
 from app.models.place import place_amenities
 from extensions import db  # db = SQLAlchemy()
@@ -35,6 +36,7 @@ class Amenity(db.Model):
         )
     places = db.relationship('Place', secondary=place_amenities,
                              back_populates='amenities')
+    icon_file = db.Column(db.String(128), default="default-amenities.png")
 
     def set_name(self, name: str):
         """
@@ -54,6 +56,15 @@ class Amenity(db.Model):
         self.description = description
         self.updated_at = datetime.now(timezone.utc)
 
+    def set_icon_file(self, icon_file: str):
+        """
+        Update the amenity's icon_file and refresh the updated_at timestamp.
+        Args:
+            icon_file (str): New icon_file for the amenity.
+        """
+        self.icon_file = icon_file
+        self.updated_at = datetime.now(timezone.utc)
+
 
 class AmenityCreate(BaseModel):
     """
@@ -66,6 +77,7 @@ class AmenityCreate(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., min_length=1, max_length=500)
+    icon_file: Optional[str] = "default-amenities.png"
 
     @model_validator(mode='before')
     @classmethod
@@ -97,6 +109,7 @@ class AmenityPublic(BaseModel):
     id: str
     name: str
     description: str
+    icon_file: Optional[str] = "default-amenities.png"
 
     model_config = ConfigDict(
                 json_encoders={datetime: lambda v: v.isoformat()},

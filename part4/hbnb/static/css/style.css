@@ -1,18 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+
 /* ---------------- General settings ---------------- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: "Cabin", Arial, sans-serif;
+    font-family: "Cabin";
 }
 
 html {
     scroll-behavior: smooth;
     font-size: 80%;
+    font-family: "Cabin" !important;
 }
 
 :root {
-    --color-primary: #fefeff;
+    --color-primary: #fffefe;
     --color-header: #fafbfb;
     --text-color: #333;
     --light-text-color: #b9b9b9bc;
@@ -198,7 +201,7 @@ main {
   margin: 20px;
   padding: 0;
   width: 300px;
-  height: 270px;
+  height: 300px;
   color: inherit;
   text-decoration: inherit;
 }
@@ -328,8 +331,8 @@ main {
 }
 
 .place-info-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   padding: 10px;
   width: 100%;
   min-height: 100px;
@@ -398,6 +401,39 @@ main {
   margin-left: 10px;
 }
 
+/* ------ amenities list settings ------ */
+
+#place-list-amenities {
+  display: grid;
+  position: inherit;
+  top: 0;
+  grid-template-columns: 3fr 3fr;
+  gap: 1rem;
+  margin: auto;
+  margin-bottom: 30px;
+}
+
+.place-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--card-border-color);
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--color-primary);
+    width: 150px;
+}
+
+.amenity-icon {
+    width: 20px;
+    height: 20px;
+}
 
 /* ------ reviews list settings ------ */
 
@@ -452,6 +488,35 @@ main {
 .review-comment{
   font-style: italic;
   margin-top: 5px;
+}
+
+/* ------ review modal settings ------ */
+
+#review-modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-primary);
+  align-items: center;
+  justify-content: center;
+}
+
+.review-modal-content {
+  background-color: var(--color-primary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+.review-modal-close-button {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 /* ------ user modal settings ------ */
@@ -572,7 +637,6 @@ main {
   max-width: 500px;
 }
 
-/* Surcharge style Litepicker - calendrier clair et épuré */
 .litepicker {
   background: var(--color-header);
   border-radius: 8px;
@@ -581,7 +645,6 @@ main {
   user-select: none;
 }
 
-/* En-tête du mois */
 .litepicker .container__months > div {
   border-bottom: 1px solid var(--card-border-color);
   padding-bottom: 8px;
@@ -591,13 +654,11 @@ main {
   color: var(--text-color);
 }
 
-/* Jours de la semaine */
 .litepicker .container__days .day-name {
   font-weight: 600;
   font-size: 0.85rem;
 }
 
-/* Jours */
 .litepicker .container__days .day-item {
   transition: background-color 0.3s ease, color 0.3s ease;
   font-weight: 500;
@@ -610,7 +671,6 @@ main {
   box-shadow: none !important;
 }
 
-/* Jour sélectionné */
 .litepicker .container__days .day-item.is-start-date,
 .litepicker .container__days .day-item.is-end-date {
   background-color: #9acba3e9 !important;
@@ -618,7 +678,6 @@ main {
   font-weight: 700;
 }
 
-/* Jours entre début et fin */
 .litepicker .container__days .day-item.is-in-range {
   background: #c9e9cfe9 !important;
   box-shadow: none !important;
@@ -626,7 +685,6 @@ main {
   border: none !important;
 }
 
-/* Jours bloqués (réservés) */
 .litepicker .container__days .day-item.is-locked {
   background-color: #eee !important;
   color: #aaa;
@@ -635,7 +693,6 @@ main {
   font-style: italic;
 }
 
-/* Jour désactivé (hors mois) */
 .litepicker .container__days .day-item.is-disabled {
   color: var(--text-color);
   cursor: default;
