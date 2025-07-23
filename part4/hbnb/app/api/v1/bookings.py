@@ -84,12 +84,13 @@ class BookingCreate(Resource):
         except ValueError as e:
             return {'error': str(e)}, 400
 
+        new_start = ensure_aware(booking_data.start_date).astimezone(timezone.utc).replace(tzinfo=None)
+        new_end = ensure_aware(booking_data.end_date).astimezone(timezone.utc).replace(tzinfo=None)
         booking_list = facade.get_pending_booking_list_by_place(place_id)
+
         for booking in booking_list:
             booking_start = ensure_aware(booking.start_date).astimezone(timezone.utc).replace(tzinfo=None)
             booking_end = ensure_aware(booking.end_date).astimezone(timezone.utc).replace(tzinfo=None)
-            new_start = ensure_aware(booking_data.start_date).astimezone(timezone.utc).replace(tzinfo=None)
-            new_end = ensure_aware(booking_data.end_date).astimezone(timezone.utc).replace(tzinfo=None)
 
             if booking_start < new_end and new_start < booking_end:
                 return {'error': 'Already booked'}, 400

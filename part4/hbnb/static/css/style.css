@@ -406,16 +406,20 @@ main {
 #place-list-amenities {
   display: grid;
   position: inherit;
-  top: 0;
-  grid-template-columns: 3fr 3fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
   margin: auto;
-  margin-bottom: 30px;
+}
+
+.place-list-amenities-title {
+  margin-top: 50px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .place-amenities {
-    display: flex;
-    flex-wrap: wrap;
+    justify-content: left;
     gap: 12px;
 }
 
@@ -490,33 +494,316 @@ main {
   margin-top: 5px;
 }
 
-/* ------ review modal settings ------ */
+/* ------ global form settings ------ */
 
-#review-modal {
+.button-wrapper {
   display: flex;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-primary);
   align-items: center;
   justify-content: center;
+  width: 280px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: var(--star-color);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  transition: all 0.5s ease;
+  overflow: hidden;
 }
 
-.review-modal-content {
-  background-color: var(--color-primary);
-  padding: 1.5rem;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-}
-.review-modal-close-button {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 1.5rem;
+.btn-submit, .btn-cancel {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 25px;
+  border: none;
   cursor: pointer;
+}
+
+.btn-submit {
+  background-color: var(--star-color);
+  color: var(--color-primary);
+}
+
+.btn-cancel {
+  background-color: var(--color-header);
+  color: var(--text-color);
+}
+
+/* ------ review form settings ------ */
+
+.review-container {
+  position: relative;
+  display: inline-block;
+}
+
+#open-review-form {
+  display: block;
+  margin: auto;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  margin-left: 10px;
+}
+
+.review-container.expanding .button-wrapper {
+  width: 900px;
+  height: 280px;
+  border-radius: 20px;
+  background-color: transparent;
+  border: 2px solid var(--star-color);
+  margin-left: 10px;
+}
+
+.review-container.expanding .button-to-review {
+  color: transparent;
+  opacity: 0;
+}
+
+.review-form-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 900px;
+  height: 280px;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
+  border-radius: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.review-container.show-form .review-form-wrapper {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.review-form textarea {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid var(--card-border-color);
+  resize: none;
+}
+
+.review-form label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.review-form .label-text {
+  width: 100px;
+  font-weight: bold;
+}
+
+.review-form input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid var(--card-border-color);
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.star-rating .star {
+  font-size: 28px;
+  transition: color 0.2s ease;
+  color: var(--star-color);
+  user-select: none;
+}
+
+.star-rating .star.filled {
+  color: var(--star-color);
+}
+
+.star-rating .star.hovered {
+  color: var(--star-color);
+}
+
+.rating-value {
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+/* ------ user profile settings ------ */
+
+#user-details {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.user-detail-display {
+  margin: 20px;
+  padding: 20px;
+}
+.avatar-change-instructions {
+  color: var(--light-text-color)
+}
+
+.user-details-name{
+  font-weight: bold;
+  font-size: 200%;
+  margin-bottom: 10px;
+}
+.user-details-photo {
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--text-color);
+}
+
+.user-details-email {
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.btn-to-change-avatar {
+  border: none;
+  background-color: var(--color-primary);
+}
+#button-to-update-user {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.button-to-add-place {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* ------ user update form settings ------ */
+
+.update-container {
+  position: relative;
+  display: inline-block;
+}
+
+.button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: var(--star-color);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+
+.update-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.update-container.expanding .button-wrapper {
+  width: 340px;
+  height: 340px;
+  border-radius: 20px;
+  background-color: transparent;
+  border: 2px solid var(--star-color);
+}
+
+.update-container.expanding .update-toggle-btn {
+  color: transparent;
+}
+
+.form-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 340px;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
+  border-radius: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.update-container.show-form .form-wrapper {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+
+.update-form label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.update-form .label-text {
+  width: 100px;
+  font-weight: bold;
+}
+
+.update-form input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 /* ------ user modal settings ------ */

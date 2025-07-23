@@ -82,6 +82,20 @@ def logout():
 def new_user():
     return render_template("registration.html")
 
+@bp_web.route('/user/<user_id>/profile')
+def user_profile(user_id):
+    try:
+        UUID(user_id)
+    except ValueError:
+        abort(400, description="Invalid UUID")
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    tomorrow = now + timedelta(days=1)
+    user = facade.get_user(user_id)
+
+    return render_template("user_profile.html", user=user, now=now, tomorrow=tomorrow)
+
+
 @bp_web.route('/booking/<place_id>')
 def new_booking(place_id):
     try:
@@ -95,10 +109,15 @@ def new_booking(place_id):
     if user_id:
         current_user = facade.get_user(user_id)
 
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    tomorrow = now + timedelta(days=1)
+
     ranges = [{"start_date": booking.start_date.strftime("%Y-%m-%d"), "end_date": booking.end_date.strftime("%Y-%m-%d")} for booking in place.bookings if booking.status != 'CANCELLED']
 
     return render_template("booking.html",
                            place=place,
+                           now=now,
+                           tomorrow=tomorrow,
                            photos_url=place.photos_url or [],
                            reviews_list=place.reviews or [],
                            current_user=current_user,

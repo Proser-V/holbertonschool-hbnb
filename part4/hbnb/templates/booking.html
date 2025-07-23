@@ -62,41 +62,75 @@
                 <img id="lightbox-img" src="" alt="Image agrandie">
             </div>
             <div class="place-info-card">
-                <div class="place-title">
-                    <h2>{{ place.title }}</h2>
-                </div>
-                <div class="place-location">
-                    <p id="location-name">{{ place.city_name }}</p>
-                </div>
-                <div class="place-owner">
-                    <img class="place-owner-photo" src="{{ place.owner.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ place.owner.first_name }}" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">
-                    <a class="place-owner-name" href="#" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
-                </div>
-                <div class="place-description">
-                    <p>{{ place.description }}</p>
-                </div>
-                <div class="place-price">
-                    <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
-                </div>
-                <div>
-                    <p class="place-card-rating">
-                        {% set rating = place.rating or 0 %}
-                        {% set note = ((rating * 2) | round) / 2 %}
-                        {% if rating == 0 %}
-                        <p>Pas encore de note</p>
-                        {% else %}
-                        {% for i in range(1, 6) %}
-                            {% if i <= note %}
-                            <span class="star">★</span>
-                            {% elif i - 0.5 == note %}
-                            <span class="star">⯪</span>
+                <div id="place-list-informations">
+                    <div class="place-title">
+                        <h2>{{ place.title }}</h2>
+                    </div>
+                    <div class="place-location">
+                        <p id="location-name">{{ place.city_name }}</p>
+                    </div>
+                    <div class="place-owner">
+                        <img class="place-owner-photo" src="{{ place.owner.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ place.owner.first_name }}" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">
+                        <a class="place-owner-name" href="#" data-user-photo="{{ place.owner.photo_url }}" data-user-name="{{ place.owner.first_name }} {{ place.owner.last_name }}">{{ place.owner.first_name }} {{ place.owner.last_name }}</a>
+                    </div>
+                    <div class="place-description">
+                        <p>{{ place.description }}</p>
+                    </div>
+                    <div class="place-price">
+                        <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                    </div>
+                    <div class="next_booking">
+                            {% set now = now %}
+                            {% set blocking_booking = place.bookings 
+                                | selectattr("status", "equalto", "PENDING") 
+                                | selectattr("start_date", "<=", tomorrow) 
+                                | selectattr("end_date", ">=", now) 
+                                | sort(attribute="end_date")
+                                | first %}
+
+                            {% if blocking_booking %}
+                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
                             {% else %}
-                            <span class="star">☆</span>
+                            Disponible immédiatement
                             {% endif %}
+                    </div>
+                    <div>
+                        <p class="place-card-rating">
+                            {% set rating = place.rating or 0 %}
+                            {% set note = ((rating * 2) | round) / 2 %}
+                            {% if rating == 0 %}
+                            <p>Pas encore de note</p>
+                            {% else %}
+                            {% for i in range(1, 6) %}
+                                {% if i <= note %}
+                                <span class="star">★</span>
+                                {% elif i - 0.5 == note %}
+                                <span class="star">⯪</span>
+                                {% else %}
+                                <span class="star">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="place-card-rating-value">{{ note }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="place-amenities">
+                    {% if place.amenities %}
+                        <h3 class="place-list-amenities-title">Équipements disponibles pour cet hébergement :</h3>
+                    <div id="place-list-amenities">
+                        {% for amenity in place.amenities %}
+                            <div class="amenity-item">
+                                <img src="{{ url_for('static', filename='icons/' ~ amenity.icon_file) }}"
+                                    alt="{{ amenity.name }} icon"
+                                    class="amenity-icon">
+                                <span>{{ amenity.name }}</span>
+                            </div>
                         {% endfor %}
-                        <span class="place-card-rating-value">{{ note }}</span>
-                        {% endif %}
-                    </p>
+                    </div>
+                    {% else %}
+                    <p>Aucune commodité renseignée.</p>
+                    {% endif %}
                 </div>
             </div>
         </section>
