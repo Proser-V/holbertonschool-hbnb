@@ -17,7 +17,7 @@
         <nav id="user-nav">
             {% if current_user %}
                 <div class ="user-nav-inner">
-                    <a href="#" class="user-logged">
+                    <a href="{{ url_for('web.user_profile', user_id=current_user.id) }}" class="user-logged">
                         {{ current_user.first_name }}
                         <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
                     </a>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+            </a>
+        </div>
+        <nav id="user-nav">
+            {% if current_user %}
+                <div class ="user-nav-inner">
+                    <a href="{{ url_for('web.user_profile', user_id=current_user.id) }}" class="user-logged">
+                        {{ current_user.first_name }}
+                        <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
+                    </a>
+                    <span class="separation">|</span>
+                    <a href="{{ url_for('web.logout') }}" id="logout-link">Logout</a>
+                </div>
+            {% else %}
+                <div class="header-auth">
+                    <div class="header-registration">
+                        <a href="{{ url_for('web.new_user') }}" id="registration-link">Créer un compte</a>
+                    </div>
+                    <p class="separation">|</p>
+                    <div class="header-login">
+                        <a href="{{ url_for('web.login') }}" id="login-link">Login</a>
+                    </div>
+                </div>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        <section id="new-place">
+            <h1 class="new-place-main-title">Votre logement</h1>
+            <form id="new-place-form" class="new-place-form">
+                <p>Preview de la gallerie photo de votre logement :</p>
+                <label class="photo-gallery">
+                    {% set default_img = url_for('static', filename="images/default-place-grey.png") %}
+                    <img class="place-photo-main" src="{{ default_img }}" alt="Photo principale">
+                    <img class="place-photo-little little-1" src="{{ default_img }}" alt="Photo 1">
+                    <img class="place-photo-little little-2" src="{{ default_img }}" alt="Photo 2">
+                    <img class="place-photo-little little-3" src="{{ default_img }}" alt="Photo 3">
+                    <img class="place-photo-little little-4" src="{{ default_img }}" alt="Photo 4">
+                </label>
+                <div class="add-photo-wrapper">
+                    <button id="add-photo-btn" class="add-new-photos-btn" type="button">
+                        <svg class="plus-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 11H13V5H11V11H5V13H11V19H13V13H19V11Z">
+                        </svg>
+                    </button>
+                    <span class="add-photo-text">Ajouter une photo</span>
+                </div>
+                <div id="photo-url-inputs"></div>
+                <div class="new-place-informations">
+                    <label>
+                        <span class="label-text">Nom de votre hébergement :</span>
+                        <input id="new-place-title" type="text" name="title" maxlength="50" value="">
+                    </label>
+                    <div class="char-counter" id="new-place-title-counter">0 / 50</div>
+                    <label>
+                        <span class="label-text">Courte descrpition de votre hébergement :</span>
+                        <textarea id="new-place-comment" name="comment" rows="6" maxlength="1000"></textarea>
+                    </label>
+                    <div class="char-counter" id="new-place-comment-counter">0 / 1000</div>
+                    <label>
+                        <span class="label-text">Prix par nuit dans votre hébergement :</span>
+                        <input type="text" name="price" id="new-place-price" value="">
+                    </label>
+                    <label>
+                        <span class="label-text">Adresse :</span>
+                        <input type="text" id="new-place-address" name="address" placeholder="Entrez une adresse">
+                    </label>
+                    <input type="hidden" name="latitude" id="new-place-latitude">
+                    <input type="hidden" name="longitude" id="new-place-longitude">
+                    <input type="hidden" id="current-user-id" value="{{ current_user.id }}">
+                    <span class="label-text">Les équipements disponibles :</span>
+                    <div id="new-place-amenities-list" class="new-place-amenities-checkbox"></div>
+                </div>
+                <button class="login-validation-button" type="submit">Mettre mon logement en location</button>
+            </form>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='js/add_place.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/new_place_adress.js') }}"></script>
+</div>
+</body>
+</html>

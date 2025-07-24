@@ -127,7 +127,7 @@
             {% else %}
             <div>
                 <p>Vous n'avez pas encore enregistré de logement.</p>
-                <button class="button-to-add-place">Ajouter un logement à louer.</button>
+                <a class="button-to-add-place" href="{{ url_for('web.add_place') }}">Ajouter un logement à louer.</a>
             </div>
             {% endif %}
         </section>

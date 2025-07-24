@@ -141,3 +141,18 @@ def add_review(booking_id):
                            place=place,
                            photos_url=place.photos_url or [],
                            current_user=current_user)
+
+@bp_web.route('/new_place')
+def add_place():
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("add_place.html",
+                           current_user=current_user)

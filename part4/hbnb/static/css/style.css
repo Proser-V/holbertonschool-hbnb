@@ -494,15 +494,153 @@ main {
   margin-top: 5px;
 }
 
+/* ------ place creation form settings ------ */
+
+.new-place-main-title {
+  margin-bottom: 20px;
+}
+
+.add-new-photos-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  border: none;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.add-photo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 20px;
+}
+
+.add-photo-text {
+  font-size: 16px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.photo-url-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  width: 600px;
+  margin-inline: auto;
+}
+
+.photo-url-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.photo-url-input input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid var(--card-border-color);
+  border-radius: 5px;
+}
+
+.photo-url-input button {
+  padding: 8px 12px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.new-place-informations {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  margin-top: 100px;
+  font-size: 14px;
+}
+
+.new-place-informations label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 800px;
+}
+
+.label-text {
+  width: 200px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.new-place-informations input:not([type="checkbox"]),
+.new-place-informations textarea {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid var(--card-border-color);
+  resize: none;
+  box-sizing: border-box;
+}
+
+.char-counter {
+  font-size: 12px;
+  color: var(--light-text-color);
+  text-align: right;
+  width: 800px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  cursor: default;
+  user-select: none;
+}
+
+.new-place-amenities-checkbox {
+  display: grid;
+  grid-template-columns: 5fr 5fr 5fr 5fr 5fr;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.new-place-amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--card-border-color);
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--color-primary);
+  cursor: pointer;
+  width: 150px !important;
+}
+
+.new-place-information input[type="checkbox"] {
+  flex-shrink: 0;    /* empêcher la case de rétrécir */
+  width: 18px;
+  height: 18px;
+  margin: 0;         /* annuler marge par défaut */
+}
+
+.amenity-icon {
+  width: 20px;
+  height: 20px;
+}
+
 /* ------ global form settings ------ */
 
 .button-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 280px;
-  height: 50px;
-  border-radius: 50px;
+  width: 265px;
+  height: 45px;
+  border-radius: 45px;
   background-color: var(--star-color);
   box-shadow: 0 4px 10px var(--shadow-color);
   transition: all 0.5s ease;
@@ -548,7 +686,6 @@ main {
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 10px var(--shadow-color);
-  margin-left: 10px;
 }
 
 .review-container.expanding .button-wrapper {
@@ -583,7 +720,7 @@ main {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .review-container.show-form .review-form-wrapper {
@@ -685,6 +822,7 @@ main {
   border: none;
   background-color: var(--color-primary);
 }
+
 #button-to-update-user {
   display: block;
   margin: 30px auto;
@@ -720,19 +858,6 @@ main {
 .update-container {
   position: relative;
   display: inline-block;
-}
-
-.button-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 280px;
-  height: 50px;
-  border-radius: 50px;
-  background-color: var(--star-color);
-  box-shadow: 0 4px 10px var(--shadow-color);
-  transition: all 0.5s ease;
-  overflow: hidden;
 }
 
 .update-toggle-btn {
@@ -785,7 +910,6 @@ main {
   pointer-events: auto;
 }
 
-
 .update-form label {
   display: flex;
   align-items: center;
@@ -803,7 +927,7 @@ main {
   padding: 8px;
   font-size: 14px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--light-text-color);
 }
 
 /* ------ user modal settings ------ */

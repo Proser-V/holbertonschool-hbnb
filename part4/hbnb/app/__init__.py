@@ -11,7 +11,7 @@ from extensions import db, jwt
 from app.models.user import RevokedToken
 from utils import purge_expired_tokens, delete_invalid_amenities
 from app.web.html_routes import bp_web
-
+from app.web.api_helpers import bp_api
 
 def create_app(config_name='default'):
     """
@@ -22,6 +22,7 @@ def create_app(config_name='default'):
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config.from_object(config[config_name])
     app.register_blueprint(bp_web)
+    app.register_blueprint(bp_api)
 
     db.init_app(app)
     jwt.init_app(app)

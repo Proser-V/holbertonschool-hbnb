@@ -232,7 +232,7 @@ class PlaceCreate(BaseModel):
     owner_id: str
     amenity_ids: Optional[List[uuid.UUID]] = []
     photos_url: Optional[List[AnyUrl]] = []
-    city_name: str
+    city_name: Optional[str] = None
 
     @field_validator("photos_url")
     @classmethod
