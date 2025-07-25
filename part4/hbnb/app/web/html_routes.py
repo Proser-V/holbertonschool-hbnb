@@ -75,7 +75,24 @@ def admin_panel():
             return {"msg": "Accès refusé"}, 403
     except:
         user_id = None
-    return render_template("admin_panel.html")
+
+    users = facade.get_all_users()
+    places = facade.place_repo.get_all()
+    reviews = facade.get_all_reviews()
+    bookings = facade.get_all_bookings()
+    amenities = facade.get_all_amenities()
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("admin_panel.html",
+                           users=users,
+                           places=places,
+                           reviews=reviews,
+                           bookings=bookings,
+                           amenities=amenities,
+                           current_user=current_user)
 
 @bp_web.route('/logout')
 def logout():

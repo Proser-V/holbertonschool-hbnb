@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
+    <title>Admin panel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +11,169 @@
 </head>
 <body>
     {% include "general_header.html" %}
+    <div id="admin-panel" class="admin-panel">
+        <button id="open-admin-panel-user">Utilisateurs</button>
+        <div id="admin-panel-user-wrapper" class="admin-panel-user-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Actif</th>
+                    <th>Admin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.is_active }}</td>
+                    <td>{{ user.is_admin }}</td>
+                    <td>
+                        <button class="admin-to-user-profile-btn" onclick="window.location.href='/under_construction'">Voir profil</button>
+                        <button class="admin-delete-user-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <button id="open-admin-panel-place">Hébergements</button>
+        <div id="admin-panel-place-wrapper" class="admin-panel-place-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Prix</th>
+                    <th>Ville</th>
+                    <th>Propriétaire</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for place in places %}
+                <tr>
+                <td>{{ place.id }}</td>
+                <td>{{ place.title }}</td>
+                <td>{{ place.description }}</td>
+                <td>{{ place.price }}</td>
+                <td>{{ place.city_name }}</td>
+                <td>{{ place.owner.first_name }} {{ place.owner.last_name }}</td>
+                <td>
+                    <button class="admin-to-place-details-btn" onclick="window.location.href='/under_construction'">Voir fiche hébergement</button>
+                    <button class="admin-delete-place-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <button id="open-admin-panel-review">Avis</button>
+        <div id="admin-panel-review-wrapper" class="admin-panel-review-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Voyageur</th>
+                    <th>Commentaire</th>
+                    <th>Note</th>
+                    <th>Hébergement</th>
+                    <th>Propriétaire</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                <td>{{ review.id }}</td>
+                <td>{{ review.user.first_name }} {{ review.user.last_name }}</td>
+                <td>{{ review.comment }}</td>
+                <td>{{ review.rating }}</td>
+                <td>{{ review.place_rel.title }}</td>
+                <td>{{ review.place_rel.owner.first_name }} {{ review.place_rel.owner.last_name }}</td>
+                <td>
+                    <button class="admin-to-place-details-btn" onclick="window.location.href='/under_construction'">Voir fiche hébergement</button>
+                    <button class="admin-delete-review-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <button id="open-admin-panel-booking">Réservations</button>
+        <div id="admin-panel-booking-wrapper" class="admin-panel-booking-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Voyageur</th>
+                    <th>Hébergement</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.user_rel.first_name }} {{ booking.user_rel.last_name }}</td>
+                <td>{{ booking.place_rel.title }}</td>
+                <td>{{ booking.start_date }}</td>
+                <td>{{ booking.end_date }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    {% if booking.status == 'PENDING' %}
+                    <button class="admin-cancel-booking-btn">Annuler la réservation</button>
+                    {% endif %}
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <button id="open-admin-panel-amenity">Equipements</button>
+        <div id="admin-panel-amenity-wrapper" class="admin-panel-amenity-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>file_name</th>
+                    <th>Icone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for amenity in amenities %}
+                <tr>
+                <td>{{ amenity.id }}</td>
+                <td>{{ amenity.name }}</td>
+                <td>{{ amenity.description }}</td>
+                <td>{{ amenity.icon_file }}</td>
+                <td><img class="admin-panel-amenity-icon" src="{{ url_for('static', filename='icons/' ~ amenity.icon_file) }}"></td>
+                <td>
+                    <button class="admin-update-amenity-btn" onclick="window.location.href='/under_construction'">Changer</button>
+                    <button class="admin-delete-amenity-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                </td>
+                </tr>
+                {% endfor %}
+                <button id="admin-new-amenity-btn" onclick="window.location.href='/under_construction'">Ajouter un équipement</button>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/admin_panel.js') }}"></script>
 </body>
 <footer>
 

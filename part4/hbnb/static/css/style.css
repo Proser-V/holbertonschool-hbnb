@@ -102,7 +102,7 @@ html {
   transition: border 0.3s;
 }
 
-.filter-wrapper {
+.filter-user-wrapper {
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -231,6 +231,123 @@ nav a {
 
 main {
     padding: 2rem;
+}
+
+/* ------ admin section settings ------ */
+
+.admin-panel {
+  width: 99%;
+  margin: 30px auto;
+}
+
+.admin-panel-amenity-icon {
+  width: 40px;
+}
+
+#admin-new-amenity-btn {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 99%;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  background-color: var(--light-text-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#open-admin-panel-user,
+#open-admin-panel-place,
+#open-admin-panel-review,
+#open-admin-panel-booking,
+#open-admin-panel-amenity {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 99%;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  background-color: var(--star-color);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-panel-user-wrapper,
+.admin-panel-place-wrapper,
+.admin-panel-review-wrapper,
+.admin-panel-booking-wrapper,
+.admin-panel-amenity-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+  background-color: var(--color-primary);
+  padding: 0 20px;
+  border-radius: 0 0 8px 8px;
+}
+
+.admin-panel.expanding-user .admin-panel-user-wrapper,
+.admin-panel.expanding-place .admin-panel-place-wrapper,
+.admin-panel.expanding-review .admin-panel-review-wrapper,
+.admin-panel.expanding-booking .admin-panel-booking-wrapper,
+.admin-panel.expanding-amenity .admin-panel-amenity-wrapper {
+  max-height: 2000px;
+  padding: 20px;
+}
+
+.admin-panel-user-wrapper table,
+.admin-panel-place-wrapper table,
+.admin-panel-review-wrapper table,
+.admin-panel-booking-wrapper table,
+.admin-panel-amenity-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+.admin-panel-user-wrapper th,
+.admin-panel-user-wrapper td,
+.admin-panel-place-wrapper th,
+.admin-panel-place-wrapper td,
+.admin-panel-review-wrapper th,
+.admin-panel-review-wrapper td,
+.admin-panel-booking-wrapper th,
+.admin-panel-booking-wrapper td,
+.admin-panel-amenity-wrapper th,
+.admin-panel-amenity-wrapper td {
+  border: 1px solid var(--card-border-color);
+  padding: 5px;
+}
+
+.admin-panel-user-wrapper th,
+.admin-panel-place-wrapper th,
+.admin-panel-review-wrapper th,
+.admin-panel-booking-wrapper th,
+.admin-panel-amenity-wrapper th {
+  text-align: center;
+}
+
+.admin-panel-user-wrapper thead,
+.admin-panel-place-wrapper thead,
+.admin-panel-review-wrapper thead,
+.admin-panel-booking-wrapper thead,
+.admin-panel-amenity-wrapper thead {
+  background-color: #f5f5f5;
+}
+
+.admin-panel-user-wrapper tbody tr:nth-child(even),
+.admin-panel-place-wrapper tbody tr:nth-child(even),
+.admin-panel-review-wrapper tbody tr:nth-child(even),
+.admin-panel-booking-wrapper tbody tr:nth-child(even),
+.admin-panel-amenity-wrapper tbody tr:nth-child(even) {
+  background-color: #fafafa;
 }
 
 /* ------ owner section settings ------ */
@@ -595,7 +712,7 @@ main {
   margin-bottom: 10px;
 }
 
-.add-photo-wrapper {
+.add-photo-user-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -709,10 +826,10 @@ main {
 }
 
 .new-place-information input[type="checkbox"] {
-  flex-shrink: 0;    /* empêcher la case de rétrécir */
+  flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin: 0;         /* annuler marge par défaut */
+  margin: 0;
 }
 
 .amenity-icon {
@@ -722,7 +839,7 @@ main {
 
 /* ------ global form settings ------ */
 
-.button-wrapper {
+.button-user-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -776,7 +893,7 @@ main {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-.review-container.expanding .button-wrapper {
+.review-container.expanding .button-user-wrapper {
   width: 900px;
   height: 280px;
   border-radius: 20px;
@@ -790,7 +907,7 @@ main {
   opacity: 0;
 }
 
-.review-form-wrapper {
+.review-form-user-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -811,7 +928,7 @@ main {
   margin-right: 10px;
 }
 
-.review-container.show-form .review-form-wrapper {
+.review-container.show-form .review-form-user-wrapper {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
@@ -969,7 +1086,7 @@ main {
   text-align: center;
 }
 
-.update-container.expanding .button-wrapper {
+.update-container.expanding .button-user-wrapper {
   width: 340px;
   height: 340px;
   border-radius: 20px;
@@ -981,7 +1098,7 @@ main {
   color: transparent;
 }
 
-.form-wrapper {
+.form-user-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -1001,7 +1118,7 @@ main {
   gap: 10px;
 }
 
-.update-container.show-form .form-wrapper {
+.update-container.show-form .form-user-wrapper {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   button.addEventListener('click', () => {
     container.classList.add('expanding');
-    button.classList.add('hide-text'); // <-- nouveau ici
+    button.classList.add('hide-text');
     setTimeout(() => {
         container.classList.add('show-form');
     }, 500);

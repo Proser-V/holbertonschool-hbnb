@@ -9,11 +9,16 @@ export async function apiFetch(url, options = {}, retry = true) {
   });
 
   if (res.status === 401 && retry) {
+    console.warn("🔒 Token expiré ou invalide, tentative de refresh...");
+
     const refreshed = await tryRefreshToken();
     if (refreshed) {
-      return apiFetch(url, options, false);
+      console.log("Refresh réussi, nouvelle tentative de", url);
+      return await apiFetch(url, options, false);
     } else {
+      console.error("Échec du refresh, redirection vers /login");
       window.location.href = "/login";
+      return new Response(null, { status: 401 });
     }
   }
 
@@ -21,10 +26,15 @@ export async function apiFetch(url, options = {}, retry = true) {
 }
 
 async function tryRefreshToken() {
-  
-  const res = await fetch('/refresh', {
-    method: 'POST',
-    credentials: 'include'
-  });
-  return res.ok;
+  try {
+    const res = await fetch('/api/v1/users/refresh', {
+      method: 'POST',
+      credentials: 'include'
+    });
+    console.log("Tentative de refresh, statut:", res.status);
+    return res.ok;
+  } catch (err) {
+    console.error("Erreur lors du refresh:", err);
+    return false;
+  }
 }
