@@ -29,6 +29,19 @@ html {
   display: none !important;
 }
 
+.under-construction {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.under-construction-pics {
+  display: flex;
+  align-items: center;
+  width: 25%;
+  height: auto;
+  margin: auto;
+}
+
 /* ---------------- header settings ---------------- */
 
 .header {
@@ -110,12 +123,6 @@ html {
   pointer-events: none;
 }
 
-.header-auth {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .header-registration a {
   text-decoration: none;
   font-weight: bold;
@@ -142,7 +149,16 @@ html {
   display: inline-block;
 }
 
-.user-nav-inner {
+#user-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+}
+
+.user-nav-inner, .admin-nav, .header-auth {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -164,6 +180,38 @@ html {
   object-fit: cover;
 }
 
+.back-btn {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--text-color);
+  border: none;
+  background-color: var(--color-header);
+  cursor: pointer;
+}
+
+.end-page-back {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 999;
+  display: none;
+  background-color: var(--star-color);
+  color: var(--color-header);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50%;
+  font-size: 30px;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
 .separation {
   padding-left: 10px;
 }
@@ -183,6 +231,24 @@ nav a {
 
 main {
     padding: 2rem;
+}
+
+/* ------ owner section settings ------ */
+
+.owner-section {
+  border: 1px solid var(--card-border-color);
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.owner-btn {
+  border: none;
+  border-radius: 50px;
+  background-color: var(--star-color);
+  margin: 5px;
+  padding: 10px;
+  color: var(--color-primary);
+  cursor: pointer;
 }
 
 /* ------ place cards settings ------ */
@@ -317,6 +383,20 @@ main {
   box-shadow: 0 0 20px var(--shadow-color);
 }
 
+.all-photos-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.all-photos {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--shadow-color);
+}
+
 .show-all-photos-btn {
     grid-column: 1 / -1;
     margin-top: 0.5rem;
@@ -340,9 +420,11 @@ main {
   text-decoration: inherit;
   margin-bottom: 20px;
 }
+
 .place-title {
   margin-top: 10px;
 }
+
 .place-owner {
   display: flex;
   align-items: center;
@@ -510,6 +592,7 @@ main {
   box-shadow: 0 4px 10px var(--shadow-color);
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 10px;
 }
 
 .add-photo-wrapper {
@@ -546,6 +629,7 @@ main {
   font-size: 14px;
   border: 1px solid var(--card-border-color);
   border-radius: 5px;
+  margin: 5px 0;
 }
 
 .photo-url-input button {
@@ -562,7 +646,7 @@ main {
   flex-direction: column;
   gap: 15px;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 20px;
   font-size: 14px;
 }
 
@@ -588,6 +672,10 @@ main {
   border: 1px solid var(--card-border-color);
   resize: none;
   box-sizing: border-box;
+}
+
+#new-place-form p {
+  margin: 20px 0;
 }
 
 .char-counter {
@@ -838,9 +926,13 @@ main {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
+#user-places-list-content {
+  margin-top: 20px;
+  align-items: center;
+}
+
 .button-to-add-place {
-  display: block;
-  margin: 30px auto;
+  display: inline-block;
   padding: 12px 30px;
   border: none;
   border-radius: 50px;
@@ -851,6 +943,11 @@ main {
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 10px var(--shadow-color);
+  text-decoration: inherit;
+  margin: 20px auto 0;
+  display: block;
+  width: 270px;
+  text-align: center;
 }
 
 /* ------ user update form settings ------ */

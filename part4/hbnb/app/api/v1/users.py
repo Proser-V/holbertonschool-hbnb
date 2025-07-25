@@ -248,7 +248,7 @@ class Login(Resource):
 
 @api.route('/refresh')
 class TokenRefresh(Resource):
-    @jwt_required()
+    @jwt_required(refresh=True)
     @api.response(200, 'Refresh token created')
     @api.response(401, 'Unauthorized')
     def post(self):

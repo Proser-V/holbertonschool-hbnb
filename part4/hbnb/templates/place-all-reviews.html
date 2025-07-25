@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avis laissés pour {{ place.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+            </a>
+        </div>
+        <nav id="user-nav">
+                <button class="back-btn" onclick="history.back()">Retour vers la page de l'hébergement</button>
+        </nav>
+    </header>
+    <main>
+        <div class="all-reviews-list">
+            <h1>Tous les avis pour : {{ place.title }}</h1>
+            {% for review in place.reviews| reverse %}
+                <div class="review-card">
+                        <div class="review-user-info">
+                            <img class="review-user-photo" src="{{ review.user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ review.user_first_name }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}" data-user-photo="{{ review.user.photo_url }}">
+                            <a class="review-user-name" href="#" data-user-photo="{{ review.user.photo_url }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
+                        </div>
+                        <p>A visité du {{ review.booking_rel.start_date.strftime('%d/%m/%Y') }} au {{ review.booking_rel.end_date.strftime('%d/%m/%Y') }}</p>
+                        <p class="review-card-rating">
+                            {% set rating = review.rating %}
+                            {% set note = ((rating * 2) | round) / 2 %}
+                            {% for i in range(1, 6) %}
+                                {% if i <= note %}
+                                    <span class="star">★</span>
+                                {% elif i - 0.5 == note %}
+                                    <span class="star">⯪</span>
+                                {% else %}
+                                    <span class="star">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="review-card-rating-value">{{ note }}</span>
+                        </p>
+                        <p class="review-comment">"{{ review.comment }}"</p>
+                    </div>
+            {% endfor %}
+        </div>
+        <div class="end-page-back">
+        <button class="back-btn" onclick="history.back()">Retour vers la page de l'hébergement</button>
+        </div>
+    </main>
+    <button id="scrollToTopBtn" title="Remonter en haut">⇧</button>
+    <script src="{{ url_for('static', filename='js/scroll-top.js') }}"></script>
+</body>
+</html>

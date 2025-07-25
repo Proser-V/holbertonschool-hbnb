@@ -1,3 +1,5 @@
+import { apiFetch } from './refresh_token.js';
+
 function expandRanges(ranges) {
   const lockedDates = [];
   ranges.forEach(range => {
@@ -43,12 +45,8 @@ document.getElementById('btn-book').addEventListener('click', async function () 
   const place_id = document.getElementById('calendar').dataset.placeId
 
   try {
-    const res = await fetch(`/api/v1/bookings/${place_id}`, {
+    const res = await apiFetch(`/api/v1/bookings/${place_id}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
       body: JSON.stringify({
         start_date: startDate.format('YYYY-MM-DD'),
         end_date: endDate.format('YYYY-MM-DD')

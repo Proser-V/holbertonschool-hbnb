@@ -1,12 +1,10 @@
+import { apiFetch } from './refresh_token.js';
+
 /* Valdation d'image via le backend */
 async function validateImageWithBackend(url) {
 try {
-    const res = await fetch('/validate-photo', {
+    const res = await apiFetch('/validate-photo', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include',
         body: JSON.stringify({ url })
     });
 
@@ -88,9 +86,8 @@ container.appendChild(wrapper);
 // ✅ Charger dynamiquement les amenities
 async function loadAmenities() {
 try {
-    const res = await fetch('/api/v1/amenities/', {
+    const res = await apiFetch('/api/v1/amenities/', {
         method: 'GET',
-        credentials: 'include'
     });
 
     const amenities = await res.json();
@@ -171,14 +168,10 @@ form.addEventListener('submit', async (e) => {
         alert("Veuillez renseigner une adresse valide pour obtenir les coordonnées.");
         return;
     }
-    console.log("Body envoyé :", body);
+
     try {
-        const res = await fetch('/api/v1/places/', {
+        const res = await apiFetch('/api/v1/places/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
             body: JSON.stringify(body)
         });
 

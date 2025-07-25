@@ -1,0 +1,35 @@
+<header class="header">
+    <div class="header-logo">
+        <a href="{{ url_for('web.index') }}">
+            <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+        </a>
+    </div>
+    <nav id="user-nav">
+        {% if current_user %}
+            {% if current_user.is_admin == True %}
+                <div class="admin-nav">
+                    <a href="{{ url_for('web.admin_panel') }}" id="admin-link">Gestion administrateur</a>
+                    <span class="separation">|</span>
+                </div>
+            <div class ="user-nav-inner">
+                <a href="{{ url_for('web.user_profile', user_id=current_user.id) }}" class="user-logged">
+                    {{ current_user.first_name }}
+                    <img class="header-user-photo" src="{{ current_user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ current_user.first_name }}">
+                </a>
+                <span class="separation">|</span>
+                <a href="{{ url_for('web.logout') }}" id="logout-link">Déconnexion</a>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="header-auth">
+                <div class="header-registration">
+                    <a href="{{ url_for('web.new_user') }}" id="registration-link">Créer un compte</a>
+                </div>
+                <p class="separation">|</p>
+                <div class="header-login">
+                    <a href="{{ url_for('web.login') }}" id="login-link">Connexion</a>
+                </div>
+            </div>
+        {% endif %}
+    </nav>
+</header>

@@ -2,7 +2,7 @@ from flask import Blueprint, abort, render_template
 from flask import make_response
 from uuid import UUID
 from app.services import facade
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity, get_jwt
 from datetime import datetime, timezone, timedelta
 
 
@@ -65,6 +65,17 @@ def show_place(place_id):
 @bp_web.route('/login')
 def login():
     return render_template("login.html")
+
+@bp_web.route('/admin_panel')
+def admin_panel():
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        if not get_jwt().get("is_admin", False):
+            return {"msg": "Accès refusé"}, 403
+    except:
+        user_id = None
+    return render_template("admin_panel.html")
 
 @bp_web.route('/logout')
 def logout():
@@ -156,3 +167,56 @@ def add_place():
 
     return render_template("add_place.html",
                            current_user=current_user)
+
+@bp_web.route('/place/<place_id>/show_photos')
+def show_photos(place_id):
+    try:
+        UUID(place_id)
+    except ValueError:
+        abort(400, description="Invalid UUID")
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    place = facade.get_place(place_id)
+    if not place:
+        abort(404, description="Place not found")
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("place-all-photos.html",
+                           place=place,
+                           photos_url=place.photos_url or [],
+                           current_user=current_user)
+
+@bp_web.route('/place/<place_id>/show_reviews')
+def show_reviews(place_id):
+    try:
+        UUID(place_id)
+    except ValueError:
+        abort(400, description="Invalid UUID")
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    place = facade.get_place(place_id)
+    if not place:
+        abort(404, description="Place not found")
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("place-all-reviews.html",
+                           place=place,
+                           current_user=current_user)
+
+@bp_web.route('/under_construction')
+def under_construction():
+    return render_template("under_construction.html")

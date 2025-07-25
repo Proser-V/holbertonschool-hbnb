@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Connexion</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -19,14 +19,14 @@
     </header>
     <main>
         <form id="login-form">
-            <h2 class="login-title">Login</h2>
+            <h2 class="login-title">Connexion</h2>
             <div class="login-input">
                 <input type="email" id="email" name="email" required placeholder="email@exemple.com">
             </div>
             <div class="login-input">
                 <input type="password" id="password" name="password" required placeholder="Mot de passe">
             </div>
-            <button class="login-validation-button" type="submit">Login</button>
+            <button class="login-validation-button" type="submit">Connexion</button>
         </form>
         <p id="error-message" style="color:red; text-align: center;"></p>
         <h2 class="login-title">Pas encore inscrit?</h2>

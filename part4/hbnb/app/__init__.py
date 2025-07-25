@@ -18,7 +18,6 @@ def create_app(config_name='default'):
     Initialize the Flask server, the database and all used
     JWT functions.
     """
-    print("create_app() called")
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config.from_object(config[config_name])
     app.register_blueprint(bp_web)

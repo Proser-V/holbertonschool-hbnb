@@ -1,3 +1,5 @@
+import { apiFetch } from './refresh_token.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('user-update-container');
   const button = document.getElementById('toggle-update-btn');
@@ -40,10 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch(`/api/v1/users/${userId}`, {
+      const response = await apiFetch(`/api/v1/users/${userId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(data)
       });
 

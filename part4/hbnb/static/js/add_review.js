@@ -1,3 +1,5 @@
+import { apiFetch } from './refresh_token.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('add-review-container');
   const button = document.getElementById('open-review-form');
@@ -30,10 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch(`/api/v1/reviews/from_booking/${bookingId}`, {
+      const response = await apiFetch(`/api/v1/reviews/from_booking/${bookingId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(data)
       });
 

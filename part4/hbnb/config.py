@@ -11,7 +11,7 @@ class Config:
                                'a-string-secret-at-least-256-bits-long')
     LOCATIONIQ_KEY = "pk.84031ba5f6aff806113e746e96348592"
     DEBUG = False
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
@@ -19,6 +19,8 @@ class Config:
     JWT_COOKIE_SECURE = False
     JWT_ACCESS_COOKIE_NAME = 'access_token'
     JWT_REFRESH_COOKIE_NAME = 'refresh_token'
+    JWT_ACCESS_COOKIE_PATH = '/'
+    JWT_REFRESH_COOKIE_PATH = '/'  # /refresh for security in prod
     JWT_COOKIE_CSRF_PROTECT = False  # True for later.
 
 

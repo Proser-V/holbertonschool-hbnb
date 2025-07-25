@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos pour {{ place.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+            </a>
+        </div>
+        <nav id="user-nav">
+                <button class="back-btn" onclick="history.back()">Retour vers la page de l'hébergement</button>
+        </nav>
+    </header>
+    <main>
+        <div class="all-photos-list">
+            <h1>Toutes les photos pour : {{ place.title }}</h1>
+            {% set i = 1 %}
+            {% for photo in photos_url %}
+                <img class="all-photos" src="{{ photo }}" alt="Photo { i }">
+                {% set i = i + 1 %}
+            {% endfor %}
+        </div>
+        <div class="end-page-back">
+        <button class="back-btn" onclick="history.back()">Retour vers la page de l'hébergement</button>
+        </div>
+    </main>
+    <button id="scrollToTopBtn" title="Remonter en haut">⇧</button>
+    <script src="{{ url_for('static', filename='js/scroll-top.js') }}"></script>
+</body>
+</html>

@@ -13,8 +13,8 @@
                 <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
             </a>
         </div>
-        <nav class="header-home">
-            <a href="{{ url_for('web.index') }}" id="home-link">Accueil</a>
+        <nav id="user-nav">
+                <button class="back-btn" onclick="history.back()">Retour vers la page précédente</button>
         </nav>
     </header>
     <main>
@@ -22,7 +22,7 @@
             <div class="avatar-display">
                 <button class="btn-to-change-avatar">
                     <img class="user-details-photo"
-                    src="{{ user.photo_url or '../static/images/default-user.png' }}"
+                    src="{{ user.photo_url or '/static/images/default-user.png' }}"
                     alt="Profil de {{ user.first_name }}">
                 </button>
             </div>
@@ -73,7 +73,7 @@
         </section>
         <section id="user-places">
             <h2>Liste de vos hébergements</h2>
-            <div id="places-list">
+            <div id="user-places-list">
                 {% if user.places %}
                     {% for place in user.places %}
                     {% set img_url = place.photos_url[0] if place.photos_url else url_for('static', filename="images/default-place-grey.png") %}
@@ -125,13 +125,13 @@
                     {% endfor %}
             </div>
             {% else %}
-            <div>
+            <div id="user-places-list-content">
                 <p>Vous n'avez pas encore enregistré de logement.</p>
-                <a class="button-to-add-place" href="{{ url_for('web.add_place') }}">Ajouter un logement à louer.</a>
-            </div>
             {% endif %}
+            <a class="button-to-add-place" href="{{ url_for('web.add_place') }}">Ajouter un logement à louer</a>
+            </div>
         </section>
     </main>
-    <script src="{{ url_for('static', filename='js/user_update.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/user_update.js') }}"></script>
 </body>
 </html>
