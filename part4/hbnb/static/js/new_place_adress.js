@@ -28,7 +28,6 @@ addressInput.addEventListener("blur", async () => {
       return;
     }
 
-    // Vérifie que les valeurs existent bien
     if (!data.lat || !data.lon) {
       alert("Adresse non reconnue.");
       return;

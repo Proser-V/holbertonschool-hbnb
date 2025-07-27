@@ -22,7 +22,6 @@ def validate_photo():
         return jsonify({"valid": False, "reason": str(e)}), 400
     
 @bp_api.route('/geocode-address', methods=['POST'])
-@jwt_required()
 def geocode_address():
     address = request.json.get("address")
     if not address:
@@ -39,11 +38,25 @@ def geocode_address():
             }
         )
         response.raise_for_status()
-        result = response.json()[0]
-        return jsonify({
-            "lat": result["lat"],
-            "lon": result["lon"],
-            "city": result.get("address", {}).get("city", result["display_name"])
-        })
+        results = response.json()
+        if len(results) > 1:
+            # Renvoie la liste des choix au front
+            choices = [{
+                "display_name": result["display_name"],
+                "lat": result["lat"],
+                "lon": result["lon"]
+            } for result in results]
+            return jsonify({
+                "multiple_results": True,
+                "choices": choices
+            })
+        else:
+            result = results[0]
+            return jsonify({
+                "multiple_results": False,
+                "lat": result["lat"],
+                "lon": result["lon"],
+                "display_name": result["display_name"]
+            })
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -78,51 +78,6 @@ html {
   height: 50px;
 }
 
-#filter {
-  position: relative;
-  width: 100%;
-}
-
-.header-filter {
-  flex: none;
-  display: flex;
-  justify-content: center;
-  margin: 20px auto;
-  max-width: 500px;
-}
-
-#filter-input {
-  flex: 1;
-  width: 100%;
-  padding: 10px 15px 10px 40px;
-  border: 2px solid var(--light-text-color);
-  border-radius: 50px;
-  outline: none;
-  font-size: 16px;
-  transition: border 0.3s;
-}
-
-.filter-user-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-}
-
-.filter-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: var(--text-color);
-  pointer-events: none;
-}
-
 .header-registration a {
   text-decoration: none;
   font-weight: bold;
@@ -231,6 +186,55 @@ nav a {
 
 main {
     padding: 2rem;
+}
+
+/* ------ filter section settings ------ */
+
+#choices-container:empty {
+  display: none;
+}
+
+#choices-container {
+  position: absolute;
+  background-color: var(--color-primary);
+  border: 1px solid var(--card-border-color);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  top: 100%;
+  left: 0;
+}
+
+.filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
+  gap: 8px;
+}
+
+.filter input,
+.filter select {
+  border-radius: 25px;
+  padding: 10px;
+  border-color: var(--card-border-color);
+}
+
+#filter-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  text-decoration: inherit;
+  margin-left: 10px;
 }
 
 /* ------ admin section settings ------ */
@@ -1433,8 +1437,15 @@ main {
     padding: 1rem 2rem;
     border-bottom: 1px solid var(--card-border-color);
 }
+
 .footer-content {
   color: var(--light-text-color);
   text-align: center;
   padding: 10px;
+  user-select: none;
+}
+
+.footer-content a {
+  text-decoration: inherit;
+  color: #9a9898;
 }
