@@ -236,8 +236,11 @@ class Login(Resource):
         access_token = create_access_token(
             identity=user.id,
             additional_claims={"is_admin": user.is_admin}
-        )
-        refresh_token = create_refresh_token(identity=user.id)
+            )
+        refresh_token = create_refresh_token(
+            identity=user.id,
+            additional_claims={"is_admin": user.is_admin}
+            )
 
         response = jsonify({'msg': 'Login successful'})
         set_access_cookies(response, access_token)

@@ -36,11 +36,34 @@
                     <td>{{ user.is_active }}</td>
                     <td>{{ user.is_admin }}</td>
                     <td>
-                        <button class="admin-to-user-profile-btn" onclick="window.location.href='/under_construction'">Voir profil</button>
-                        <button class="admin-delete-user-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                        <button class="admin-to-user-profile-btn" data-id="{{ user.id }}">Voir profil</button>
+                        <button class="admin-delete-user-btn" data-id="{{ user.id }}">Supprimer</button>
+                        <button class="admin-moderate-user-btn" data-id="{{ user.id }}" data-is-active="{{ user.is_active }}">Actif on/off</button>
                     </td>
                 </tr>
                 {% endfor %}
+                <button id="admin-new-admin-btn">Créer admin</button>
+                <div id="admin-panel-admin-wrapper" class="admin-panel-admin-wrapper">
+                    <form id="admin-registration-form">
+                        <h2 class="registration-title">Création d'un administrateur</h2>
+                        <div class="registration-input">
+                            <input type="email" id="email" name="email" required placeholder="Email">
+                        </div>
+                        <div class="registration-input">
+                            <input type="password" id="password" name="password" required placeholder="Mot de passe">
+                        </div>
+                        <div class="registration-input">
+                            <input type="text" id="first_name" name="first_name" required placeholder="Prénom">
+                        </div>
+                        <div class="registration-input">
+                            <input type="text" id="last_name" name="last_name" required placeholder="Nom">
+                        </div>
+                        <div class="registration-input">
+                            <input type="url" id="new_user_photo_url" name="photo_url" placeholder="L'URL pour photo de profil">
+                        </div>
+                        <button class="registration-validation-button" type="submit">Créer un admin</button>
+                    </form>
+                </div>
             </tbody>
             </table>
         </div>
@@ -164,16 +187,31 @@
                 <td><img class="admin-panel-amenity-icon" src="{{ url_for('static', filename='icons/' ~ amenity.icon_file) }}"></td>
                 <td>
                     <button class="admin-update-amenity-btn" onclick="window.location.href='/under_construction'">Changer</button>
-                    <button class="admin-delete-amenity-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                    <button class="admin-delete-amenity-btn" data-id="{{ amenity.id }}">Supprimer</button>
                 </td>
                 </tr>
                 {% endfor %}
-                <button id="admin-new-amenity-btn" onclick="window.location.href='/under_construction'">Ajouter un équipement</button>
+                <button id="admin-new-amenity-btn">Ajouter un équipement</button>
+                <div id="admin-panel-new-amenity-wrapper" class="admin-panel-new-amenity-wrapper">
+                    <form id="new-amenity-registration-form">
+                        <h2 class="registration-title">Création d'un équipement</h2>
+                        <div class="registration-input">
+                            <input type="name" id="new-amenity-name" name="name" required placeholder="Nom">
+                        </div>
+                        <div class="registration-input">
+                            <textarea id="new-amenity-description" name="description" rows="6" required placeholder="Description"></textarea>
+                        </div>
+                        <div class="registration-input">
+                            <input type="text" id="new-amenity-icon-file" name="icon_file" placeholder="Icône - Nom du fichier">
+                        </div>
+                        <button class="registration-validation-button" type="submit">Créer un équipement</button>
+                    </form>
+                </div>
             </tbody>
             </table>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/admin_panel.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/admin_panel.js') }}"></script>
 </body>
 <footer>
     <div class="footer-content">

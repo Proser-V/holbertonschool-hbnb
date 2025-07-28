@@ -110,7 +110,7 @@ html {
   gap: 10px;
   font-family: Arial, sans-serif;
   padding: 10px 20px;
-  background-color: #f8f8f8;
+  background-color: var(--color-header);
 }
 
 .user-nav-inner, .admin-nav, .header-auth {
@@ -218,7 +218,16 @@ main {
 .filter select {
   border-radius: 25px;
   padding: 10px;
-  border-color: var(--card-border-color);
+  border: 1px solid var(--card-border-color);
+}
+
+#address-filter {
+  width: 350px;
+}
+
+#min-price-filter,
+#max-price-filter {
+  width: 80px;
 }
 
 #filter-btn {
@@ -248,7 +257,8 @@ main {
   width: 40px;
 }
 
-#admin-new-amenity-btn {
+#admin-new-amenity-btn,
+#admin-new-admin-btn {
   margin-top: 5px;
   margin-bottom: 5px;
   width: 99%;
@@ -267,7 +277,8 @@ main {
 #open-admin-panel-place,
 #open-admin-panel-review,
 #open-admin-panel-booking,
-#open-admin-panel-amenity {
+#open-admin-panel-amenity,
+#open-admin-panel-admin {
   margin-top: 5px;
   margin-bottom: 5px;
   width: 99%;
@@ -286,7 +297,9 @@ main {
 .admin-panel-place-wrapper,
 .admin-panel-review-wrapper,
 .admin-panel-booking-wrapper,
-.admin-panel-amenity-wrapper {
+.admin-panel-amenity-wrapper,
+.admin-panel-admin-wrapper,
+.admin-panel-new-amenity-wrapper {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.6s ease;
@@ -299,7 +312,9 @@ main {
 .admin-panel.expanding-place .admin-panel-place-wrapper,
 .admin-panel.expanding-review .admin-panel-review-wrapper,
 .admin-panel.expanding-booking .admin-panel-booking-wrapper,
-.admin-panel.expanding-amenity .admin-panel-amenity-wrapper {
+.admin-panel.expanding-amenity .admin-panel-amenity-wrapper,
+.admin-panel.expanding-admin-creation .admin-panel-admin-wrapper,
+.admin-panel.expanding-amenity-creation .admin-panel-new-amenity-wrapper {
   max-height: 2000px;
   padding: 20px;
 }
@@ -1401,6 +1416,18 @@ main {
   padding: 12px 20px;
   border: 2px solid var(--card-border-color);
   border-radius: 50px;
+  outline: none;
+  font-size: 16px;
+  background-color: var(--color-header);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+.registration-input textarea {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--card-border-color);
+  border-radius: 25px;
   outline: none;
   font-size: 16px;
   background-color: var(--color-header);

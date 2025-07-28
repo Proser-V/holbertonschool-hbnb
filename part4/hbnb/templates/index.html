@@ -30,63 +30,67 @@
                 <input type="hidden" name="latitude" id="latitude-filter">
                 <input type="hidden" name="longitude" id="longitude-filter">
                 <span>Prix par nuit : </span>
-                <input id="min-price-filter" type="text" placeholder="Prix minimum par nuit">
-                <input id="max-price-filter" type="text" placeholder="Prix maximum par nuit">
+                <input id="min-price-filter" type="text" placeholder="Minimum">
+                <input id="max-price-filter" type="text" placeholder="Maximum">
                 <button id="filter-btn" type="button">Filtrer</button>
             </div>
         </section>
         <section id="places-section">
             <h2>Découvrez nos logements</h2>
-
             <div id="places-list">
-                {% for place in places_list %}
-                {% set img_url = place.photos_url[0] if place.photos_url else url_for('static', filename="images/default-place-grey.png") %}
-                <a href="{{ url_for('web.show_place', place_id=place.id) }}" class="place-card">
-                    <img src="{{ img_url }}"
-                        alt="{{ place.title }}"
-                        class="place-front-pic">
-                    <div class="place-card-content">
-                    <h2 class="place-card-title">{{ place.title }}</h2>
-                    <p class="place-card-price" data-price="{{ place.price }}"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
-                    <p class="place-card-rating">
-                        {% set rating = place.rating or 0 %}
-                        {% set note = ((rating * 2) | round) / 2 %}
-                        {% if rating == 0 %}
-                        <p>Pas encore de note</p>
-                        {% else %}
-                        {% for i in range(1, 6) %}
-                            {% if i <= note %}
-                            <span class="star">★</span>
-                            {% elif i - 0.5 == note %}
-                            <span class="star">⯪</span>
+                <p id="no-results-msg" style="display:none;">Aucun logement ne correspond à vos critères.</p>
+                {% if places_list %}
+                    {% for place in places_list %}
+                    {% set img_url = place.photos_url[0] if place.photos_url else url_for('static', filename="images/default-place-grey.png") %}
+                    <a href="{{ url_for('web.show_place', place_id=place.id) }}" class="place-card">
+                        <img src="{{ img_url }}"
+                            alt="{{ place.title }}"
+                            class="place-front-pic">
+                        <div class="place-card-content">
+                        <h2 class="place-card-title">{{ place.title }}</h2>
+                        <p class="place-card-price" data-price="{{ place.price }}"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                        <p class="place-card-rating">
+                            {% set rating = place.rating or 0 %}
+                            {% set note = ((rating * 2) | round) / 2 %}
+                            {% if rating == 0 %}
+                            <p>Pas encore de note</p>
                             {% else %}
-                            <span class="star">☆</span>
+                            {% for i in range(1, 6) %}
+                                {% if i <= note %}
+                                <span class="star">★</span>
+                                {% elif i - 0.5 == note %}
+                                <span class="star">⯪</span>
+                                {% else %}
+                                <span class="star">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="place-card-rating-value">{{ note }}</span>
                             {% endif %}
-                        {% endfor %}
-                        <span class="place-card-rating-value">{{ note }}</span>
-                        {% endif %}
-                    </p>
-                    <div class="place-location" data-lat="{{ place.latitude }}" data-lon="{{ place.longitude}}">
-                        <p class="location-name">{{ place.city_name }}</p>
-                    </div>
-                    <div class="next_booking">
-                        {% set now = now %}
-                        {% set blocking_booking = place.bookings 
-                            | selectattr("status", "equalto", "PENDING") 
-                            | selectattr("start_date", "<=", tomorrow) 
-                            | selectattr("end_date", ">=", now) 
-                            | sort(attribute="end_date")
-                            | first %}
+                        </p>
+                        <div class="place-location" data-lat="{{ place.latitude }}" data-lon="{{ place.longitude}}">
+                            <p class="location-name">{{ place.city_name }}</p>
+                        </div>
+                        <div class="next_booking">
+                            {% set now = now %}
+                            {% set blocking_booking = place.bookings 
+                                | selectattr("status", "equalto", "PENDING") 
+                                | selectattr("start_date", "<=", tomorrow) 
+                                | selectattr("end_date", ">=", now) 
+                                | sort(attribute="end_date")
+                                | first %}
 
-                        {% if blocking_booking %}
-                        Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
-                        {% else %}
-                        Disponible immédiatement
-                        {% endif %}
-                    </div>
-                    </div>
-                </a>
-                {% endfor %}
+                            {% if blocking_booking %}
+                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
+                            {% else %}
+                            Disponible immédiatement
+                            {% endif %}
+                        </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <p>Aucun hébergement trouvé.</p>
+                {% endif %}
             </div>
         </section>
     </main>

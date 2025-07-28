@@ -60,6 +60,7 @@ function applyFilters() {
         const locationDiv = card.querySelector(".place-location");
         const latPlace = parseFloat(locationDiv.dataset.lat);
         const lonPlace = parseFloat(locationDiv.dataset.lon);
+        let visibleCount = 0;
 
         let priceOk = true;
         if (minPrice !== undefined && price < minPrice) priceOk = false;
@@ -73,8 +74,15 @@ function applyFilters() {
         }
         if (priceOk && distanceOk) {
             card.style.display = "";
+            visibleCount++;
         } else {
             card.style.display = "none";
+        }
+        const noResultMessage = document.getElementById('no-results-msg');
+        if (visibleCount === 0) {
+            noResultMessage.style.display = "block";
+        } else {
+            noResultMessage.style.display = "none";
         }
     });
 };

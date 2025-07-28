@@ -9,7 +9,7 @@ export async function apiFetch(url, options = {}, retry = true) {
   });
 
   if (res.status === 401 && retry) {
-    console.warn("🔒 Token expiré ou invalide, tentative de refresh...");
+    console.warn("Token expiré ou invalide, tentative de refresh...");
 
     const refreshed = await tryRefreshToken();
     if (refreshed) {

@@ -45,8 +45,9 @@ class AmenityList(Resource):
 
         if facade.get_amenity_by_name(amenity_data.name):
             return {"error": "This amenity already exists"}, 400
-        if "icon_file" not in amenity_data:
-            amenity_data['icon_file'] = 'default-amenities.png'
+        if amenity_data.icon_file is None:
+            amenity_data = amenity_data.model_copy(
+                update={'icon_file': 'default-amenities.png'})
         new_amenity = facade.create_amenity(amenity_data.model_dump())
         return AmenityPublic.model_validate(new_amenity).model_dump(), 200
 
