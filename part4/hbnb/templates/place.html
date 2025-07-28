@@ -9,6 +9,12 @@
 <body>
     {% include "general_header.html" %}
     <main>
+        {% if current_user.is_admin %}
+        <div class="owner-section">
+            Droits d'administrateur:
+            <button class="owner-btn" onclick="window.location.href='/under_construction'">Modifier les informations</button>
+        </div>
+        {% endif %}
         {% if current_user.id == place.owner.id %}
         <div class="owner-section">
             Vous êtes propriétaire de cet hébergement:

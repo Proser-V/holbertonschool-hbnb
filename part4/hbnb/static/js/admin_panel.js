@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* To User profile */
 document.addEventListener('DOMContentLoaded', () => {
-    const deleteUserButton = document.querySelectorAll('.admin-to-user-profile-btn');
+    const goToUserButton = document.querySelectorAll('.admin-to-user-profile-btn');
 
-    deleteUserButton.forEach(button => {
+    goToUserButton.forEach(button => {
         button.addEventListener('click', async () => {
             const userId = button.getAttribute('data-id')
             if (!userId) return;
@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* User is_active ON/OFF */
 document.addEventListener('DOMContentLoaded', () => {
-    const deleteUserButton = document.querySelectorAll('.admin-moderate-user-btn');
+    const moderateUserButton = document.querySelectorAll('.admin-moderate-user-btn');
 
-    deleteUserButton.forEach(button => {
+    moderateUserButton.forEach(button => {
         button.addEventListener('click', async () => {
             const userId = button.getAttribute('data-id')
             const userIsActive = button.getAttribute('data-is-active')
@@ -233,6 +233,95 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(err);
                     alert("Une erreur est survenue.");
                 }
+            }
+        });
+    });
+});
+
+/* Place deletion */
+document.addEventListener('DOMContentLoaded', () => {
+    const deletePlaceButton = document.querySelectorAll('.admin-delete-place-btn');
+
+    deletePlaceButton.forEach(button => {
+        button.addEventListener('click', async () => {
+            const placeId = button.getAttribute('data-id')
+            if (!placeId) return;
+            
+            const confirmDelete = confirm("Voulez vous vraiment supprimer cet hébergement?");
+            if (!confirmDelete) return;
+
+            try {
+                const result = await apiFetch(`/api/v1/places/${placeId}`, {
+                    method: "DELETE"
+                })
+                if (result.ok) {
+                    alert("Hébergement supprimé avec succès");
+                    location.reload();
+                } else {
+                    const error = await result.json();
+                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Une erreur est survenue.");
+            }
+        });
+    });
+});
+
+/* To Place details */
+document.addEventListener('DOMContentLoaded', () => {
+    const goToPlaceButton = document.querySelectorAll('.admin-to-place-details-btn');
+
+    goToPlaceButton.forEach(button => {
+        button.addEventListener('click', async () => {
+            const placeId = button.getAttribute('data-id')
+            if (!placeId) return;
+
+            try {
+                const result = await apiFetch(`/api/v1/places/${placeId}`, {
+                    method: "GET"
+                })
+                if (result.ok) {
+                    window.location.href = `/place/${placeId}`;
+                } else {
+                    const error = await result.json();
+                    alert(`Erreur lors de la redirection : ${error?.error || 'Inconnue'}`)
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Une erreur est survenue.");
+            }
+        });
+    });
+});
+
+/* Review deletion */
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteReviewButton = document.querySelectorAll('.admin-delete-review-btn');
+
+    deleteReviewButton.forEach(button => {
+        button.addEventListener('click', async () => {
+            const reviewId = button.getAttribute('data-id')
+            if (!reviewId) return;
+            
+            const confirmDelete = confirm("Voulez vous vraiment supprimer cet avis?");
+            if (!confirmDelete) return;
+
+            try {
+                const result = await apiFetch(`/api/v1/places/${reviewId}`, {
+                    method: "DELETE"
+                })
+                if (result.ok) {
+                    alert("Avis supprimé avec succès");
+                    location.reload();
+                } else {
+                    const error = await result.json();
+                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Une erreur est survenue.");
             }
         });
     });

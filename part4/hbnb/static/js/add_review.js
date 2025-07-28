@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelBtn = document.getElementById('cancel-review-form');
   const form = document.getElementById('add-review-form');
 
+  if (button && cancelBtn && form && container) {
   button.addEventListener('click', () => {
     container.classList.add('expanding');
     button.classList.add('hide-text');
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Erreur réseau ou serveur');
     }
   });
+  }
 });
 
 /* Star rating management */

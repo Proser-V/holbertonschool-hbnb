@@ -30,7 +30,7 @@ let photoUrls = [];
 
 function updateGallery() {
 const galleryImgs = document.querySelectorAll('.photo-gallery img');
-const defaultImg = galleryImgs[0]?.src; // assume first is default
+const defaultImg = galleryImgs[0]?.src;
 
 for (let i = 0; i < 5; i++) {
     const img = galleryImgs[i];
@@ -83,7 +83,7 @@ wrapper.appendChild(button);
 container.appendChild(wrapper);
 }
 
-// ✅ Charger dynamiquement les amenities
+// Charger dynamiquement les amenities
 async function loadAmenities() {
 try {
     const res = await apiFetch('/api/v1/amenities/', {
@@ -126,7 +126,7 @@ if (addText) {
 loadAmenities();
 });
 
-// ✅ Gestion du compteur de caractères
+// Gestion du compteur de caractères
 const inputTitle = document.getElementById('new-place-title');
 const inputDescription = document.getElementById('new-place-comment');
 const counterTitle = document.getElementById('new-place-title-counter');
@@ -140,7 +140,7 @@ inputDescription.addEventListener('input', () => {
     counterComment.textContent = `${inputDescription.value.length} / ${inputDescription.maxLength}`;
 });
 
-// ✅ Soumission du formulaire
+// Soumission du formulaire
 const form = document.getElementById('new-place-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -153,6 +153,7 @@ form.addEventListener('submit', async (e) => {
     const longitude = parseFloat(document.getElementById('new-place-longitude').value);
     const checkedAmenityIds = Array.from(document.querySelectorAll('input[name="amenities"]:checked'))
         .map(input => input.value);
+    const filteredPhotos = photoUrls.filter(url => url && url.trim() !== "");
 
     const body = {
         title,
@@ -161,7 +162,7 @@ form.addEventListener('submit', async (e) => {
         latitude,
         longitude,
         amenity_ids: checkedAmenityIds || undefined,
-        photos_url: photoUrls || undefined,
+        photos_url: filteredPhotos.length > 0 ? filteredPhotos : undefined,
     };
 
     if (latitude === null || longitude === null) {

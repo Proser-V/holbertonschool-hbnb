@@ -84,9 +84,9 @@ class PlaceList(Resource):
             elif photos_url is None:
                 photos_url = []
 
-            if not PlaceCreate.validate_image(photos_url):
-                return {'message': 'L\'URL ne pointe pas'
-                        ' vers une image valide'}, 400
+            if photos_url:
+                if not PlaceCreate.validate_image(photos_url):
+                    return {'message': 'L\'URL ne pointe pas vers une image valide'}, 400
         except ValidationError as e:
             return {'error': json.loads(e.json())}, 400
         

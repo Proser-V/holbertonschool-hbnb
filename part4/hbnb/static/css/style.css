@@ -209,6 +209,7 @@ main {
 .filter {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin: 10px auto;
   gap: 8px;
@@ -858,7 +859,7 @@ main {
 
 /* ------ global form settings ------ */
 
-.button-user-wrapper {
+.button-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -912,21 +913,23 @@ main {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-.review-container.expanding .button-user-wrapper {
+.review-container.expanding .button-wrapper {
   width: 900px;
   height: 280px;
   border-radius: 20px;
   background-color: transparent;
   border: 2px solid var(--star-color);
   margin-left: 10px;
+  transition: all 0.5s ease;
 }
 
 .review-container.expanding .button-to-review {
   color: transparent;
   opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-.review-form-user-wrapper {
+.review-form-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -947,7 +950,7 @@ main {
   margin-right: 10px;
 }
 
-.review-container.show-form .review-form-user-wrapper {
+.review-container.show-form .review-form-wrapper {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
@@ -1050,7 +1053,6 @@ main {
 #button-to-update-user {
   display: block;
   margin: 30px auto;
-  padding: 12px 30px;
   border: none;
   border-radius: 50px;
   color: var(--color-primary);
@@ -1060,6 +1062,14 @@ main {
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+#user-places-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+  margin: 20px;
+  padding-right: 30px;
 }
 
 #user-places-list-content {
@@ -1088,12 +1098,12 @@ main {
 
 /* ------ user update form settings ------ */
 
-.update-container {
+.user-update-container {
   position: relative;
   display: inline-block;
 }
 
-.update-toggle-btn {
+.button-to-update-user {
   background: transparent;
   border: none;
   color: var(--color-primary);
@@ -1105,19 +1115,21 @@ main {
   text-align: center;
 }
 
-.update-container.expanding .button-user-wrapper {
+.user-update-container.expanding .button-wrapper {
   width: 340px;
   height: 340px;
   border-radius: 20px;
-  background-color: transparent;
   border: 2px solid var(--star-color);
+  background-color: transparent;
 }
 
-.update-container.expanding .update-toggle-btn {
+.user-update-container.expanding .button-to-update-user {
   color: transparent;
+  opacity: 0;
+  transition: color 0.3s ease;
 }
 
-.form-user-wrapper {
+.form-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -1137,7 +1149,7 @@ main {
   gap: 10px;
 }
 
-.update-container.show-form .form-user-wrapper {
+.user-update-container.show-form .form-wrapper {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;

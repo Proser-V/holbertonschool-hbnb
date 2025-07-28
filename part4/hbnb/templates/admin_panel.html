@@ -91,8 +91,8 @@
                 <td>{{ place.city_name }}</td>
                 <td>{{ place.owner.first_name }} {{ place.owner.last_name }}</td>
                 <td>
-                    <button class="admin-to-place-details-btn" onclick="window.location.href='/under_construction'">Voir fiche hébergement</button>
-                    <button class="admin-delete-place-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                    <button class="admin-to-place-details-btn" data-id="{{ place.id }}">Voir fiche hébergement</button>
+                    <button class="admin-delete-place-btn" data-id="{{ place.id }}">Supprimer</button>
                 </td>
                 </tr>
                 {% endfor %}
@@ -123,8 +123,8 @@
                 <td>{{ review.place_rel.title }}</td>
                 <td>{{ review.place_rel.owner.first_name }} {{ review.place_rel.owner.last_name }}</td>
                 <td>
-                    <button class="admin-to-place-details-btn" onclick="window.location.href='/under_construction'">Voir fiche hébergement</button>
-                    <button class="admin-delete-review-btn" onclick="window.location.href='/under_construction'">Supprimer</button>
+                    <button class="admin-to-place-details-btn" data-id="{{ review.place_rel.id }}">Voir fiche hébergement</button>
+                    <button class="admin-delete-review-btn" data-id="{{ review.id }}">Supprimer</button>
                 </td>
                 </tr>
                 {% endfor %}

@@ -2,13 +2,12 @@ import { apiFetch } from './refresh_token.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('user-update-container');
-  const button = document.getElementById('toggle-update-btn');
+  const button = document.getElementById('button-to-update-user');
   const cancelBtn = document.getElementById('cancel-update-form');
   const form = document.getElementById('user-update-form');
 
   button.addEventListener('click', () => {
     container.classList.add('expanding');
-
     setTimeout(() => {
       container.classList.add('show-form');
     }, 400);
@@ -19,14 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       container.classList.remove('expanding');
     }, 400);
-  });
-
-  button.addEventListener('click', () => {
-    container.classList.add('expanding');
-    button.classList.add('hide-text');
-    setTimeout(() => {
-        container.classList.add('show-form');
-    }, 500);
   });
 
   form.addEventListener('submit', async (e) => {
