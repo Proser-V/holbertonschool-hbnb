@@ -52,19 +52,11 @@
                         <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
                     </div>
                     <div class="next_booking">
-                            {% set now = now %}
-                            {% set blocking_booking = place.bookings 
-                                | selectattr("status", "equalto", "PENDING") 
-                                | selectattr("start_date", "<=", tomorrow) 
-                                | selectattr("end_date", ">=", now) 
-                                | sort(attribute="end_date")
-                                | first %}
-
-                            {% if blocking_booking %}
-                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
-                            {% else %}
-                            Disponible immédiatement
-                            {% endif %}
+                        {% if place.available_date and place.available_date > now %}
+                            Prochaine disponibilité : {{ place.available_date.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            Disponible dès maintenant.
+                        {% endif %}
                     </div>
                     <div>
                         <p class="place-card-rating">
@@ -125,7 +117,7 @@
             <span id="close-user-modal" class="close" style="cursor:pointer; font-size:24px;">&times;</span>
             <img id="modal-user-photo" src="" alt="Photo utilisateur" style="width:100px; border-radius: 50%;">
             <h2 id="modal-user-name"></h2>
-            <button id="user-contact-button" class="message-button">Contactez-moi</button>
+            <button id="user-contact-button" class="message-button" onclick="window.location.href='/under_construction'">Contactez-moi</button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/user_popup.js') }}"></script>

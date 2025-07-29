@@ -78,13 +78,13 @@ function applyFilters() {
         } else {
             card.style.display = "none";
         }
-        const noResultMessage = document.getElementById('no-results-msg');
-        if (visibleCount === 0) {
-            noResultMessage.style.display = "block";
-        } else {
-            noResultMessage.style.display = "none";
-        }
     });
+    const noResultMessage = document.getElementById('no-results-msg');
+    if (visibleCount === 0) {
+        noResultMessage.style.display = "block";
+    } else {
+        noResultMessage.style.display = "none";
+    }
 };
 
 filterButton.addEventListener('click', async function(event) {

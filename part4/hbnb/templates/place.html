@@ -12,16 +12,16 @@
         {% if current_user.is_admin %}
         <div class="owner-section">
             Droits d'administrateur:
-            <button class="owner-btn" onclick="window.location.href='/under_construction'">Modifier les informations</button>
+            <button class="owner-btn" onclick="window.location.href='{{ url_for('web.update_place', place_id=place.id) }}'">Modifier les informations</button>
         </div>
         {% endif %}
         {% if current_user.id == place.owner.id %}
         <div class="owner-section">
             Vous êtes propriétaire de cet hébergement:
-            <button class="owner-btn" onclick="window.location.href='/under_construction'">Réservations</button>
-            <button class="owner-btn" onclick="window.location.href='/under_construction'">Modifier les informations</button>
+            <button class="owner-btn" onclick="window.location.href='{{ url_for('web.place_bookings', place_id=place.id) }}'">Réservations</button>
+            <button class="owner-btn" onclick="window.location.href='{{ url_for('web.update_place', place_id=place.id) }}'">Modifier les informations</button>
             <button class="owner-btn" onclick="window.location.href='/under_construction'">Signaler un abus</button>
-            <button class="owner-btn" onclick="window.location.href='/under_construction'">Supprimer cet hébergement</button>
+            <button class="owner-btn" id="place-deletion-btn" data-id="{{ place.id }}">Supprimer cet hébergement</button>
         </div>
         {% endif %}
         <section id="place-details">
@@ -66,19 +66,11 @@
                         <p><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
                     </div>
                     <div class="next_booking">
-                            {% set now = now %}
-                            {% set blocking_booking = place.bookings 
-                                | selectattr("status", "equalto", "PENDING") 
-                                | selectattr("start_date", "<=", tomorrow) 
-                                | selectattr("end_date", ">=", now) 
-                                | sort(attribute="end_date")
-                                | first %}
-
-                            {% if blocking_booking %}
-                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
-                            {% else %}
-                            Disponible immédiatement
-                            {% endif %}
+                        {% if place.available_date and place.available_date > now %}
+                            Prochaine disponibilité : {{ place.available_date.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            Disponible dès maintenant.
+                        {% endif %}
                     </div>
                     <div>
                         <p class="place-card-rating">
@@ -137,7 +129,7 @@
                         | rejectattr("id", "in", reviewed_booking_ids)
                         | list %}
 
-                    {% if bookings_without_review %}
+                    {% if bookings_without_review and current_user.id != place.owner.id %}
                         Vous avez séjourné chez {{ place.owner.first_name }}:
                         <div id="add-review-container" class="review-container">
                             <div class="button-wrapper" id="review-button-wrapper">
@@ -221,12 +213,13 @@
             <span id="close-user-modal" class="close" style="cursor:pointer; font-size:24px;">&times;</span>
             <img id="modal-user-photo" src="" alt="Photo utilisateur" style="width:100px; border-radius: 50%;">
             <h2 id="modal-user-name"></h2>
-            <button id="user-contact-button" class="message-button">Contactez-moi</button>
+            <button id="user-contact-button" class="message-button" onclick="window.location.href='/under_construction'">Contactez-moi</button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/user_popup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/show_photos.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/add_review.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/delete-place.js') }}"></script>
 </div>
 </body>
 <footer>

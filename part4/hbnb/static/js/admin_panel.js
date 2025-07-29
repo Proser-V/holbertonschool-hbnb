@@ -72,7 +72,7 @@ document.getElementById('admin-new-amenity-btn').addEventListener('click', () =>
 document.addEventListener("DOMContentLoaded", () => {
     const adminRegistrationForm = document.getElementById('new-amenity-registration-form');
     if (!adminRegistrationForm) return;
-    console.log("Formulaire détecté");
+
     adminRegistrationForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!confirmDelete) return;
 
             try {
-                const result = await apiFetch(`/api/v1/places/${reviewId}`, {
+                const result = await apiFetch(`/api/v1/reviews/${reviewId}`, {
                     method: "DELETE"
                 })
                 if (result.ok) {
@@ -318,6 +318,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Une erreur est survenue.");
+            }
+        });
+    });
+});
+
+/* Booking status update */
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelBookingButton = document.getElementById('admin-refresh-bookings-btn');
+
+    cancelBookingButton.addEventListener('click', async function() {
+        try {
+            const result = await apiFetch(`/api/v1/bookings`, {
+                method: "GET",
+            })
+            if (result.ok) {
+                alert("Liste de réservation mise à jour.");
+                location.reload();
+            } else {
+                const error = await result.json();
+                alert(`Erreur lors de la mise à jour' : ${error?.error || 'Inconnue'}`)
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Une erreur est survenue.");
+        }
+    });
+});
+
+/* Booking cancellation */
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelBookingButton = document.querySelectorAll('.admin-cancel-booking-btn');
+
+    cancelBookingButton.forEach(button => {
+        button.addEventListener('click', async () => {
+            const bookingId = button.getAttribute('data-id')
+            if (!bookingId) return;
+            
+            const confirmCancel = confirm("Voulez vous vraiment annuler cette réservation?");
+            if (!confirmCancel) return;
+
+            try {
+                const result = await apiFetch(`/api/v1/bookings/${bookingId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ "status": "CANCELLED" })
+                })
+                if (result.ok) {
+                    alert("Réservation annulée avec succès");
+                    location.reload();
+                } else {
+                    const error = await result.json();
+                    alert(`Erreur lors de l'annulation' : ${error?.error || 'Inconnue'}`)
                 }
             } catch (err) {
                 console.error(err);

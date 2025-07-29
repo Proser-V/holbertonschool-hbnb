@@ -47,44 +47,36 @@
                             alt="{{ place.title }}"
                             class="place-front-pic">
                         <div class="place-card-content">
-                        <h2 class="place-card-title">{{ place.title }}</h2>
-                        <p class="place-card-price" data-price="{{ place.price }}"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
-                        <p class="place-card-rating">
-                            {% set rating = place.rating or 0 %}
-                            {% set note = ((rating * 2) | round) / 2 %}
-                            {% if rating == 0 %}
-                            <p>Pas encore de note</p>
-                            {% else %}
-                            {% for i in range(1, 6) %}
-                                {% if i <= note %}
-                                <span class="star">★</span>
-                                {% elif i - 0.5 == note %}
-                                <span class="star">⯪</span>
+                            <h2 class="place-card-title">{{ place.title }}</h2>
+                            <p class="place-card-price" data-price="{{ place.price }}"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                            <p class="place-card-rating">
+                                {% set rating = place.rating or 0 %}
+                                {% set note = ((rating * 2) | round) / 2 %}
+                                {% if rating == 0 %}
+                                    <p>Pas encore de note</p>
                                 {% else %}
-                                <span class="star">☆</span>
+                                    {% for i in range(1, 6) %}
+                                        {% if i <= note %}
+                                        <span class="star">★</span>
+                                        {% elif i - 0.5 == note %}
+                                        <span class="star">⯪</span>
+                                        {% else %}
+                                        <span class="star">☆</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="place-card-rating-value">{{ note }}</span>
                                 {% endif %}
-                            {% endfor %}
-                            <span class="place-card-rating-value">{{ note }}</span>
-                            {% endif %}
-                        </p>
-                        <div class="place-location" data-lat="{{ place.latitude }}" data-lon="{{ place.longitude}}">
-                            <p class="location-name">{{ place.city_name }}</p>
-                        </div>
-                        <div class="next_booking">
-                            {% set now = now %}
-                            {% set blocking_booking = place.bookings 
-                                | selectattr("status", "equalto", "PENDING") 
-                                | selectattr("start_date", "<=", tomorrow) 
-                                | selectattr("end_date", ">=", now) 
-                                | sort(attribute="end_date")
-                                | first %}
-
-                            {% if blocking_booking %}
-                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
-                            {% else %}
-                            Disponible immédiatement
-                            {% endif %}
-                        </div>
+                            </p>
+                            <div class="place-location" data-lat="{{ place.latitude }}" data-lon="{{ place.longitude}}">
+                                <p class="location-name">{{ place.city_name }}</p>
+                            </div>
+                            <div class="next_booking">
+                                {% if place.available_date and place.available_date > now %}
+                                    Prochaine disponibilité : {{ place.available_date.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    Disponible dès maintenant.
+                                {% endif %}
+                            </div>
                         </div>
                     </a>
                     {% endfor %}

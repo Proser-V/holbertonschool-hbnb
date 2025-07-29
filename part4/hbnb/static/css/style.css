@@ -259,7 +259,8 @@ main {
 }
 
 #admin-new-amenity-btn,
-#admin-new-admin-btn {
+#admin-new-admin-btn,
+#admin-refresh-bookings-btn {
   margin-top: 5px;
   margin-bottom: 5px;
   width: 99%;
@@ -620,6 +621,39 @@ main {
   margin-left: 10px;
 }
 
+/* ------ place's bookings list settings ------ */
+
+#all-bookings-list p {
+  margin: 50px 0 150px 0;
+}
+
+#all-bookings-list table {
+  margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+#all-bookings-list th,
+#all-bookings-list td {
+  border: 1px solid var(--card-border-color);
+  padding: 5px;
+}
+
+#all-bookings-list th {
+  text-align: center;
+}
+
+#all-bookings-list thead {
+  background-color: #f5f5f5;
+}
+
+#all-bookings-list tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
 /* ------ amenities list settings ------ */
 
 #place-list-amenities {
@@ -713,9 +747,10 @@ main {
   margin-top: 5px;
 }
 
-/* ------ place creation form settings ------ */
+/* ------ place creation/update form settings ------ */
 
-.new-place-main-title {
+.new-place-main-title,
+.update-place-main-title {
   margin-bottom: 20px;
 }
 
@@ -745,7 +780,8 @@ main {
   cursor: pointer;
 }
 
-.photo-url-inputs {
+.photo-url-inputs,
+.update-photo-url-inputs {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -754,13 +790,15 @@ main {
   margin-inline: auto;
 }
 
-.photo-url-input {
+.photo-url-input,
+.update-photo-url-input {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.photo-url-input input {
+.photo-url-input input,
+.update-photo-url-input input {
   flex: 1;
   padding: 8px;
   font-size: 14px;
@@ -769,16 +807,18 @@ main {
   margin: 5px 0;
 }
 
-.photo-url-input button {
+.photo-url-input button,
+.update-photo-url-input button {
   padding: 8px 12px;
-  background-color: #00b894;
-  color: white;
+  background-color: var(--star-color);
+  color: var(--color-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.new-place-informations {
+.new-place-informations,
+.update-place-informations {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -787,7 +827,8 @@ main {
   font-size: 14px;
 }
 
-.new-place-informations label {
+.new-place-informations label,
+.update-place-informations label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -801,7 +842,9 @@ main {
 }
 
 .new-place-informations input:not([type="checkbox"]),
-.new-place-informations textarea {
+.new-place-informations textarea,
+.update-place-informations input:not([type="checkbox"]),
+.update-place-informations textarea {
   flex: 1;
   padding: 8px;
   font-size: 14px;
@@ -811,7 +854,8 @@ main {
   box-sizing: border-box;
 }
 
-#new-place-form p {
+#new-place-form p,
+#update-place-form p {
   margin: 20px 0;
 }
 
@@ -826,14 +870,16 @@ main {
   user-select: none;
 }
 
-.new-place-amenities-checkbox {
+.new-place-amenities-checkbox,
+.update-place-amenities-checkbox {
   display: grid;
   grid-template-columns: 5fr 5fr 5fr 5fr 5fr;
   gap: 12px;
   padding: 10px 0;
 }
 
-.new-place-amenity-item {
+.new-place-amenity-item,
+.update-place-amenity-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -845,7 +891,8 @@ main {
   width: 150px !important;
 }
 
-.new-place-information input[type="checkbox"] {
+.new-place-information input[type="checkbox"],
+.update-place-information input[type="checkbox"] {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
@@ -1230,6 +1277,25 @@ main {
   right: 8px;
   font-size: 24px;
   cursor: pointer;
+}
+
+#user-contact-button {
+  display: inline-block;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  text-decoration: inherit;
+  margin: 20px auto 0;
+  display: block;
+  width: 270px;
+  text-align: center;
 }
 
 .show-all-reviews-btn {

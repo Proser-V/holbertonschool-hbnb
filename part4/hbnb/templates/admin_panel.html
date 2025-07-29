@@ -133,6 +133,7 @@
         </div>
         <button id="open-admin-panel-booking">Réservations</button>
         <div id="admin-panel-booking-wrapper" class="admin-panel-booking-wrapper">
+            <button id="admin-refresh-bookings-btn">Mettre à jour les réservations</button>
             <table>
             <thead>
                 <tr>
@@ -151,12 +152,12 @@
                 <td>{{ booking.id }}</td>
                 <td>{{ booking.user_rel.first_name }} {{ booking.user_rel.last_name }}</td>
                 <td>{{ booking.place_rel.title }}</td>
-                <td>{{ booking.start_date }}</td>
-                <td>{{ booking.end_date }}</td>
+                <td>{{ booking.start_date.strftime("%d/%m/%Y") }}</td>
+                <td>{{ booking.end_date.strftime("%d/%m/%Y") }}</td>
                 <td>{{ booking.status }}</td>
                 <td>
                     {% if booking.status == 'PENDING' %}
-                    <button class="admin-cancel-booking-btn">Annuler la réservation</button>
+                    <button class="admin-cancel-booking-btn" data-id="{{ booking.id }}">Annuler la réservation</button>
                     {% endif %}
                 </td>
                 </tr>
@@ -211,6 +212,8 @@
             </table>
         </div>
     </div>
+    <button id="scrollToTopBtn" title="Remonter en haut">⇧</button>
+    <script src="{{ url_for('static', filename='js/scroll-top.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/admin_panel.js') }}"></script>
 </body>
 <footer>

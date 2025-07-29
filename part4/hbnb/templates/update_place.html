@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="{{ url_for('web.index') }}">
+                <img src = "{{ url_for('static', filename='images/logo.png') }}" alt="HBnB logo">
+            </a>
+        </div>
+        <nav id="user-nav">
+                <button class="back-btn" onclick="history.back()">Retour vers la page de l'hébergement</button>
+        </nav>
+    </header>
+    <main>
+        <section id="update-place">
+            <h1 class="update-place-main-title">Votre logement</h1>
+            <form id="update-place-form" class="update-place-form">
+                <p>Preview de la gallerie photo de votre logement :</p>
+                <label class="photo-gallery">
+                    {% set default_img = url_for('static', filename="images/default-place-grey.png") %}
+                    <img class="place-photo-main" src="{{ place.photos_url[0] }}" alt="Photo principale">
+                    <img class="place-photo-little little-1" src="{{ place.photos_url[1] }}" alt="Photo 1">
+                    <img class="place-photo-little little-2" src="{{ place.photos_url[2] }}" alt="Photo 2">
+                    <img class="place-photo-little little-3" src="{{ place.photos_url[3] }}" alt="Photo 3">
+                    <img class="place-photo-little little-4" src="{{ place.photos_url[4] }}" alt="Photo 4">
+                </label>
+                <div class="add-photo-wrapper">
+                    <input type="hidden" id="existing-photo-urls" value='{{ place.photos_url | tojson }}'>
+                    <button id="add-photo-btn" class="add-new-photos-btn" type="button">
+                        <svg class="plus-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 11H13V5H11V11H5V13H11V19H13V13H19V11Z">
+                        </svg>
+                    </button>
+                    <span class="add-photo-text">Ajouter une photo</span>
+                <div id="update-photo-url-inputs"></div>
+                <div class="update-place-informations">
+                    <label>
+                        <span class="label-text">Nom de votre hébergement :</span>
+                        <input id="update-place-title" type="text" name="title" maxlength="50" value="{{ place.title }}">
+                    </label>
+                    <div class="char-counter" id="update-place-title-counter">0 / 50</div>
+                    <label>
+                        <span class="label-text">Courte descrpition de votre hébergement :</span>
+                        <textarea id="update-place-comment" name="comment" rows="6" maxlength="1000">{{ place.description }}</textarea>
+                    </label>
+                    <div class="char-counter" id="update-place-comment-counter">0 / 1000</div>
+                    <label>
+                        <span class="label-text">Prix par nuit dans votre hébergement :</span>
+                        <input type="text" name="price" id="update-place-price" value="{{ place.price }}">
+                    </label>
+                    <label>
+                        <span class="label-text">Adresse :</span>
+                        <input type="text" id="new-place-address" name="address" placeholder="Entrez une adresse">
+                    </label>
+                    <input type="hidden" name="latitude" id="update-place-latitude">
+                    <input type="hidden" name="longitude" id="update-place-longitude">
+                    <input type="hidden" id="current-place-id" value="{{ place.id }}">
+                    <span class="label-text">Les équipements disponibles :</span>
+                    <input type="hidden" id="current-amenities" value='{{ place.amenity_ids | tojson }}'>
+                    <div id="update-place-amenities-list" class="update-place-amenities-checkbox"></div>
+                </div>
+                <button class="login-validation-button" type="submit">Mettre mon logement à jour</button>
+            </form>
+        </section>
+    </main>
+    <script type="module" src="{{ url_for('static', filename='js/update_place.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/new_place_adress.js') }}"></script>
+</div>
+</body>
+<footer>
+    <div class="footer-content">
+        <p>
+            &copy; 2025 HBnB. Fait avec ❤️ à Holberton School Dijon par 
+            <a href="https://github.com/Proser-V">Valentin DUMONT</a> et <a href="https://github.com/loufi84">Quentin LATASTE</a>.
+        </p>
+    </div>
+</footer>
+</html>

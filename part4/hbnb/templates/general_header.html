@@ -11,6 +11,7 @@
                     <a href="{{ url_for('web.admin_panel') }}" id="admin-link">Gestion administrateur</a>
                     <span class="separation">|</span>
                 </div>
+            {% endif %}
             <div class ="user-nav-inner">
                 <a href="{{ url_for('web.user_profile', user_id=current_user.id) }}" class="user-logged">
                     {{ current_user.first_name }}
@@ -19,7 +20,6 @@
                 <span class="separation">|</span>
                 <a href="{{ url_for('web.logout') }}" id="logout-link">Déconnexion</a>
             </div>
-            {% endif %}
         {% else %}
             <div class="header-auth">
                 <div class="header-registration">

@@ -8,6 +8,16 @@ from datetime import datetime, timezone, timedelta
 
 bp_web = Blueprint('web', __name__)
 
+def get_first_available_date(bookings, tomorow):
+    for booking in sorted(
+        [booking for booking in bookings if booking.status == "PENDING"],
+        key=lambda booking: booking.start_date
+    ):
+        if booking.start_date > tomorow:
+            return tomorow
+        if booking.end_date >= tomorow:
+            tomorow = booking.end_date + timedelta(days=1)
+    return tomorow
 
 @bp_web.route('/')
 def index():
@@ -24,43 +34,19 @@ def index():
     current_user = None
     if user_id:
         current_user = facade.get_user(user_id)
+
+    for place in places:
+        place.available_date = get_first_available_date(place.bookings, tomorrow)
+
     return render_template('index.html',
                            places_list=places,
                            now=now,
                            tomorrow=tomorrow,
                            current_user=current_user)
 
-
-@bp_web.route('/place/<place_id>')
-def show_place(place_id):
-    try:
-        UUID(place_id)
-    except ValueError:
-        abort(400, description="Invalid UUID")
-    try:
-        verify_jwt_in_request()
-        user_id = get_jwt_identity()
-    except:
-        user_id = None
-
-    place = facade.get_place(place_id)
-    now = datetime.now(timezone.utc).replace(tzinfo=None)
-    tomorrow = now + timedelta(days=1)
-    if not place:
-        abort(404, description="Place not found")
-
-    current_user = None
-    if user_id:
-        current_user = facade.get_user(user_id)
-
-    return render_template("place.html",
-                           place=place,
-                           photos_url=place.photos_url or [],
-                           reviews_list=place.reviews or [],
-                           now=now,
-                           tomorrow=tomorrow,
-                           current_user=current_user)
-
+@bp_web.route('/under_construction')
+def under_construction():
+    return render_template("under_construction.html")
 
 @bp_web.route('/login')
 def login():
@@ -141,6 +127,7 @@ def new_booking(place_id):
     tomorrow = now + timedelta(days=1)
 
     ranges = [{"start_date": booking.start_date.strftime("%Y-%m-%d"), "end_date": booking.end_date.strftime("%Y-%m-%d")} for booking in place.bookings if booking.status != 'CANCELLED']
+    place.available_date = get_first_available_date(place.bookings, tomorrow)
 
     return render_template("booking.html",
                            place=place,
@@ -184,6 +171,24 @@ def add_place():
 
     return render_template("add_place.html",
                            current_user=current_user)
+
+@bp_web.route('/place/<place_id>/update')
+def update_place(place_id):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    place = facade.get_place(place_id)
+
+    return render_template("update_place.html",
+                           current_user=current_user,
+                           place=place)
 
 @bp_web.route('/place/<place_id>/show_photos')
 def show_photos(place_id):
@@ -234,6 +239,59 @@ def show_reviews(place_id):
                            place=place,
                            current_user=current_user)
 
-@bp_web.route('/under_construction')
-def under_construction():
-    return render_template("under_construction.html")
+@bp_web.route('/place/<place_id>')
+def show_place(place_id):
+    try:
+        UUID(place_id)
+    except ValueError:
+        abort(400, description="Invalid UUID")
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    place = facade.get_place(place_id)
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    tomorrow = now + timedelta(days=1)
+    if not place:
+        abort(404, description="Place not found")
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    place.available_date = get_first_available_date(place.bookings, tomorrow)
+
+    return render_template("place.html",
+                           place=place,
+                           photos_url=place.photos_url or [],
+                           reviews_list=place.reviews or [],
+                           now=now,
+                           tomorrow=tomorrow,
+                           current_user=current_user)
+
+@bp_web.route('/place/<place_id>/bookings')
+def place_bookings(place_id):
+    try:
+        UUID(place_id)
+    except ValueError:
+        abort(400, description="Invalid UUID")
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+    except:
+        user_id = None
+
+    place = facade.get_place(place_id)
+    if not place:
+        abort(404, description="Place not found")
+
+    current_user = None
+    if user_id:
+        current_user = facade.get_user(user_id)
+
+    return render_template("place-all-bookings.html",
+                           place=place,
+                           bookings=place.bookings,
+                           current_user=current_user)
