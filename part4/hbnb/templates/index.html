@@ -48,7 +48,7 @@
                             class="place-front-pic">
                         <div class="place-card-content">
                             <h2 class="place-card-title">{{ place.title }}</h2>
-                            <p class="place-card-price" data-price="{{ place.price }}"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                            <p class="place-card-price" data-price="{{ place.price }}"><strong>{{ "%.2f"|format(place.price) }}</strong> €/nuit</p>
                             <p class="place-card-rating">
                                 {% set rating = place.rating or 0 %}
                                 {% set note = ((rating * 2) | round) / 2 %}

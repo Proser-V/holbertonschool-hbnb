@@ -500,10 +500,7 @@ main {
 .place-card-price {
   font-size: 125%;
 }
-.place-card-price bold {
-  font-weight: bold;
-}
-
+.place-card-price strong,
 .place-card-rating-value {
   font-weight: bold;
 }
