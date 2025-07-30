@@ -259,7 +259,8 @@ class HBnBFacade:
         amenity = Amenity(
             id=str(uuid.uuid4()),
             name=amenity_in.name,
-            description=amenity_in.description
+            description=amenity_in.description,
+            icon_file=amenity_in.icon_file
         )
 
         self.amenity_repo.add(amenity)

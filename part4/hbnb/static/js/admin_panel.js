@@ -78,13 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const name = document.getElementById('new-amenity-name').value;
         const description = document.getElementById('new-amenity-description').value;
-        let icon_file = document.getElementById('new-amenity-icon-file').value;
-        if (icon_file === "" || icon_file.toLowerCase() === "none") {
-            icon_file = null;
-        }
+        const icon_file_input = document.getElementById('new-amenity-icon-file').value;
+        const icon_file = icon_file_input !== "" ? icon_file_input: "default-amenities.png"
 
         const body = { name, description, icon_file };
-        console.log(JSON.stringify(body));
+
         const res = await apiFetch('/api/v1/amenities', {
             method: 'POST',
             body: JSON.stringify(body)
@@ -129,6 +127,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+/* Amenity update */
+const modal = document.getElementById('amenity-modal');
+const overlay = document.getElementById('amenity-modal-overlay');
+const closeModalBtn = document.getElementById('close-amenity-modal');
+
+let currentAmenityId = null;
+
+function openModalWithData(button) {
+    currentAmenityId = button.getAttribute('data-id');
+    const name = button.getAttribute('data-name');
+    const description = button.getAttribute('data-description');
+    const icon = button.getAttribute('data-icon');
+
+    const modalElement = button.closest('td').querySelector('.amenity-modal');
+    if (!modalElement) return;
+
+
+    modalElement.querySelector('.update-amenity-name').value = name || '';
+    modalElement.querySelector('.update-amenity-description').value = description || '';
+    modalElement.querySelector('.update-amenity-icon-file').value = icon || '';
+
+    modalElement.classList.remove('hidden');
+    modalElement.previousElementSibling.classList.remove('hidden');
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    overlay.classList.add('hidden');
+    currentAmenityId = null;
+}
+
+document.querySelectorAll(".admin-update-amenity-btn").forEach(button => {
+    button.addEventListener("click", event => {
+        event.preventDefault();
+        openModalWithData(button);
+    });
+});
+
+closeModalBtn.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+
+document.querySelectorAll('.submit-amenity-update').forEach(button => {
+    button.addEventListener('click', async () => {
+        const parentModal = button.closest('.amenity-modal');
+        const amenityName = parentModal.querySelector('.update-amenity-name').value || undefined;
+        const amenityDescription = parentModal.querySelector('.update-amenity-description').value || undefined;
+        let amenityIcon = parentModal.querySelector('.update-amenity-icon-file').value || undefined;
+
+        if (amenityIcon === '' || amenityIcon.toLowerCase() === 'none') {
+            amenityIcon = null;
+        }
+
+        const amenityId = button.closest('td').querySelector('.admin-update-amenity-btn')?.getAttribute('data-id')
+            || currentAmenityId;
+
+        try {
+            const result = await apiFetch(`/api/v1/amenities/${amenityId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: amenityName,
+                    description: amenityDescription,
+                    icon_file: amenityIcon
+                })
+            });
+
+            if (result.ok) {
+                alert("Équipement modifié avec succès.");
+                location.reload();
+            } else {
+                const error = await result.json();
+                alert(`Erreur lors de la mise à jour : ${error?.error || 'Inconnue'}`);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Une erreur est survenue.");
+        }
+    })
+});
+
 
 /* User deletion */
 document.addEventListener('DOMContentLoaded', () => {
@@ -194,10 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     moderateUserButton.forEach(button => {
         button.addEventListener('click', async () => {
-            const userId = button.getAttribute('data-id')
-            const userIsActive = button.getAttribute('data-is-active')
+            const userId = button.getAttribute('data-id');
+            const userIsActive = button.getAttribute('data-is-active') === "True";
             if (!userId) return;
-            if (userIsActive == true) {
+            if (userIsActive) {
                 try {
                     const body = { "is_active": false };
                     const result = await apiFetch(`/api/v1/users/${userId}/moderate`, {

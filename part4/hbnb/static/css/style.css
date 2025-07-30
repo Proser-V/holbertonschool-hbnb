@@ -204,6 +204,7 @@ main {
   width: 100%;
   top: 100%;
   left: 0;
+  cursor: pointer;
 }
 
 .filter {
@@ -369,6 +370,88 @@ main {
 .admin-panel-booking-wrapper tbody tr:nth-child(even),
 .admin-panel-amenity-wrapper tbody tr:nth-child(even) {
   background-color: #fafafa;
+}
+
+.admin-delete-amenity-btn,
+.admin-update-amenity-btn,
+.admin-cancel-booking-btn,
+.admin-to-place-details-btn,
+.admin-delete-review-btn,
+.admin-delete-place-btn,
+.admin-moderate-user-btn,
+.admin-delete-user-btn,
+.admin-to-user-profile-btn {
+  padding: 5px;
+}
+
+#amenity-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--overlay-color);
+  z-index: 999;
+}
+
+#amenity-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-primary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  z-index: 1000;
+}
+
+.amenity-modal {
+  background-color: var(--color-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  position: relative;
+  text-align: center;
+}
+
+.amenity-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+#close-amenity-modal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.update-amenity-name,
+.update-amenity-description,
+.update-amenity-icon-file {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid var(--card-border-color);
+  border-radius: 5px;
+  margin: 5px 0;
+  max-width: 400px;
+  min-width: 400px;
+}
+
+.submit-amenity-update {
+  padding: 8px 12px;
+  background-color: var(--star-color);
+  color: var(--color-primary);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 /* ------ owner section settings ------ */
@@ -684,7 +767,7 @@ main {
     padding: 6px 12px;
     border-radius: 10px;
     background: var(--color-primary);
-    width: 150px;
+    height: 35px;
 }
 
 .amenity-icon {
@@ -745,6 +828,10 @@ main {
 .review-comment{
   font-style: italic;
   margin-top: 5px;
+}
+.no-review-text {
+  margin-top: 50px;
+  margin-bottom: 150px;
 }
 
 /* ------ place creation/update form settings ------ */
@@ -889,6 +976,7 @@ main {
   background: var(--color-primary);
   cursor: pointer;
   width: 150px !important;
+  height: 35px !important;
 }
 
 .new-place-information input[type="checkbox"],
@@ -1140,6 +1228,62 @@ main {
   margin: 20px auto 0;
   display: block;
   width: 270px;
+  text-align: center;
+}
+
+#user-bookings-list h2,
+#user-reviews-list h2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#user-bookings-list p,
+#user-reviews-list p {
+  margin: 50px 0 150px 0;
+}
+
+#user-bookings-list table,
+#user-reviews-list table {
+  margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+#user-bookings-list th,
+#user-bookings-list td,
+#user-reviews-list th,
+#user-reviews-list td {
+  border: 1px solid var(--card-border-color);
+  padding: 5px;
+}
+
+#user-bookings-list th,
+#user-reviews-list th {
+  text-align: center;
+}
+
+#user-bookings-list thead,
+#user-reviews-list thead {
+  background-color: #f5f5f5;
+}
+
+#user-bookings-list tbody tr:nth-child(even),
+#user-reviews-list tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.place-owner-contact-btn {
+  background: transparent;
+  border: none;
+  color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 

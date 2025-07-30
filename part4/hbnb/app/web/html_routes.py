@@ -8,16 +8,16 @@ from datetime import datetime, timezone, timedelta
 
 bp_web = Blueprint('web', __name__)
 
-def get_first_available_date(bookings, tomorow):
-    for booking in sorted(
-        [booking for booking in bookings if booking.status == "PENDING"],
-        key=lambda booking: booking.start_date
-    ):
-        if booking.start_date > tomorow:
-            return tomorow
-        if booking.end_date >= tomorow:
-            tomorow = booking.end_date + timedelta(days=1)
-    return tomorow
+def get_first_available_date(bookings, now):
+    pending_bookings = sorted((b for b in bookings if b.status == "PENDING"), key=lambda b: b.start_date)
+
+    current = now
+    for booking in pending_bookings:
+        if booking.start_date > current:
+            return current
+        current = max(current, booking.end_date + timedelta(days=1))
+
+    return current
 
 @bp_web.route('/')
 def index():
@@ -106,6 +106,9 @@ def user_profile(user_id):
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     tomorrow = now + timedelta(days=1)
     user = facade.get_user(user_id)
+
+    for place in user.places:
+        place.available_date = get_first_available_date(place.bookings, tomorrow)
 
     return render_template("user_profile.html", user=user, now=now, tomorrow=tomorrow)
 

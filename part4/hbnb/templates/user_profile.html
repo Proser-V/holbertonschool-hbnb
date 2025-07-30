@@ -82,54 +82,124 @@
                             alt="{{ place.title }}"
                             class="place-front-pic">
                         <div class="place-card-content">
-                        <h2 class="place-card-title">{{ place.title }}</h2>
-                        <p class="place-card-price"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
-                        <p class="place-card-rating">
-                            {% set rating = place.rating or 0 %}
-                            {% set note = ((rating * 2) | round) / 2 %}
-                            {% if rating == 0 %}
-                            <p>Pas encore de note</p>
-                            {% else %}
-                            {% for i in range(1, 6) %}
-                                {% if i <= note %}
-                                <span class="star">★</span>
-                                {% elif i - 0.5 == note %}
-                                <span class="star">⯪</span>
+                            <h2 class="place-card-title">{{ place.title }}</h2>
+                            <p class="place-card-price"><bold>{{ "%.2f"|format(place.price) }}</bold> €/nuit</p>
+                            <p class="place-card-rating">
+                                {% set rating = place.rating or 0 %}
+                                {% set note = ((rating * 2) | round) / 2 %}
+                                {% if rating == 0 %}
+                                <p>Pas encore de note</p>
                                 {% else %}
-                                <span class="star">☆</span>
+                                {% for i in range(1, 6) %}
+                                    {% if i <= note %}
+                                    <span class="star">★</span>
+                                    {% elif i - 0.5 == note %}
+                                    <span class="star">⯪</span>
+                                    {% else %}
+                                    <span class="star">☆</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="place-card-rating-value">{{ note }}</span>
                                 {% endif %}
-                            {% endfor %}
-                            <span class="place-card-rating-value">{{ note }}</span>
-                            {% endif %}
-                        </p>
-                        <div class="place-location">
-                            <p class="location-name">{{ place.city_name }}</p>
-                        </div>
-                        <div class="next_booking">
-                            {% set now = now %}
-                            {% set blocking_booking = place.bookings 
-                                | selectattr("status", "equalto", "PENDING") 
-                                | selectattr("start_date", "<=", tomorrow) 
-                                | selectattr("end_date", ">=", now) 
-                                | sort(attribute="end_date")
-                                | first %}
-
-                            {% if blocking_booking %}
-                            Prochaine disponibilité : {{ blocking_booking.end_date.strftime("%d/%m/%Y") }}
-                            {% else %}
-                            Disponible immédiatement
-                            {% endif %}
-                        </div>
+                            </p>
+                            <div class="place-location">
+                                <p class="location-name">{{ place.city_name }}</p>
+                            </div>
+                            <div class="next_booking">
+                                {% if place.available_date and place.available_date > now %}
+                                    Prochaine disponibilité : {{ place.available_date.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    Disponible dès maintenant.
+                                {% endif %}
+                            </div>
                         </div>
                     </a>
                     {% endfor %}
+                </div>
+                {% else %}
+                <div id="user-places-list-content">
+                    <p>Vous n'avez pas encore enregistré de logement.</p>
+                {% endif %}
+                <a class="button-to-add-place" href="{{ url_for('web.add_place') }}">Ajouter un logement à louer</a>
             </div>
+        </section>
+        <section id="user-bookings">
+        <div id="user-bookings-list">
+            <h2>Liste de vos réservations</h2>
+            {% set bookings = user.bookings %}
+            {% set pending_bookings = bookings | selectattr("status", "equalto", "PENDING") | list %}
+            {% if pending_bookings %}
+                <table>
+                <thead>
+                    <tr>
+                        <th>Hébergement</th>
+                        <th>Localisation</th>
+                        <th>Hôte</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th>Nombre de nuits</th>
+                        <th>Prix total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for booking in pending_bookings %}
+                    <tr>
+                    <td>{{ booking.place_rel.title }}</td>
+                    <td>{{ booking.place_rel.city_name }}</td>
+                    <td>{{ booking.place_rel.owner.first_name}} {{ booking.place_rel.owner.last_name}}</td>
+                    <td>{{ booking.start_date.strftime("%d/%m/%Y") }}</td>
+                    <td>{{ booking.end_date.strftime("%d/%m/%Y") }}</td>
+                    <td>
+                        {% set nights = (booking.end_date - booking.start_date).days %}
+                        {{ nights }} nuit{% if nights > 1 %}s{% endif %}
+                    </td>
+                    <td>
+                        {% set total_price = nights * booking.place_rel.price %}
+                        {{ total_price }} €
+                    </td>
+                    <td>
+                        <button class="place-owner-contact-btn" onclick="window.location.href='/under_construction'">Contactez l'hôte ici</button>
+                    </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
             {% else %}
-            <div id="user-places-list-content">
-                <p>Vous n'avez pas encore enregistré de logement.</p>
+                <p>Vous n'avez pas encore de réservation en cours.</p>
             {% endif %}
-            <a class="button-to-add-place" href="{{ url_for('web.add_place') }}">Ajouter un logement à louer</a>
-            </div>
+        </div>
+        </section>
+        <section id="user-reviews">
+        <div id="user-reviews-list">
+            <h2>Les avis que vous avez laissés</h2>
+            {% if user.reviews %}
+                <table>
+                <thead>
+                    <tr>
+                        <th>Hébergement</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th>Votre avis</th>
+                        <th>Votre note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for review in user.reviews %}
+                    <tr>
+                    <td>{{ review.place_rel.title }}</td>
+                    <td>{{ review.booking_rel.start_date.strftime("%d/%m/%Y") }}</td>
+                    <td>{{ review.booking_rel.end_date.strftime("%d/%m/%Y") }}</td>
+                    <td>{{ review.comment }}</td>
+                    <td>{{ review.rating }} / 5</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+                <p>Vous n'avez pas encore laissé d'avis.</p>
+            {% endif %}
+        </div>
         </section>
     </main>
     <script type="module" src="{{ url_for('static', filename='js/user_update.js') }}"></script>

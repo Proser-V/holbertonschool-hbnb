@@ -54,13 +54,13 @@ function applyFilters() {
     };
     const lat = parseFloat(latInput.value);
     const lon = parseFloat(lonInput.value);
+    let visibleCount = 0;
 
     placeCards.forEach(card => {
         const price = parseFloat(card.querySelector(".place-card-price").dataset.price);
         const locationDiv = card.querySelector(".place-location");
         const latPlace = parseFloat(locationDiv.dataset.lat);
         const lonPlace = parseFloat(locationDiv.dataset.lon);
-        let visibleCount = 0;
 
         let priceOk = true;
         if (minPrice !== undefined && price < minPrice) priceOk = false;

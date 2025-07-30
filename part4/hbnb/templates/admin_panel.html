@@ -187,7 +187,24 @@
                 <td>{{ amenity.icon_file }}</td>
                 <td><img class="admin-panel-amenity-icon" src="{{ url_for('static', filename='icons/' ~ amenity.icon_file) }}"></td>
                 <td>
-                    <button class="admin-update-amenity-btn" onclick="window.location.href='/under_construction'">Changer</button>
+                    <button
+                    class="admin-update-amenity-btn"
+                    data-id="{{ amenity.id }}"
+                    data-name="{{ amenity.name }}"
+                    data-description="{{ amenity.description }}"
+                    data-icon="{{ amenity.icon_file }}">Mettre à jour
+                </button>
+                    <div id="amenity-modal-overlay" class="hidden"></div>
+                    <div id="amenity-modal" class="amenity-modal hidden">
+                        <div class="amenity-modal-content">
+                            <h3>Mise à jour de l'équipement : {{ amenity.name }}</h3>
+                            <span id="close-amenity-modal" class="close" style="cursor:pointer; font-size:24px;">&times;</span>
+                            <input type="name" class="update-amenity-name" name="name">
+                            <textarea class="update-amenity-description" name="description" rows="6"></textarea>
+                            <input type="text" class="update-amenity-icon-file" name="icon_file">
+                            <button class="submit-amenity-update">Valider</button>
+                        </div>
+                    </div>
                     <button class="admin-delete-amenity-btn" data-id="{{ amenity.id }}">Supprimer</button>
                 </td>
                 </tr>

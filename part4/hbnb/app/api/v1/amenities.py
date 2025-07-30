@@ -42,7 +42,7 @@ class AmenityList(Resource):
             amenity_data = AmenityCreate(**request.json)
         except ValidationError as e:
             return {"error": json.loads(e.json())}, 400
-
+        print("Reçu :", amenity_data)
         if facade.get_amenity_by_name(amenity_data.name):
             return {"error": "This amenity already exists"}, 400
         if amenity_data.icon_file is None:
