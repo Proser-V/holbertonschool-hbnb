@@ -29,6 +29,11 @@ html {
   display: none !important;
 }
 
+.invalid {
+  border: 2px solid var(--star-color);
+  background-color: #ffe6e6;
+}
+
 .under-construction {
   text-align: center;
   margin-top: 10px;

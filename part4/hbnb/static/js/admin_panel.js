@@ -1,5 +1,6 @@
 import { apiFetch } from "./refresh_token.js";
 
+/* Toggle admin panel sections visibility when corresponding buttons are clicked */
 document.getElementById('open-admin-panel-user').addEventListener('click', () => {
     const panel = document.getElementById('admin-panel');
     panel.classList.toggle('expanding-user');
@@ -31,29 +32,35 @@ document.getElementById('admin-new-admin-btn').addEventListener('click', () => {
     });
 
 /* New admin registration */
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Get the admin registration form element
     const adminRegistrationForm = document.getElementById('admin-registration-form');
     if (!adminRegistrationForm) return;
 
+    // Listen for the form submit event
     adminRegistrationForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission (page reload)
 
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const first_name = document.getElementById('first_name').value;
         const last_name = document.getElementById('last_name').value;
         let photo_url = document.getElementById('new_user_photo_url').value.trim();
+        // Set photo_url to null if empty or equals "none"
         if (photo_url === "" || photo_url.toLowerCase() === "none") {
             photo_url = null;
         }
 
         const body = { first_name, last_name, email, password, photo_url };
 
+        // Send POST request to create the new admin user
         const res = await apiFetch('/api/v1/users/admin_creation', {
             method: 'POST',
             body: JSON.stringify(body)
         });
 
+        // On success, reload page and alert user
         if (res.ok) {
             location.reload();
             alert(`Administrateur créé.`)
@@ -63,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+/* Toggle new amenity creation form visibility */
 document.getElementById('admin-new-amenity-btn').addEventListener('click', () => {
     const panel = document.getElementById('admin-panel');
     panel.classList.toggle('expanding-amenity-creation');
@@ -70,26 +78,30 @@ document.getElementById('admin-new-amenity-btn').addEventListener('click', () =>
 
 /* New amenity registration */
 document.addEventListener("DOMContentLoaded", () => {
+    // Get the new amenity registration form element
     const adminRegistrationForm = document.getElementById('new-amenity-registration-form');
     if (!adminRegistrationForm) return;
 
+    // Listen for the form submit event
     adminRegistrationForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission (page reload)
 
         const name = document.getElementById('new-amenity-name').value;
         const description = document.getElementById('new-amenity-description').value;
         const icon_file_input = document.getElementById('new-amenity-icon-file').value;
+        // Use default icon if no icon file was provided
         const icon_file = icon_file_input !== "" ? icon_file_input: "default-amenities.png"
 
         const body = { name, description, icon_file };
 
+        // Send POST request to create the new amenity
         const res = await apiFetch('/api/v1/amenities', {
             method: 'POST',
             body: JSON.stringify(body)
         });
 
         if (res.ok) {
-            location.reload();
+            location.reload(); // Reload the page to show the updated list and notify user
             alert(`Equipement créé.`)
         } else {
             alert("Enregistrement échouée.");
@@ -99,23 +111,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* Amenity deletion */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select all delete buttons for amenities in admin panel
     const deleteAmenityButtons = document.querySelectorAll('.admin-delete-amenity-btn');
 
     deleteAmenityButtons.forEach(button => {
         button.addEventListener('click', async () => {
+            // Get amenity ID from data attribute
             const amenityId = button.getAttribute('data-id')
             if (!amenityId) return;
             
+            // Confirm deletion with the user
             const confirmDelete = confirm("Voulez vous vraiment supprimer cet équipement?");
             if (!confirmDelete) return;
 
             try {
+                // Call API DELETE endpoint to remove the amenity
                 const result = await apiFetch(`/api/v1/amenities/${amenityId}`, {
                     method: "DELETE"
                 })
                 if (result.ok) {
                     alert("Equipement supprimé avec succès");
-                    location.reload();
+                    location.reload(); // Reload page to reflect changes
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
@@ -136,54 +152,64 @@ const closeModalBtn = document.getElementById('close-amenity-modal');
 let currentAmenityId = null;
 
 function openModalWithData(button) {
+    // Get current amenity info from data attributes on button
     currentAmenityId = button.getAttribute('data-id');
     const name = button.getAttribute('data-name');
     const description = button.getAttribute('data-description');
     const icon = button.getAttribute('data-icon');
 
+    // Find modal element within the same table cell (<td>)
     const modalElement = button.closest('td').querySelector('.amenity-modal');
     if (!modalElement) return;
 
-
+    // Pre-fill modal inputs with current values or empty strings
     modalElement.querySelector('.update-amenity-name').value = name || '';
     modalElement.querySelector('.update-amenity-description').value = description || '';
     modalElement.querySelector('.update-amenity-icon-file').value = icon || '';
 
+    // Show modal and overlay by removing 'hidden' class
     modalElement.classList.remove('hidden');
     modalElement.previousElementSibling.classList.remove('hidden');
 }
 
 function closeModal() {
-    modal.classList.add('hidden');
-    overlay.classList.add('hidden');
-    currentAmenityId = null;
+    modal.classList.add('hidden'); // Hide modal
+    overlay.classList.add('hidden'); // Hide overlay
+    currentAmenityId = null; // Reset current amenity ID
 }
 
 document.querySelectorAll(".admin-update-amenity-btn").forEach(button => {
     button.addEventListener("click", event => {
-        event.preventDefault();
-        openModalWithData(button);
+        event.preventDefault(); // Prevent default behavior
+        openModalWithData(button); // Open modal with pre-filled data
     });
 });
 
+// Close modal on close button or overlay click
 closeModalBtn.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
 
 document.querySelectorAll('.submit-amenity-update').forEach(button => {
     button.addEventListener('click', async () => {
+        // Get modal containing the clicked button
         const parentModal = button.closest('.amenity-modal');
+
+        // Get updated values or undefined if empty
         const amenityName = parentModal.querySelector('.update-amenity-name').value || undefined;
         const amenityDescription = parentModal.querySelector('.update-amenity-description').value || undefined;
         let amenityIcon = parentModal.querySelector('.update-amenity-icon-file').value || undefined;
 
+        // Set icon to null if empty string or "none"
         if (amenityIcon === '' || amenityIcon.toLowerCase() === 'none') {
             amenityIcon = null;
         }
 
+        // Get the amenity ID either from closest button or fallback to currentAmenityId
         const amenityId = button.closest('td').querySelector('.admin-update-amenity-btn')?.getAttribute('data-id')
             || currentAmenityId;
 
         try {
+            // Call API PUT to update the amenity data
             const result = await apiFetch(`/api/v1/amenities/${amenityId}`, {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -195,7 +221,7 @@ document.querySelectorAll('.submit-amenity-update').forEach(button => {
 
             if (result.ok) {
                 alert("Équipement modifié avec succès.");
-                location.reload();
+                location.reload(); // Refresh page to reflect changes
             } else {
                 const error = await result.json();
                 alert(`Erreur lors de la mise à jour : ${error?.error || 'Inconnue'}`);
@@ -210,23 +236,27 @@ document.querySelectorAll('.submit-amenity-update').forEach(button => {
 
 /* User deletion */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select all user deletion buttons in admin panel
     const deleteUserButton = document.querySelectorAll('.admin-delete-user-btn');
 
     deleteUserButton.forEach(button => {
         button.addEventListener('click', async () => {
+            // Get user ID from data attribute
             const userId = button.getAttribute('data-id')
             if (!userId) return;
-            
+
+            // Confirm with user before deleting
             const confirmDelete = confirm("Voulez vous vraiment supprimer cet utilisateur?");
             if (!confirmDelete) return;
 
             try {
+                // Call API DELETE to remove user
                 const result = await apiFetch(`/api/v1/users/${userId}`, {
                     method: "DELETE"
                 })
                 if (result.ok) {
                     alert("Utilisateur supprimé avec succès");
-                    location.reload();
+                    location.reload(); // Refresh page to reflect changes
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
@@ -241,18 +271,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* To User profile */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select buttons that redirect to user profile
     const goToUserButton = document.querySelectorAll('.admin-to-user-profile-btn');
 
     goToUserButton.forEach(button => {
         button.addEventListener('click', async () => {
+            // Get user ID from data attribute
             const userId = button.getAttribute('data-id')
             if (!userId) return;
 
             try {
+                // Verify user exists before redirecting
                 const result = await apiFetch(`/api/v1/users/${userId}`, {
                     method: "GET"
                 })
                 if (result.ok) {
+                    // Redirect to user's profile page
                     window.location.href = `/user/${userId}/profile`;
                 } else {
                     const error = await result.json();
@@ -268,15 +302,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* User is_active ON/OFF */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select buttons toggling user active status
     const moderateUserButton = document.querySelectorAll('.admin-moderate-user-btn');
 
     moderateUserButton.forEach(button => {
         button.addEventListener('click', async () => {
             const userId = button.getAttribute('data-id');
+            // The attribute is string, compare to "True"
             const userIsActive = button.getAttribute('data-is-active') === "True";
             if (!userId) return;
             if (userIsActive) {
                 try {
+                    // If user is active, prepare to deactivate (PATCH with is_active: false)
                     const body = { "is_active": false };
                     const result = await apiFetch(`/api/v1/users/${userId}/moderate`, {
                         method: "PATCH",
@@ -295,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 try {
+                    // If user is inactive, prepare to activate (PATCH with is_active: true
                     const body = { "is_active": true };
                     const result = await apiFetch(`/api/v1/users/${userId}/moderate`, {
                         method: "PATCH",
@@ -318,23 +356,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Place deletion */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select all delete buttons for places
     const deletePlaceButton = document.querySelectorAll('.admin-delete-place-btn');
 
     deletePlaceButton.forEach(button => {
         button.addEventListener('click', async () => {
+            // Get place ID from data attribute
             const placeId = button.getAttribute('data-id')
             if (!placeId) return;
-            
+
+            // Confirm deletion with the user
             const confirmDelete = confirm("Voulez vous vraiment supprimer cet hébergement?");
             if (!confirmDelete) return;
 
             try {
+                // API call to DELETE the place
                 const result = await apiFetch(`/api/v1/places/${placeId}`, {
                     method: "DELETE"
                 })
                 if (result.ok) {
                     alert("Hébergement supprimé avec succès");
-                    location.reload();
+                    location.reload(); // Reload to render results
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
@@ -349,6 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* To Place details */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select buttons that redirect to place details
     const goToPlaceButton = document.querySelectorAll('.admin-to-place-details-btn');
 
     goToPlaceButton.forEach(button => {
@@ -357,10 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!placeId) return;
 
             try {
+                // Check if place exists before redirecting
                 const result = await apiFetch(`/api/v1/places/${placeId}`, {
                     method: "GET"
                 })
                 if (result.ok) {
+                    // Redirect to place details page
                     window.location.href = `/place/${placeId}`;
                 } else {
                     const error = await result.json();
@@ -376,6 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Review deletion */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select all review deletion buttons
     const deleteReviewButton = document.querySelectorAll('.admin-delete-review-btn');
 
     deleteReviewButton.forEach(button => {
@@ -383,16 +429,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const reviewId = button.getAttribute('data-id')
             if (!reviewId) return;
             
+            // Confirm review deletion with user
             const confirmDelete = confirm("Voulez vous vraiment supprimer cet avis?");
             if (!confirmDelete) return;
 
             try {
+                // API call to DELETE review
                 const result = await apiFetch(`/api/v1/reviews/${reviewId}`, {
                     method: "DELETE"
                 })
                 if (result.ok) {
                     alert("Avis supprimé avec succès");
-                    location.reload();
+                    location.reload(); // Reload to render results
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
@@ -405,18 +453,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* Booking status update */
+/* Booking status update (refresh bookings list) */
 document.addEventListener('DOMContentLoaded', () => {
+    // Button that triggers bookings refresh
     const cancelBookingButton = document.getElementById('admin-refresh-bookings-btn');
 
     cancelBookingButton.addEventListener('click', async function() {
         try {
+            // Call API GET to refresh bookings list
             const result = await apiFetch(`/api/v1/bookings`, {
                 method: "GET",
             })
             if (result.ok) {
                 alert("Liste de réservation mise à jour.");
-                location.reload();
+                location.reload(); // Reload to show refreshed bookings
             } else {
                 const error = await result.json();
                 alert(`Erreur lors de la mise à jour' : ${error?.error || 'Inconnue'}`)
@@ -430,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Booking cancellation */
 document.addEventListener('DOMContentLoaded', () => {
+    // Select all booking cancellation buttons
     const cancelBookingButton = document.querySelectorAll('.admin-cancel-booking-btn');
 
     cancelBookingButton.forEach(button => {
@@ -437,17 +488,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const bookingId = button.getAttribute('data-id')
             if (!bookingId) return;
             
+            // Confirm cancellation with user
             const confirmCancel = confirm("Voulez vous vraiment annuler cette réservation?");
             if (!confirmCancel) return;
 
             try {
+                // API PUT call to update booking status to "CANCELLED"
                 const result = await apiFetch(`/api/v1/bookings/${bookingId}`, {
                     method: "PUT",
                     body: JSON.stringify({ "status": "CANCELLED" })
                 })
                 if (result.ok) {
                     alert("Réservation annulée avec succès");
-                    location.reload();
+                    location.reload(); // Reload to show results
                 } else {
                     const error = await result.json();
                     alert(`Erreur lors de l'annulation' : ${error?.error || 'Inconnue'}`)

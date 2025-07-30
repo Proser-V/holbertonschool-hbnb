@@ -5,22 +5,40 @@ from app.services import facade
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity, get_jwt
 from datetime import datetime, timezone, timedelta
 
-
+# Define the main web blueprint for route declarations
 bp_web = Blueprint('web', __name__)
 
 def get_first_available_date(bookings, now):
-    pending_bookings = sorted((b for b in bookings if b.status == "PENDING"), key=lambda b: b.start_date)
+    """
+    Calculate the earliest available date after all PENDING bookings.
+    
+    Args:
+        bookings (list): List of booking objects.
+        now (datetime): Reference date to start checking availability.
+    
+    Returns:
+        datetime: First available date not covered by a pending booking.
+    """
+
+    # Filter only pending bookings and sort them by start date
+    pending_bookings = sorted((b for b in bookings if b.status == "PENDING"),
+                              key=lambda b: b.start_date)
 
     current = now
+    # Loop through sorted bookings and find the next free slot
     for booking in pending_bookings:
         if booking.start_date > current:
             return current
+        # Move current pointer to after the booking ends
         current = max(current, booking.end_date + timedelta(days=1))
 
     return current
 
 @bp_web.route('/')
 def index():
+    """
+    Home page route. Displays all available places and their next available booking date.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -28,6 +46,7 @@ def index():
         user_id = None
 
     places = facade.place_repo.get_all()
+    # Get current date (naive UTC format) and compute tomorrow's date
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     tomorrow = now + timedelta(days=1)
 
@@ -35,6 +54,7 @@ def index():
     if user_id:
         current_user = facade.get_user(user_id)
 
+    # For each place, calculate the next available booking date
     for place in places:
         place.available_date = get_first_available_date(place.bookings, tomorrow)
 
@@ -46,14 +66,23 @@ def index():
 
 @bp_web.route('/under_construction')
 def under_construction():
+    """
+    Route for an under-construction page.
+    """
     return render_template("under_construction.html")
 
 @bp_web.route('/login')
 def login():
+    """
+    Login page route.
+    """
     return render_template("login.html")
 
 @bp_web.route('/admin_panel')
 def admin_panel():
+    """
+    Admin panel route. Only accessible to authenticated admins.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -62,6 +91,7 @@ def admin_panel():
     except:
         user_id = None
 
+    # Get all the informations for the admin panel
     users = facade.get_all_users()
     places = facade.place_repo.get_all()
     reviews = facade.get_all_reviews()
@@ -82,6 +112,9 @@ def admin_panel():
 
 @bp_web.route('/logout')
 def logout():
+    """
+    Logout route. Clears JWT cookies and redirects to home page.
+    """
     response = make_response("""
         <script>
             alert("A bientôt sur HBnB");
@@ -94,19 +127,27 @@ def logout():
 
 @bp_web.route('/new_user')
 def new_user():
+    """
+    Route to register a new user.
+    """
     return render_template("registration.html")
 
 @bp_web.route('/user/<user_id>/profile')
 def user_profile(user_id):
+    """
+    Display a user's profile, including their places and availability.
+    """
     try:
         UUID(user_id)
     except ValueError:
         abort(400, description="Invalid UUID")
 
+    # Get current date (naive UTC format) and compute tomorrow's date
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     tomorrow = now + timedelta(days=1)
     user = facade.get_user(user_id)
 
+    # For each place, calculate the next available booking date
     for place in user.places:
         place.available_date = get_first_available_date(place.bookings, tomorrow)
 
@@ -115,6 +156,9 @@ def user_profile(user_id):
 
 @bp_web.route('/booking/<place_id>')
 def new_booking(place_id):
+    """
+    Booking form page for a given place.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -126,10 +170,21 @@ def new_booking(place_id):
     if user_id:
         current_user = facade.get_user(user_id)
 
+
+    # Get current date (naive UTC format) and compute tomorrow's date
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     tomorrow = now + timedelta(days=1)
 
-    ranges = [{"start_date": booking.start_date.strftime("%Y-%m-%d"), "end_date": booking.end_date.strftime("%Y-%m-%d")} for booking in place.bookings if booking.status != 'CANCELLED']
+    # Extract non-cancelled booking date ranges for use in templates
+    ranges = [
+        {
+            "start_date": booking.start_date.strftime("%Y-%m-%d"),
+            "end_date": booking.end_date.strftime("%Y-%m-%d")
+        }
+        for booking in place.bookings if booking.status != 'CANCELLED'
+    ]
+
+    # For the place, calculate the next available booking date
     place.available_date = get_first_available_date(place.bookings, tomorrow)
 
     return render_template("booking.html",
@@ -143,6 +198,9 @@ def new_booking(place_id):
 
 @bp_web.route('/reviews/from_booking/<booking_id>')
 def add_review(booking_id):
+    """
+    Route to add a review for a specific booking.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -162,6 +220,9 @@ def add_review(booking_id):
 
 @bp_web.route('/new_place')
 def add_place():
+    """
+    Route to render the form to add a new place.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -177,6 +238,9 @@ def add_place():
 
 @bp_web.route('/place/<place_id>/update')
 def update_place(place_id):
+    """
+    Route to render the form to update an existing place.
+    """
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
@@ -195,6 +259,9 @@ def update_place(place_id):
 
 @bp_web.route('/place/<place_id>/show_photos')
 def show_photos(place_id):
+    """
+    Route to display all photos for a given place.
+    """
     try:
         UUID(place_id)
     except ValueError:
@@ -220,6 +287,9 @@ def show_photos(place_id):
 
 @bp_web.route('/place/<place_id>/show_reviews')
 def show_reviews(place_id):
+    """
+    Route to display all reviews for a given place.
+    """
     try:
         UUID(place_id)
     except ValueError:
@@ -244,6 +314,9 @@ def show_reviews(place_id):
 
 @bp_web.route('/place/<place_id>')
 def show_place(place_id):
+    """
+    Route to display a single place's details, photos, and reviews.
+    """
     try:
         UUID(place_id)
     except ValueError:
@@ -255,8 +328,11 @@ def show_place(place_id):
         user_id = None
 
     place = facade.get_place(place_id)
+
+    # Get current date (naive UTC format) and compute tomorrow's date
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     tomorrow = now + timedelta(days=1)
+
     if not place:
         abort(404, description="Place not found")
 
@@ -264,6 +340,7 @@ def show_place(place_id):
     if user_id:
         current_user = facade.get_user(user_id)
 
+    # For the place, calculate the next available booking date
     place.available_date = get_first_available_date(place.bookings, tomorrow)
 
     return render_template("place.html",
@@ -276,6 +353,9 @@ def show_place(place_id):
 
 @bp_web.route('/place/<place_id>/bookings')
 def place_bookings(place_id):
+    """
+    Route to show all bookings for a given place.
+    """
     try:
         UUID(place_id)
     except ValueError:
