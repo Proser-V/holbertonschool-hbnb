@@ -20,8 +20,8 @@ def create_app(config_name='default'):
     """
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config.from_object(config[config_name])
-    app.register_blueprint(bp_web)
-    app.register_blueprint(bp_api)
+    app.register_blueprint(bp_web) # Frontend web routes
+    app.register_blueprint(bp_api) # Frontend api helpers routes
 
     db.init_app(app)
     jwt.init_app(app)

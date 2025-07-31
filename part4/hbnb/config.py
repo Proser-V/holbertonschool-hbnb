@@ -16,13 +16,12 @@ class Config:
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_COOKIE_SECURE = False
+    JWT_COOKIE_SECURE = False  # False : HTTP / True : HTTPS
     JWT_ACCESS_COOKIE_NAME = 'access_token'
     JWT_REFRESH_COOKIE_NAME = 'refresh_token'
     JWT_ACCESS_COOKIE_PATH = '/'
     JWT_REFRESH_COOKIE_PATH = '/'  # /refresh for security in prod
-    JWT_COOKIE_CSRF_PROTECT = False  # True for later.
-
+    JWT_COOKIE_CSRF_PROTECT = False  # True for security in prod
 
 class DevelopmentConfig(Config):
     # Use 'sqlite:///testDB.db' to use automated tests
