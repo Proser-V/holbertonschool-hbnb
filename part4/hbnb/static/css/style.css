@@ -324,7 +324,7 @@ main {
 .admin-panel.expanding-amenity .admin-panel-amenity-wrapper,
 .admin-panel.expanding-admin-creation .admin-panel-admin-wrapper,
 .admin-panel.expanding-amenity-creation .admin-panel-new-amenity-wrapper {
-  max-height: 2000px;
+  max-height: 20000px;
   padding: 20px;
 }
 
@@ -486,6 +486,7 @@ main {
   gap: 20px;
   margin: 20px;
   padding-right: 30px;
+  position: ;
 }
 
 .place-card {

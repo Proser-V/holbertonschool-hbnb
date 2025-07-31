@@ -24,11 +24,11 @@
                 <p>Preview de la gallerie photo de votre logement :</p>
                 <label class="photo-gallery">
                     {% set default_img = url_for('static', filename="images/default-place-grey.png") %}
-                    <img class="place-photo-main" src="{{ place.photos_url[0] }}" alt="Photo principale">
-                    <img class="place-photo-little little-1" src="{{ place.photos_url[1] }}" alt="Photo 1">
-                    <img class="place-photo-little little-2" src="{{ place.photos_url[2] }}" alt="Photo 2">
-                    <img class="place-photo-little little-3" src="{{ place.photos_url[3] }}" alt="Photo 3">
-                    <img class="place-photo-little little-4" src="{{ place.photos_url[4] }}" alt="Photo 4">
+                    <img class="place-photo-main" src="{{ place.photos_url[0] if place.photos_url|length > 0 else default_img }}" alt="Photo principale">
+                    <img class="place-photo-little little-1" src="{{ place.photos_url[1] if place.photos_url|length > 1 else default_img }}" alt="Photo 1">
+                    <img class="place-photo-little little-2" src="{{ place.photos_url[2] if place.photos_url|length > 2 else default_img }}" alt="Photo 2">
+                    <img class="place-photo-little little-3" src="{{ place.photos_url[3] if place.photos_url|length > 3 else default_img }}" alt="Photo 3">
+                    <img class="place-photo-little little-4" src="{{ place.photos_url[4] if place.photos_url|length > 4 else default_img }}" alt="Photo 4">
                 </label>
                 <div class="add-photo-wrapper">
                     <input type="hidden" id="existing-photo-urls" value='{{ place.photos_url | tojson }}'>

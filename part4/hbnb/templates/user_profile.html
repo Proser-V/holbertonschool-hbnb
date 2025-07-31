@@ -156,7 +156,7 @@
                     </td>
                     <td>
                         {% set total_price = nights * booking.place_rel.price %}
-                        {{ total_price }} €
+                        {{ '%.2f' | format(total_price) }} €
                     </td>
                     <td>
                         <button class="place-owner-contact-btn" onclick="window.location.href='/under_construction'">Contactez l'hôte ici</button>
