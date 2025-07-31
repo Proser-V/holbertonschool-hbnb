@@ -1,4 +1,4 @@
-import { apiFetch } from "./refresh_token.js";
+import { apiFetch, formatPydanticError } from "./refresh_token.js";
 
 /* Toggle admin panel sections visibility when corresponding buttons are clicked */
 document.getElementById('open-admin-panel-user').addEventListener('click', () => {
@@ -65,7 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload();
             alert(`Administrateur créé.`)
         } else {
-            alert("Enregistrement échouée.");
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
     });
 });
@@ -104,7 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload(); // Reload the page to show the updated list and notify user
             alert(`Equipement créé.`)
         } else {
-            alert("Enregistrement échouée.");
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
     });
 });
@@ -133,8 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Equipement supprimé avec succès");
                     location.reload(); // Reload page to reflect changes
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -145,10 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* Amenity update */
-const modal = document.getElementById('amenity-modal');
-const overlay = document.getElementById('amenity-modal-overlay');
-const closeModalBtn = document.getElementById('close-amenity-modal');
-
 let currentAmenityId = null;
 
 function openModalWithData(button) {
@@ -173,9 +183,13 @@ function openModalWithData(button) {
 }
 
 function closeModal() {
-    modal.classList.add('hidden'); // Hide modal
-    overlay.classList.add('hidden'); // Hide overlay
-    currentAmenityId = null; // Reset current amenity ID
+    // Select the opened modal and overlay
+    const openModal = document.querySelector('.amenity-modal:not(.hidden)');
+    const openOverlay = document.querySelector('.amenity-modal-overlay:not(.hidden)');
+
+    if (openModal) openModal.classList.add('hidden'); // Hide the opened modal
+    if (openOverlay) openOverlay.classList.add('hidden'); // Hide the opened overlay
+    currentAmenityId = null;
 }
 
 document.querySelectorAll(".admin-update-amenity-btn").forEach(button => {
@@ -186,8 +200,8 @@ document.querySelectorAll(".admin-update-amenity-btn").forEach(button => {
 });
 
 // Close modal on close button or overlay click
-closeModalBtn.addEventListener('click', closeModal);
-overlay.addEventListener('click', closeModal);
+document.getElementById('close-amenity-modal').addEventListener('click', closeModal);
+document.getElementById('amenity-modal-overlay').addEventListener('click', closeModal);
 
 document.querySelectorAll('.submit-amenity-update').forEach(button => {
     button.addEventListener('click', async () => {
@@ -223,8 +237,12 @@ document.querySelectorAll('.submit-amenity-update').forEach(button => {
                 alert("Équipement modifié avec succès.");
                 location.reload(); // Refresh page to reflect changes
             } else {
-                const error = await result.json();
-                alert(`Erreur lors de la mise à jour : ${error?.error || 'Inconnue'}`);
+                // Attempt to parse the JSON error response
+                const errorData = await res.json();
+                // Format Pydantic-style validation errors into a user-friendly message
+                const prettyMessage = formatPydanticError(errorData);
+                // Display the formatted error to the user
+                alert(`Erreur :\n${prettyMessage}`);
             }
         } catch (error) {
             console.error(error);
@@ -258,8 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Utilisateur supprimé avec succès");
                     location.reload(); // Refresh page to reflect changes
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -289,8 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to user's profile page
                     window.location.href = `/user/${userId}/profile`;
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la redirection : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -323,8 +349,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert("Utilisateur passé inactif avec succès");
                         location.reload();
                     } else {
-                        const error = await result.json();
-                        alert(`Erreur lors de la redirection : ${error?.error || 'Inconnue'}`)
+                        // Attempt to parse the JSON error response
+                        const errorData = await res.json();
+                        // Format Pydantic-style validation errors into a user-friendly message
+                        const prettyMessage = formatPydanticError(errorData);
+                        // Display the formatted error to the user
+                        alert(`Erreur :\n${prettyMessage}`);
                     }
                 } catch (err) {
                     console.error(err);
@@ -342,8 +372,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert("Utilisateur passé actif avec succès");
                         location.reload();
                     } else {
-                        const error = await result.json();
-                        alert(`Erreur lors de la redirection : ${error?.error || 'Inconnue'}`)
+                        // Attempt to parse the JSON error response
+                        const errorData = await res.json();
+                        // Format Pydantic-style validation errors into a user-friendly message
+                        const prettyMessage = formatPydanticError(errorData);
+                        // Display the formatted error to the user
+                        alert(`Erreur :\n${prettyMessage}`);
                     }
                 } catch (err) {
                     console.error(err);
@@ -378,8 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Hébergement supprimé avec succès");
                     location.reload(); // Reload to render results
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -408,8 +446,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to place details page
                     window.location.href = `/place/${placeId}`;
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la redirection : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -442,8 +484,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Avis supprimé avec succès");
                     location.reload(); // Reload to render results
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -468,8 +514,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Liste de réservation mise à jour.");
                 location.reload(); // Reload to show refreshed bookings
             } else {
-                const error = await result.json();
-                alert(`Erreur lors de la mise à jour' : ${error?.error || 'Inconnue'}`)
+                // Attempt to parse the JSON error response
+                const errorData = await res.json();
+                // Format Pydantic-style validation errors into a user-friendly message
+                const prettyMessage = formatPydanticError(errorData);
+                // Display the formatted error to the user
+                alert(`Erreur :\n${prettyMessage}`);
             }
         } catch (err) {
             console.error(err);
@@ -502,8 +552,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Réservation annulée avec succès");
                     location.reload(); // Reload to show results
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de l'annulation' : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);

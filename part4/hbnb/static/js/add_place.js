@@ -1,4 +1,5 @@
 import { apiFetch } from './refresh_token.js';
+import { formatPydanticError } from './refresh_token.js';
 
 // Store the default image URL on initial page load
 const defaultGalleryImage = document.querySelector('.photo-gallery img')?.getAttribute('src');
@@ -205,9 +206,18 @@ form.addEventListener('submit', async (e) => {
         if (res.ok) {
             // Redirect to user profile after successful creation
             window.location.href = `/user/${userId}/profile`;
+            alert('Logement ajouté avec succès.')
         } else {
-            const err = await res.json();
-            alert("Erreur : " + (err.message || res.statusText));
+            try {
+                // Attempt to parse the JSON error response
+                const errorData = await res.json();
+                // Format Pydantic-style validation errors into a user-friendly message
+                const prettyMessage = formatPydanticError(errorData);
+                // Display the formatted error to the user
+                alert(`Erreur lors de l'enregistrement :\n${prettyMessage}`);
+            } catch {
+                alert('Erreur inconnue lors de la requête');
+            }
         }
     } catch (error) {
         alert("Erreur réseau lors de la création.");

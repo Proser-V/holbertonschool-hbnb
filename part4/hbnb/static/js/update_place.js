@@ -1,4 +1,4 @@
-import { apiFetch } from './refresh_token.js';
+import { apiFetch, formatPydanticError } from './refresh_token.js';
 
 // Store the default image URL on initial page load
 const defaultGalleryImage = document.querySelector('.photo-gallery img')?.getAttribute('src');
@@ -267,8 +267,12 @@ form.addEventListener('submit', async (e) => {
             window.location.href = `/place/${placeId}`; // Redirection to the place public page
             alert('Hébergement modifié avec succès.')
         } else {
-            const err = await res.json();
-            alert("Erreur : " + (err.message || res.statusText));
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
     } catch (error) {
         alert("Erreur réseau lors de la création.");

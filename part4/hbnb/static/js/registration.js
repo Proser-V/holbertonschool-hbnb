@@ -1,3 +1,5 @@
+import { formatPydanticError } from "./refresh_token.js";
+
 // Wait until the full HTML document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Select the registration form element
@@ -33,7 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/login'; // Redirect to login page
             alert(`Bienvenue sur HBnB ${first_name}.`)
         } else {
-            alert("Enregistrement échouée.");
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur lors de l'enregistrement :\n${prettyMessage}`);
         }
     });
 });

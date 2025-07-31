@@ -32,7 +32,7 @@
         <h2 class="login-title">Pas encore inscrit?</h2>
         <button class="login-validation-button" type="redirect"><a href="{{ url_for('web.new_user') }}">Créer un compte</a></button>
     </main>
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 <footer>
     <div class="footer-content">

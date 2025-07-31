@@ -43,10 +43,25 @@ async function tryRefreshToken() {
         });
         // Log status and return true if refresh was successful (status 200)
         console.log("Tentative de refresh, statut:", res.status);
+        console.log("Réponse brute du refresh :", await res.text());
         return res.ok;
     } catch (err) {
         // Catch and log any network error
         console.error("Erreur lors du refresh:", err);
         return false;
     }
+}
+
+// Format a Pydantic validation error response into a user-friendly string.
+export function formatPydanticError(errorData) {
+    // Check if the response contains a list of validation errors
+    if (errorData?.error && Array.isArray(errorData.error)) {
+        return errorData.error.map(e => {
+            // Build a readable field name from the location path
+            const field = e.loc?.join('.') || 'champ inconnu'; // Join the location array into a dotted path like "body.field"
+            const msg = e.msg || 'Erreur inconnue'; // Use default message if msg is missing
+            return `${field} : ${msg}`;
+        }).join('\n'); // Combine all error lines into one string separated by newlines
+    }
+    return errorData?.error || 'Erreur inconnue';
 }

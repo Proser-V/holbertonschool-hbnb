@@ -1,4 +1,4 @@
-import { apiFetch } from './refresh_token.js';
+import { apiFetch, formatPydanticError } from './refresh_token.js';
 
 // Helper function to expand reserved date ranges into individual date strings
 function expandRanges(ranges) {
@@ -40,12 +40,19 @@ const picker = new Litepicker({
 });
 
 // Handle booking button click
-document.getElementById('btn-book').addEventListener('click', async function () {
+document.getElementById('btn-book').addEventListener('click', async function (e) {
+    e.preventDefault();
+
     const startDate = picker.getStartDate(); // Get selected start date
     const endDate = picker.getEndDate(); // Get selected end date
 
     if (!startDate || !endDate) { // Validate that both dates are selected
         alert("Veuillez sélectionner une plage de dates avant de réserver.");
+        return;
+    }
+
+    if (startDate.isSame(endDate, 'day')) {
+        alert("Veuillez sélectionner au moins une nuit (2 dates consécutives).");
         return;
     }
 
@@ -67,9 +74,12 @@ document.getElementById('btn-book').addEventListener('click', async function () 
             alert('Réservation enregistrée avec succès !');
             window.location.href = `/place/${place_id}`;
         } else {
-            // On failure, display error message from API
-            const error = await res.json();
-            alert(`Erreur : ${error.message || 'Impossible de réserver'}`);
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
     } catch (err) {
         // Catch network or unexpected errors

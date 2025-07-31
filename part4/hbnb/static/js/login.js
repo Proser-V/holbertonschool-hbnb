@@ -1,3 +1,5 @@
+import { formatPydanticError } from "./refresh_token.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     // Select the login form
     const loginForm = document.getElementById('login-form');
@@ -21,7 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res.ok) {
             window.location.href = '/'; // Redirect to home page
         } else {
-            alert("Login failed");
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
     });
 });

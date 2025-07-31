@@ -1,4 +1,4 @@
-import { apiFetch } from "./refresh_token.js";
+import { apiFetch, formatPydanticError } from "./refresh_token.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Select all delete buttons for places
@@ -23,8 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Hébergement supprimé avec succès");
                 window.location.href = '/'; // Redirect to home page
             } else {
-                const error = await result.json();
-                alert(`Erreur lors de la suppression : ${error?.error || 'Inconnue'}`)
+                // Attempt to parse the JSON error response
+                const errorData = await res.json();
+                // Format Pydantic-style validation errors into a user-friendly message
+                const prettyMessage = formatPydanticError(errorData);
+                // Display the formatted error to the user
+                alert(`Erreur :\n${prettyMessage}`);
             }
         } catch (err) {
             console.error(err);

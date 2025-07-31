@@ -256,7 +256,11 @@ class TokenRefresh(Resource):
     @api.response(401, 'Unauthorized')
     def post(self):
         identity = get_jwt_identity()
-        new_token = create_access_token(identity=identity)
+        user = facade.get_user(identity)
+        new_token = create_access_token(
+            identity=user.id,
+            additional_claims={"is_admin": user.is_admin}
+            )
 
         response = jsonify({'msg': 'Token refreshed'})
         set_access_cookies(response, new_token)

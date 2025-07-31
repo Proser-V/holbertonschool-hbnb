@@ -1,4 +1,4 @@
-import { apiFetch } from './refresh_token.js';
+import { apiFetch, formatPydanticError } from './refresh_token.js';
 
 // Wait until the full HTML document is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -47,8 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Profil mis à jour !');
             location.reload(); // Reload the page to reflect changes
         } else {
-            const error = await response.json();
-            alert(`Erreur : ${error.message || 'Impossible de mettre à jour le profil'}`);
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur :\n${prettyMessage}`);
         }
         } catch (err) {
             console.error(err);

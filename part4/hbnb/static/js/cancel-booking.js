@@ -1,4 +1,4 @@
-import { apiFetch } from "./refresh_token.js";
+import { apiFetch, formatPydanticError } from "./refresh_token.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Select all booking cancellation buttons
@@ -23,8 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("Réservation annulée avec succès");
                     location.reload(); // Reload the page to show results
                 } else {
-                    const error = await result.json();
-                    alert(`Erreur lors de l'annulation' : ${error?.error || 'Inconnue'}`)
+                    // Attempt to parse the JSON error response
+                    const errorData = await res.json();
+                    // Format Pydantic-style validation errors into a user-friendly message
+                    const prettyMessage = formatPydanticError(errorData);
+                    // Display the formatted error to the user
+                    alert(`Erreur :\n${prettyMessage}`);
                 }
             } catch (err) {
                 console.error(err);

@@ -1,4 +1,4 @@
-import { apiFetch } from './refresh_token.js';
+import { apiFetch, formatPydanticError } from './refresh_token.js';
 
 // Wait for the DOM to be fully loaded before attaching event listeners
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,9 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Merci d'avoir laissé votre avis.");
             location.reload(); // Reload page to show updated reviews
         } else {
-            // Extract and display error message from response
-            const error = await response.json();
-            alert(`Erreur : ${error.message || 'Impossible de laisser un avis.'}`);
+            // Attempt to parse the JSON error response
+            const errorData = await res.json();
+            // Format Pydantic-style validation errors into a user-friendly message
+            const prettyMessage = formatPydanticError(errorData);
+            // Display the formatted error to the user
+            alert(`Erreur lors de l'enregistrement :\n${prettyMessage}`);
         }
         } catch (err) {
             console.error(err);
