@@ -432,7 +432,7 @@ class HBnBFacade:
             booking.set_status(BookingStatus.CANCELLED.value)
         return booking
 
-    def update_booking(self, booking_id, booking_data):
+    def update_booking(self, booking_id, booking_data, current_user):
         """
         Update a booking.
         Only the owner of the place can update booking status.
@@ -446,10 +446,13 @@ class HBnBFacade:
         user = self.get_user(user_id)
 
         if 'status' in booking_data:
-            if (str(place.owner_id) != str(user_id)
-               and not user.is_admin):
-                raise PermissionError("Only the owner of a place or an admin"
-                                      " can update the status")
+            is_place_owner = str(place.owner_id) == str(current_user.id)
+            is_admin = current_user.is_admin
+
+            if not (is_place_owner or is_admin):
+                raise PermissionError(
+                    "Only the booking user, the owner of the place, or an admin can update the status"
+                )
             if booking_data['status'] not in ("DONE", "PENDING", "CANCELLED"):
                 raise ValueError("Status must be DONE, PENDING, or CANCELLED")
 

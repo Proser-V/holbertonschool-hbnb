@@ -177,8 +177,11 @@ class BookingResource(Resource):
             place = facade.get_place(booking.place)
             if not place:
                 return {'error': 'Associated place not found'}, 404
-            if (str(place.owner_id) != str(current_user_id)
-               and not current_user.is_admin):
+
+            is_owner = str(place.owner_id) == str(current_user_id)
+            is_admin = current_user.is_admin
+
+            if not (is_owner or is_admin):
                 return {
                     "error": "Only the owner of a place or an"
                     "admin can update the status"
@@ -189,7 +192,7 @@ class BookingResource(Resource):
                     }, 400
 
         try:
-            updated_booking = facade.update_booking(booking_id, update_data)
+            updated_booking = facade.update_booking(booking_id, update_data, current_user)
         except ValidationError as e:
             return {'error': json.loads(e.json())}, 400
         except PermissionError as e:

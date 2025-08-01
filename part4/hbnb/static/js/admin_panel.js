@@ -553,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     location.reload(); // Reload to show results
                 } else {
                     // Attempt to parse the JSON error response
-                    const errorData = await res.json();
+                    const errorData = await result.json();
                     // Format Pydantic-style validation errors into a user-friendly message
                     const prettyMessage = formatPydanticError(errorData);
                     // Display the formatted error to the user
