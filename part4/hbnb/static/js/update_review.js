@@ -1,68 +1,60 @@
 import { apiFetch, formatPydanticError } from './refresh_token.js';
 
-// Wait for the DOM to be fully loaded before attaching event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Get references to key elements for the review form UI
-    const container = document.getElementById('add-review-container');
-    const button = document.getElementById('open-review-form');
-    const cancelBtn = document.getElementById('cancel-review-form');
-    const form = document.getElementById('add-review-form');
+    const buttons = document.querySelectorAll('.button-to-update-review');
 
-    // Ensure all elements exist before adding event listeners
-    if (button && cancelBtn && form && container) {
-        // Show the review form with animation when "open review" button is clicked
+    buttons.forEach(button => {
         button.addEventListener('click', () => {
-            container.classList.add('expanding'); // Start expansion animation
-            button.classList.add('hide-text'); // Hide the button text during animation
+            const container = button.closest('.review-container');
+            const formWrapper = container.querySelector('.review-form-wrapper');
+
+            container.classList.add('expanding');
+            button.classList.add('hide-text');
             setTimeout(() => {
-                container.classList.add('show-form'); // Show the form after animation delay
+                container.classList.add('show-form');
+                formWrapper.querySelector('textarea[name="comment"]').focus();
             }, 500);
+
+            const cancelBtn = formWrapper.querySelector('.btn-cancel');
+            cancelBtn.addEventListener('click', () => {
+                container.classList.remove('show-form');
+                setTimeout(() => {
+                    container.classList.remove('expanding');
+                    button.classList.remove('hide-text');
+                }, 400);
+            });
+
+            const form = formWrapper.querySelector('form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const reviewId = form.dataset.reviewId;
+                const data = {
+                    comment: form.comment.value,
+                    rating: form.rating.value,
+                };
+
+                try {
+                    const response = await apiFetch(`/api/v1/reviews/${reviewId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        alert("Votre avis a bien été mis à jour.");
+                        location.reload();
+                    } else {
+                        const errorData = await response.json();
+                        const prettyMessage = formatPydanticError(errorData);
+                        alert(`Erreur lors de l'enregistrement :\n${prettyMessage}`);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Erreur réseau ou serveur');
+                }
+            });
         });
-
-    // Hide the review form and revert UI when "cancel" button is clicked
-    cancelBtn.addEventListener('click', () => {
-        container.classList.remove('show-form'); // Hide the form immediately
-        setTimeout(() => {
-            container.classList.remove('expanding'); // Remove expansion animation class
-            button.classList.remove('hide-text'); // Show the button text again
-        }, 400);
     });
-
-    // Handle the review form submission asynchronously
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent default form submission and page reload
-        const bookingId = form.dataset.bookingId // Retrieve associated booking ID from data attribute
-
-        // Gather data from form fields
-        const data = {
-            comment: form.comment.value,
-            rating: form.rating.value,
-        };
-
-    try {
-        // Send review data to backend API
-        const response = await apiFetch(`/api/v1/reviews/from_booking/${bookingId}`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            alert("Merci d'avoir laissé votre avis.");
-            location.reload(); // Reload page to show updated reviews
-        } else {
-            // Attempt to parse the JSON error response
-            const errorData = await response.json();
-            // Format Pydantic-style validation errors into a user-friendly message
-            const prettyMessage = formatPydanticError(errorData);
-            // Display the formatted error to the user
-            alert(`Erreur lors de l'enregistrement :\n${prettyMessage}`);
-        }
-        } catch (err) {
-            console.error(err);
-            alert('Erreur réseau ou serveur');
-        }
-    });
-    }
 });
 
 /* Star rating management */
@@ -103,6 +95,8 @@ ratingContainers.forEach(container => {
             ratingText.textContent = `${rating.toFixed(1)} / 5`;
         }
     };
+    const initialRating = parseFloat(container.dataset.rating || 0);
+    renderStars(initialRating);
 
     // Add event listeners to each star for interactive rating selection
     stars.forEach(star => {

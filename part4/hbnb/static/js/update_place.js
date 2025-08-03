@@ -48,7 +48,7 @@ function updateGallery() {
     // Set gallery image to photo URL if available, or use default image as fallback.
     for (let i = 0; i < 5; i++) {
         const img = galleryImgs[i];
-        img.src = photoUrls[i] || defaultImg;
+        img.src = photoUrls[i] || defaultGalleryImage;
     }
 }
 

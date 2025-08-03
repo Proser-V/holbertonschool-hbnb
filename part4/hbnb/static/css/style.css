@@ -691,7 +691,9 @@ main {
   margin-bottom: 20px;
 }
 
-.login-button-fromplace, .button-to-booking, .button-to-review {
+.login-button-fromplace,
+.button-to-booking,
+.button-to-review {
   display: inline-block;
   padding: 12px 30px;
   border: none;
@@ -706,6 +708,23 @@ main {
   text-decoration: inherit;
   margin-left: 10px;
 }
+
+.button-to-update-review {
+  display: inline-block;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  color: var(--color-primary);
+  background-color: var(--star-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  text-decoration: inherit;
+  margin-left: 10px;
+}
+
 
 /* ------ place's bookings list settings ------ */
 
@@ -788,7 +807,6 @@ main {
 
 .review-card {
   display: flex;
-  flex-direction: column;
   margin: 20px 0;
   padding: 10px;
   width: 100%;
@@ -798,6 +816,14 @@ main {
   border: 1px solid var(--card-border-color);
   border-radius: 10px;
   gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-card-content {
+  flex: 1;
+  padding-right: 20px;
+  align-items: center;
 }
 
 .review-user-info {
@@ -1036,7 +1062,8 @@ main {
   display: inline-block;
 }
 
-#open-review-form {
+#open-review-form,
+#open-update-review-form {
   display: block;
   margin: auto;
   padding: 12px 30px;
