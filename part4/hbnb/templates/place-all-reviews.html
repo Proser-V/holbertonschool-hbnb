@@ -23,6 +23,7 @@
             {% if place.reviews %}
                 {% for review in place.reviews| reverse %}
                     <div class="review-card">
+                        <div class="review-card-content">
                             <div class="review-user-info">
                                 <img class="review-user-photo" src="{{ review.user.photo_url or '../static/images/default-user.png' }}" alt="Profil de {{ review.user_first_name }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}" data-user-photo="{{ review.user.photo_url }}">
                                 <a class="review-user-name" href="#" data-user-photo="{{ review.user.photo_url }}" data-user-name="{{ review.user_first_name }} {{ review.user_last_name }}">{{ review.user_first_name }} {{ review.user_last_name }}</a>
@@ -44,6 +45,41 @@
                             </p>
                             <p class="review-comment">"{{ review.comment }}"</p>
                         </div>
+                        <div class="review-container">
+                            {% if review.user.id == current_user.id %}
+                            <div class="button-wrapper">
+                                <button class="button-to-update-review" data-review-id="{{ review.id }}">
+                                    Vous avez changé d'avis?
+                                </button>
+                            </div>
+                            <div class="review-form-wrapper">
+                                <form class="review-form" data-user-id="{{ current_user.id }}" data-review-id="{{ review.id }}" data-booking-id="review.booking_rel.id">
+                                    <div class="update-review-form">
+                                        <h4>Concernant votre séjour du {{ review.booking_rel.start_date.strftime("%d/%m/%Y") }} au : {{ review.booking_rel.end_date.strftime("%d/%m/%Y") }}</h4>
+                                        <label>
+                                            <span class="label-text">Votre avis :</span>
+                                            <textarea name="comment" rows="6">{{ review.comment }}</textarea>
+                                        </label>
+                                        <label>
+                                            <span class="label-text">Votre note :</span>
+                                            <div class="star-rating" data-rating="{{ review.rating }}">
+                                                <span class="star" data-index="1">☆</span>
+                                                <span class="star" data-index="2">☆</span>
+                                                <span class="star" data-index="3">☆</span>
+                                                <span class="star" data-index="4">☆</span>
+                                                <span class="star" data-index="5">☆</span>
+                                                <span class="rating-value" data-index="5">0 / 5</span>
+                                                <input type="hidden" name="rating" value="{{ review.rating }}">
+                                            </div>
+                                        </label>
+                                    </div>
+                                        <button type="submit" class="btn-submit">Enregistrer</button>
+                                        <button type="button" class="btn-cancel" id="cancel-update-review-form">Annuler</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 {% endfor %}
             {% else %}
                 <p class="no-review-text">Aucun avis pour l'instant.</p>

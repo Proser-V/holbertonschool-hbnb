@@ -176,6 +176,9 @@ class ReviewResource(Resource):
                     " creator or admin to delete it"}, 403
 
         facade.delete_review(review_id)
+        place = facade.place_repo.get(review_to_delete.place)
+        place.update_average_rating()
+        facade.place_repo.update(place.id, {"rating": place.rating})
         return {'message': 'Review deleted successfully'}, 200
 
 

@@ -623,13 +623,10 @@ main {
 
 .show-all-photos-btn {
     grid-column: 1 / -1;
-    margin-top: 0.5rem;
-    padding: 0.75rem 1.5rem;
     background-color: var(--color-primary);
     color: var(--text-color);
     font-weight: bold;
     border: none;
-    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
 }

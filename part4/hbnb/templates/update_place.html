@@ -58,8 +58,8 @@
                         <span class="label-text">Adresse :</span>
                         <input type="text" id="new-place-address" name="address" placeholder="Entrez une adresse">
                     </label>
-                    <input type="hidden" name="latitude" id="update-place-latitude">
-                    <input type="hidden" name="longitude" id="update-place-longitude">
+                    <input type="hidden" name="latitude" id="new-place-latitude">
+                    <input type="hidden" name="longitude" id="new-place-longitude">
                     <input type="hidden" id="current-place-id" value="{{ place.id }}">
                     <span class="label-text">Les équipements disponibles :</span>
                     <input type="hidden" id="current-amenities" value='{{ place.amenity_ids | tojson }}'>

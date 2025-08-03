@@ -231,8 +231,8 @@ form.addEventListener('submit', async (e) => {
     const title = document.getElementById('update-place-title').value || undefined;
     const description = document.getElementById('update-place-comment').value || undefined;
     const price = parseFloatOrUndefined(document.getElementById('update-place-price').value);
-    const latitude = parseFloatOrUndefined(document.getElementById('update-place-latitude').value);
-    const longitude = parseFloatOrUndefined(document.getElementById('update-place-longitude').value);
+    const latitude = parseFloatOrUndefined(document.getElementById('new-place-latitude').value);
+    const longitude = parseFloatOrUndefined(document.getElementById('new-place-longitude').value);
     // Get IDs of all checked amenities
     const checkedAmenityIds = Array.from(document.querySelectorAll('input[name="amenities"]:checked'))
         .map(input => input.value);
